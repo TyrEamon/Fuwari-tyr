@@ -85,13 +85,18 @@ export const navBarConfig: NavBarConfig = {
 			url: "https://监控",
 			external: true,
 		},
+				{
+			name: "图站",
+			url: "https://b.0106010.xyz",
+			external: true,
+		},
 	],
 };
 
 export const profileConfig: ProfileConfig = {
 	avatar: "https://pan.0106010.xyz/file/MyFlie/NFSW/sex/1769180763512_preview.jpg", // Relative to the /src directory. Relative to the /public directory if it starts with '/'
 	name: "TyrEamon",
-	bio: "爱折腾的小白,似乎什么都不会\n那就好好学吧！小子\n--------------\nCurated, as you see | : )",
+	bio: "爱折腾的小白,似乎什么都不会\n那就好好学吧！小子\n------------------------------------------------\nCurated, as you see | : )",
 	links: [
 		{
 			name: "QQ",
