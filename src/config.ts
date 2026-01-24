@@ -73,7 +73,7 @@ export const navBarConfig: NavBarConfig = {
 		},
 		{
 			name: "统计",
-			url: "https://umamii.zeabur.app/share/9WknxPqM6gjT0j4w",
+			url: "https://umamii.zeabur.app/share/C8gWpSlbh6hrKEUL",
 			external: true,
 		},
 		{
@@ -127,7 +127,7 @@ export const imageFallbackConfig: ImageFallbackConfig = {
 export const umamiConfig: UmamiConfig = {
 	enable: true,
 	baseUrl: "https://umamii.zeabur.app",
-	shareId: "9WknxPqM6gjT0j4w",
+	shareId: "C8gWpSlbh6hrKEUL",
 	timezone: "Asia/Shanghai",
 };
 
