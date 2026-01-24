@@ -1,0 +1,1216 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>RuneByte Blog</title><description>你的副标题</description><link>https://blog.acofork.com/</link><language>zh_CN</language><item><title>加群向导</title><link>https://blog.acofork.com/posts/pin/</link><guid isPermaLink="true">https://blog.acofork.com/posts/pin/</guid><description>关于如何联系二叉树树~</description><pubDate>Sat, 24 May 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;官方&lt;/h1&gt;
+&lt;h2&gt;Telegram群组&lt;/h2&gt;
+&lt;p&gt;&lt;a href=&quot;https://t.me/+_07DERp7k1ljYTc1&quot;&gt;Telegram: Join Group Chat [2x.nz]&lt;/a&gt;&lt;/p&gt;
+&lt;h2&gt;QQ群&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;为什么仅QQ群需要赞助？因为QQ作为国内平台，很容易被内鬼举报致使封群，但相对的，门槛更低，交流更方便。当然，如果您是高级用户，可以加入非QQ群。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;请先 &lt;a href=&quot;/sponsors/&quot;&gt;赞助&lt;/a&gt; 至少 &lt;strong&gt;10 CNY&lt;/strong&gt; 后加群。赞助时建议留备注，加群问题填写你留的备注或者交易订单号
+点击链接加入群聊【2x.nz】： &lt;a href=&quot;https://qm.qq.com/q/I2Quch1uy6&quot;&gt;QQ群&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://blog.acofork.com/_astro/2025-08-15-03-24-11-image.9R4OmJCY.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;h1&gt;非官方&lt;/h1&gt;
+&lt;blockquote&gt;
+&lt;p&gt;粉丝自建&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;a href=&quot;https://t.me/blog2x&quot;&gt;Telegram: View @blog2x&lt;/a&gt;&lt;/p&gt;
+</content:encoded></item><item><title>WTF？！直接将Umami部署到EdgeOne Pages？扔掉VPS！直接跑在云函数！</title><link>https://blog.acofork.com/posts/eo-umami/</link><guid isPermaLink="true">https://blog.acofork.com/posts/eo-umami/</guid><description>我们都知道，EdgeOne Pages有个完整的Node.js环境，那Umami是Next.js也基于Node.js，那我们是不是可以...</description><pubDate>Mon, 19 Jan 2026 10:14:32 GMT</pubDate><content:encoded>&lt;h1&gt;原理探寻&lt;/h1&gt;
+&lt;p&gt;由于 &lt;strong&gt;Umami&lt;/strong&gt; 使用的是 &lt;strong&gt;SSR&lt;/strong&gt; ，我原以为EdgeOne Pages不支持该模式，尝试部署后发现最大的问题在于&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;Error: SSR functions package size exceeds 128MiB limit (157MiB)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;也就是说，EdgeOne Page是支持SSR程序的，只是Umami构建后的函数太大了，那么我们的思路就很清晰了，只需要裁切一些代码即可&lt;/p&gt;
+&lt;p&gt;那么该项目就应运而生了 &lt;a href=&quot;https://github.com/afoim/umami&quot;&gt;afoim/umami: Umami is a modern, privacy-focused analytics platform. An open-source alternative to Google Analytics, Mixpanel and Amplitude.&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;我将Umami v3中的无关紧要的东西，如 &lt;code&gt;像素统计&lt;/code&gt; &lt;code&gt;链接统计&lt;/code&gt; &lt;code&gt;团队&lt;/code&gt; &lt;code&gt;地理位置文件&lt;/code&gt; 删去了，最终可以在EO上部署一个残血版的Umami&lt;/p&gt;
+&lt;p&gt;至于数据库，我用的是 https://supabase.com/ 需要注意，连接方式不能用 &lt;code&gt;Direct Connection&lt;/code&gt;
+&lt;img src=&quot;https://blog.acofork.com/_astro/eo-umami-2.B_7cF9HN.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;Demo： &lt;a href=&quot;https://eo-umami.acofork.com/share/rC995W8J6CT4uLDo&quot;&gt;Umami&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;视频： https://www.bilibili.com/video/BV1JiqSBaEY1/&lt;/p&gt;
+&lt;p&gt;唯一的缺陷，无法获取用户地区（原逻辑有个高达60M的本地Geo文件）
+&lt;img src=&quot;https://blog.acofork.com/_astro/eo-umami.CRrlz1l4.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;h1&gt;上手部署&lt;/h1&gt;
+&lt;ol&gt;
+&lt;li&gt;Fork 该仓库 [&lt;a href=&quot;https://github.com/afoim/umami&quot;&gt;afoim/umami: Umami is a modern, privacy-focused analytics platform. An open-source alternative to Google Analytics, Mixpanel and Amplitude.&lt;/a&gt;](https://github.com/afoim/umami-edgeonepages/tree/main)&lt;/li&gt;
+&lt;li&gt;连接到EdgeOne Pages，但先别点部署&lt;/li&gt;
+&lt;li&gt;填写环境变量 &lt;code&gt;DATABASE_URL&lt;/code&gt; 从Supbase中拿，类似于 &lt;code&gt;postgresql://postgres.kupggtyqiaepzvjqbboy:[YOUR-PASSWORD]@aws-1-ap-northeast-1.pooler.supabase.com:5432/postgres&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;绑定你的域名，访问并登录。用户名： admin | 密码：umami&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h1&gt;疑难解答&lt;/h1&gt;
+&lt;p&gt;&lt;s&gt;内部重定向貌似出了问题，如果你想要访问设置更改你的管理员密码请手动前往 &lt;code&gt;/settings/preferences&lt;/code&gt;&lt;/s&gt; 他们解决了这个问题，但是...&lt;/p&gt;
+&lt;p&gt;但是有个新问题，就是POST请求全被吃了，目前代码暂时将所有POST请求改为了GET请求。我们在 &lt;strong&gt;Main&lt;/strong&gt; 分支发布了全GET请求的版本，保证普通用户可用&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;master 分支目前提供给腾讯当作试验场使用，会暴露很多敏感信息，别用&lt;/strong&gt;&lt;/p&gt;
+</content:encoded></item><item><title>静态网站也需要WAF？Cloudflare不需要但是EdgeOne/ESA需要！</title><link>https://blog.acofork.com/posts/waf/</link><guid isPermaLink="true">https://blog.acofork.com/posts/waf/</guid><description>在几周前，我的网站累计被DDoS了约100TB的流量，哪怕我是静态网站，并不会被“打死”，但因为流量过大，还是被EdgeOne取消接入了，其实这件事本不会发生...</description><pubDate>Sun, 18 Jan 2026 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;静态网站能不能被打死？&lt;/h1&gt;
+&lt;p&gt;首先，先给结论：&lt;/p&gt;
+&lt;p&gt;如果你托管在 &lt;strong&gt;Cloudflare Page&lt;/strong&gt; ，那确实不用担心，因为它既不对静态请求计费，自身的CDN网络也足够强大，只要不是一天一PB，都是稳如老狗的&lt;/p&gt;
+&lt;p&gt;但是，如果你托管在 &lt;strong&gt;EdgeOne/ESA&lt;/strong&gt; 等计费平台，是 &lt;strong&gt;可以被打死&lt;/strong&gt; 的&lt;/p&gt;
+&lt;p&gt;有人就会问了： 我都是静态网站了，源站都没有，怎么能被打死呢？&lt;/p&gt;
+&lt;p&gt;是的，你的确没有源站，静态网站也不计请求数，但是如果你任何防护都不配，所有人，或者说所有IP都可以批量刷取你站的流量，一天刷个几TB。几天后，&lt;strong&gt;CDN方可能就会给你取消接入了&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;那么我们要解决的问题也就明晰了，其实跟动态网站一样，本质就是： &lt;strong&gt;让网站尽可能服务真实用户&lt;/strong&gt; 。只不过对于动态站，这是为了 &lt;strong&gt;防止源站被打死&lt;/strong&gt; ，而对于静态网站，是为了 &lt;strong&gt;CDN看到大额流量&lt;/strong&gt;&lt;/p&gt;
+&lt;h1&gt;如何做WAF？&lt;/h1&gt;
+&lt;p&gt;首先，如果你使用的CDN是国内节点，就直接拦截海外访问&lt;/p&gt;
+&lt;p&gt;因为大部分刷子的IP都来自海外（大陆IP金贵），直接拦截可以很好防止大文件被刷取，如图片等。我就是个例子
+&lt;img src=&quot;https://blog.acofork.com/_astro/waf-1.B7Z7rMjT.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;其实做好这一步，你已经 &lt;strong&gt;99%&lt;/strong&gt; 不会被刷死了，因为海外刷子本来可以刷 &lt;strong&gt;100~1000KB&lt;/strong&gt;不等的图片，但现在只能刷 &lt;strong&gt;拦截页面&lt;/strong&gt; 了（一般不到 &lt;strong&gt;5KB&lt;/strong&gt; ），而一般拦截页面没有太多信息，甚至有些平台能自定义拦截页面，使其返回空报文（&lt;strong&gt;小于1KB&lt;/strong&gt;）&lt;/p&gt;
+&lt;p&gt;假如原本刷子可以拿 &lt;strong&gt;十万个&lt;/strong&gt; IP刷死你，而现在刷子需要 &lt;strong&gt;100 * 100000 个&lt;/strong&gt; IP才能刷死了 ，这无疑是个指数级别的增长，并且你还是静态站，刷死你除了让业务停机，你也不会收到任何账单，大部分刷子会放弃刷站&lt;/p&gt;
+&lt;p&gt;接下来我们仍然可以配置额外防护，比如 &lt;strong&gt;速率限制&lt;/strong&gt;，&lt;strong&gt;全局JS质询&lt;/strong&gt; 等，这些都是针对于真实访客无感的验证&lt;/p&gt;
+&lt;p&gt;对于 &lt;strong&gt;速率限制&lt;/strong&gt; 。真实访客不会进你站疯狂按F5短时间刷大量请求&lt;/p&gt;
+&lt;p&gt;对于 &lt;strong&gt;JS质询&lt;/strong&gt; 。真实访客是用 &lt;strong&gt;浏览器&lt;/strong&gt; 访问的，而不是 &lt;strong&gt;curl&lt;/strong&gt; &lt;strong&gt;wget&lt;/strong&gt; &lt;strong&gt;okhttp&lt;/strong&gt; &lt;strong&gt;httpx&lt;/strong&gt; 等无JS执行模块的轻 &lt;strong&gt;请求发生器&lt;/strong&gt; 访问的，所以建议开启全站JS拦截&lt;/p&gt;
+&lt;p&gt;接下来才是重磅的，如果你的站被刷特别严重，尽管在L7全拦截住了，但是流量还是止不住的被刷刷刷，那就不要犹豫，&lt;strong&gt;关闭CDN的 HTTP 2.0&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;这是什么原理？我们都知道，在HTTP 2.0，引入了 &lt;strong&gt;连接复用&lt;/strong&gt; ，也就是在一个TCP连接里面可以发很多HTTP请求，这无疑降低了攻击成本&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;经过实测，关闭HTTP 2.0后，攻击者从1分钟刷50G暴跌到了10分钟刷5G&lt;/strong&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;视频： https://www.bilibili.com/video/BV1paryBeEbP/&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h1&gt;总结：如何成为最耐刷的网站？&lt;/h1&gt;
+&lt;ol&gt;
+&lt;li&gt;拦截海外&lt;/li&gt;
+&lt;li&gt;所有请求JS质询（注意不要质询到API）&lt;/li&gt;
+&lt;li&gt;设置速率限制&lt;/li&gt;
+&lt;li&gt;关闭CDN的HTTP 2.0&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h1&gt;奇技淫巧&lt;/h1&gt;
+&lt;h3&gt;ESA禁海外访问&lt;/h3&gt;
+&lt;p&gt;针对于ESA，免费版用户可能无法设置区域限制
+&lt;img src=&quot;https://blog.acofork.com/_astro/waf-3.BGkdcti5.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;但是我们可以 &lt;strong&gt;曲线救国&lt;/strong&gt; ，先设置一个规则将所有请求默认拦截，再判断是不是大陆IP，如果是，则跳过这个规则&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://blog.acofork.com/_astro/waf-4.hx-BeEfK.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://blog.acofork.com/_astro/waf-5.Smz5IuFS.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;视频： https://www.bilibili.com/video/BV1fKimBnE3T/&lt;/p&gt;
+&lt;h3&gt;EdgeOne Page使用CDN WAF&lt;/h3&gt;
+&lt;p&gt;EdgeOne是个奇葩，它的CDN和Page的WAF是分开的，并且Page的WAF防护非常烂，只能 &lt;strong&gt;针对单个IP&lt;/strong&gt; 进行拦截
+&lt;img src=&quot;https://blog.acofork.com/_astro/waf-8.CntHvySR.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;我们可以让CDN回源Page让Page吃上CDN的WAF策略，左边为CDN创建域名界面，右边悬浮窗为Page界面&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;[!WARNING]
+这样设置后你会在总览看到双倍的流量，因为CDN回源Page记一次，而Page真正提供源站内容再记一次。可以通过开启缓存来缓解&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;img src=&quot;https://blog.acofork.com/_astro/waf-7.DX_DbHCN.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+</content:encoded></item><item><title>什么？4元每月200G的服务器？还是阿里的？还有联通9929精品回程？？</title><link>https://blog.acofork.com/posts/aliyun-ecs-4rm/</link><guid isPermaLink="true">https://blog.acofork.com/posts/aliyun-ecs-4rm/</guid><description>通过创建抢占型实例+每月免费CDT 200G流量包，你几乎只需要付很少的硬盘费！</description><pubDate>Fri, 16 Jan 2026 23:59:40 GMT</pubDate><content:encoded>&lt;h1&gt;正式开始&lt;/h1&gt;
+&lt;blockquote&gt;
+&lt;p&gt;[!CAUTION]
+抢占型实例在高峰期可能会进行回收，不要跑生产业务&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;[!NOTE]
+下文都是以 &lt;strong&gt;阿里云国内版&lt;/strong&gt; 演示的，注意在国内版按量付费业务需要账户内可用余额要 &amp;gt;=100 CNY。国际版无限制，但是要海外手机号+海外卡，有可能还需要KYC&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3&gt;下载Alpine镜像&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;由于我们主要的成本在硬盘上面，所以呢为了极致压缩空间，我们需要一个非常小巧的Linux镜像，以便我们可以用1G的 ESSD 云盘来安装。如果你也是极致玩家，仅用1G盘装系统，那么一定就要用我下面给你的Alpine镜像
+如果你财大气粗，不在乎，或者说想跑一些正常业务，想用Debian或Ubuntu，那就10G起步，也不需要自定义镜像了&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Alpine 60M镜像链接&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;https://dl-cdn.alpinelinux.org/alpine/v3.23/releases/x86_64/alpine-virt-3.23.2-x86_64.iso
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;将镜像上传至阿里云OSS&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;由于我们需要自定义镜像，但是镜像又必须要通过OSS提供，所以我们需要临时性的创建一个OSS Bucket实例，来上传我们的ISO镜像。在实例成功创建后，我们可以将其删除，以避免不必要的扣费&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;首先，来到 &lt;a href=&quot;https://oss.console.aliyun.com/bucket&quot;&gt;OSS管理控制台&lt;/a&gt; ，创建一个 Bucket，&lt;strong&gt;地域一定要选中国香港&lt;/strong&gt; ，并且上传ISO，最后，复制URL备用&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://blog.acofork.com/_astro/aliyun-ecs-4rm-1.BukRs8uK.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;h3&gt;导入镜像&lt;/h3&gt;
+&lt;p&gt;前往 &lt;a href=&quot;https://ecs.console.aliyun.com/image/region/cn-hongkong&quot;&gt;云服务器管理控制台&lt;/a&gt; ，选择右上角的 导入镜像
+&lt;img src=&quot;https://blog.acofork.com/_astro/aliyun-ecs-4rm-2.CJWbIgbk.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;注意需要授权ECS访问OSS业务
+&lt;img src=&quot;https://blog.acofork.com/_astro/aliyun-ecs-4rm-3.DMPxNKbF.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;然后正常填写，&lt;strong&gt;取消勾选“导入后执行检测”&lt;/strong&gt; ，先不要点下一步&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://blog.acofork.com/_astro/aliyun-ecs-4rm-4.D7hFnk__.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;接下来勾选配置云盘属性，并且将 &lt;strong&gt;云盘容量设置为1GB&lt;/strong&gt; ，确认无误，导入
+&lt;img src=&quot;https://blog.acofork.com/_astro/aliyun-ecs-4rm-5.Cxu6iMdm.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;h3&gt;创建ECS抢占型实例&lt;/h3&gt;
+&lt;p&gt;前往 &lt;a href=&quot;https://ecs.console.aliyun.com/server/&quot;&gt;云服务器管理控制台&lt;/a&gt; ，创建 &lt;strong&gt;中国香港&lt;/strong&gt; 实例，注意红框区域要保持一致&lt;/p&gt;
+&lt;p&gt;另外，对于 &lt;strong&gt;网络及可用区&lt;/strong&gt; ，香港一共有 &lt;strong&gt;B、C、D&lt;/strong&gt; 三个区，D区比B、C区贵不少，可以都开开测个速，留下最好的
+&lt;img src=&quot;https://blog.acofork.com/_astro/ALIECSSNPSHOT.FZLX4fPF.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;h3&gt;开通CDT&lt;/h3&gt;
+&lt;p&gt;前往 &lt;a href=&quot;https://cdt.console.aliyun.com/overview&quot;&gt;云数据传输&lt;/a&gt; 将升级状态全部变为已升级即可
+&lt;img src=&quot;https://blog.acofork.com/_astro/aliyun-ecs-4rm-6.B8_B2J3g.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;h3&gt;创建&amp;amp;绑定弹性公网IP并且挂上CDT&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;因为弹性公网IP可以绑定CDT的每月200G免费流量，并且在绑定实例后，弹性公网IP将不会再扣费。如果后续删机的时候不要忘记释放弹性公网IP，否则会一直扣费&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;进入 &lt;a href=&quot;https://vpc.console.aliyun.com/eip/cn-hongkong/eips&quot;&gt;专有网络管理控制台&lt;/a&gt; 如图选择，然后购买即可（这里显示的费用是纯持有不绑定的费用，一旦绑定就不计费了）
+&lt;img src=&quot;https://blog.acofork.com/_astro/aliyun-ecs-4rm-7.BC0G134f.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;接下来绑定弹性公网IP（因为我绑定过了，所以是解绑）
+&lt;img src=&quot;https://blog.acofork.com/_astro/aliyun-ecs-4rm-8.EKBA5fPi.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;接下来在这里绑定CDT，带宽最高可以拉到 2000Mbps，但是不推荐，一般300M够用了
+&lt;img src=&quot;https://blog.acofork.com/_astro/aliyun-ecs-4rm-9.BH_lAhbQ.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;h3&gt;配置Alpine&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;如果你安装了Alpine，默认是需要VNC进入手动配置系统的。如果是公共镜像，则已经可以用了，但不要忘了保证系统纯净&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;进入 &lt;a href=&quot;https://ecs.console.aliyun.com/server/&quot;&gt;云服务器管理控制台&lt;/a&gt; 选择你刚买的ECS，接下来点击 &lt;strong&gt;远程连接&lt;/strong&gt; ，展开更多，选择 &lt;strong&gt;通过VNC远程连接&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;接下来就是愉快的敲命令环节~ （方括号内为默认值，你可以输入新值回车覆盖也可以直接回车应用默认值）&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;启动 Alpine 安装程序&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;&lt;code&gt;localhost:~# setup-alpine
+&lt;/code&gt;&lt;/pre&gt;
+&lt;ul&gt;
+&lt;li&gt;选择键盘布局&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;&lt;code&gt;Select keyboard layout: [none] us
+Select variant: [us]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;ul&gt;
+&lt;li&gt;设置主机名&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;&lt;code&gt;Enter system hostname (fully qualified form, e.g. &apos;foo.example.org&apos;) [localhost] alpine-vps
+&lt;/code&gt;&lt;/pre&gt;
+&lt;ul&gt;
+&lt;li&gt;设置网卡&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;&lt;code&gt;Available interfaces are: eth0 lo
+Which one do you want to initialize? [eth0]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;ul&gt;
+&lt;li&gt;设置 IP 获取方式&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;&lt;code&gt;Ip address for eth0? (or &apos;dhcp&apos;, &apos;none&apos;, &apos;manual&apos;) [dhcp]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;ul&gt;
+&lt;li&gt;是否进行手动网络配置&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;&lt;code&gt;Do you want to do any manual network configuration? [no]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;ul&gt;
+&lt;li&gt;设置 root 密码（输入时不会显示）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;&lt;code&gt;New password:
+Retype password:
+&lt;/code&gt;&lt;/pre&gt;
+&lt;ul&gt;
+&lt;li&gt;设置时区，或者（PRC）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;&lt;code&gt;Which timezone are you in? (&apos;?&apos; for list) [UTC] Asia/Shanghai
+&lt;/code&gt;&lt;/pre&gt;
+&lt;ul&gt;
+&lt;li&gt;设置代理&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;&lt;code&gt;HTTP/FTP proxy URL? [none]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;ul&gt;
+&lt;li&gt;选择软件仓库镜像。这个地方建议先输入 &lt;code&gt;s&lt;/code&gt; 列出所有镜像，然后上下翻找找到阿里云镜像源，然后输入对应镜像源编号，否则选错了你后续通过apk安装软件的时候不会免流&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;&lt;code&gt;Which mirror do you want to use? (or &apos;?&apos; or &apos;done&apos;) [44] 
+&lt;/code&gt;&lt;/pre&gt;
+&lt;ul&gt;
+&lt;li&gt;不创建普通用户&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;&lt;code&gt;Setup a user? (enter a username, or &apos;no&apos;) [no] no
+&lt;/code&gt;&lt;/pre&gt;
+&lt;ul&gt;
+&lt;li&gt;选择 SSH 服务&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;&lt;code&gt;Which SSH server? (&apos;openssh&apos;, &apos;dropbear&apos;, or &apos;none&apos;) [openssh]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;ul&gt;
+&lt;li&gt;是否允许 root 通过 SSH 登录&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;&lt;code&gt;Allow root ssh login? (&apos;?&apos; for help) [prohibit-password] yes
+&lt;/code&gt;&lt;/pre&gt;
+&lt;ul&gt;
+&lt;li&gt;没有找到磁盘，是否安装至 vda 云盘，是&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;&lt;code&gt;No disk available, Try boot media /media/vda ? (y/n) [n] y
+&lt;/code&gt;&lt;/pre&gt;
+&lt;ul&gt;
+&lt;li&gt;选择要安装的磁盘&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;&lt;code&gt;Which disk(s) would you like to use? (or &apos;?&apos; for help or &apos;none&apos;) [none] vda
+&lt;/code&gt;&lt;/pre&gt;
+&lt;ul&gt;
+&lt;li&gt;选择磁盘使用方式&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;&lt;code&gt;How would you like to use it? (&apos;sys&apos;, &apos;data&apos;, &apos;crypt&apos;, &apos;lvm&apos;) [sys]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;ul&gt;
+&lt;li&gt;确认格式化磁盘&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;&lt;code&gt;WARNING: Erase the above disk(s) and continue? [y/N] y
+&lt;/code&gt;&lt;/pre&gt;
+&lt;ul&gt;
+&lt;li&gt;安装系统&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;&lt;code&gt;Installing system on /dev/sda:
+  Installing alpine-base...
+  Installing busybox...
+  Installing openssh...
+  Installing openrc...
+&lt;/code&gt;&lt;/pre&gt;
+&lt;ul&gt;
+&lt;li&gt;安装完成提示&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;&lt;code&gt;Installation is complete. Please reboot.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;ul&gt;
+&lt;li&gt;重启系统&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;&lt;code&gt;localhost:~# reboot
+&lt;/code&gt;&lt;/pre&gt;
+&lt;ul&gt;
+&lt;li&gt;重启后登录&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;&lt;code&gt;alpine-vps login: root
+Password:
+&lt;/code&gt;&lt;/pre&gt;
+&lt;ul&gt;
+&lt;li&gt;设置DNS（Cloudflare &amp;amp; Google DNS）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;&lt;code&gt;alpine-vps:~# setup-dns
+DNS Domain name? (e.g. &apos;bar.com&apos;) nameserver
+DNS nameserver(s)? [223.5.5.5] 1.1.1.1 8.8.8.8
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Alpine的软件包管理器为 &lt;strong&gt;APK&lt;/strong&gt; ，首先我们先更新软件源&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;apk update
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;接下来，安装一些基本的软件包&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;apk add curl unzip jq openssl tar iproute2 bash
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;设置保活&amp;amp;用量封顶策略&lt;/h3&gt;
+&lt;p&gt;虽然我们将弹性公网IP连接了CDT，默认流量会从CDT的免费流量份额里面扣&lt;/p&gt;
+&lt;p&gt;但是一旦超出上限，那就会扣我们的真金白银了&lt;/p&gt;
+&lt;p&gt;所以，我们需要一个定时监测的服务，发现CDT流量快用完了立即停机&lt;/p&gt;
+&lt;p&gt;那么...让我们请出 Cloudflare Worker！&lt;/p&gt;
+&lt;p&gt;::github{repo=&quot;afoim/cf-worker-aliyun-cdt-tracker&quot;}&lt;/p&gt;
+&lt;p&gt;在Cloudflare Worker的仪表盘配置五个机密环境变量即可
+以下是需要配置的机密环境变量 (Secrets)：&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;变量名&lt;/th&gt;
+&lt;th&gt;描述&lt;/th&gt;
+&lt;th&gt;示例 / 备注&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;ACCESS_KEY_ID&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;阿里云账号的 AccessKey ID&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;LTAIxxxxxxxxxxxx&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;ACCESS_KEY_SECRET&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;阿里云账号的 AccessKey Secret&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;xxxxxxxxxxxxxxxxxxxxxxxx&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;REGION_ID&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;ECS 实例所在的区域 ID。&lt;/td&gt;
+&lt;td&gt;cn-hongkong&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;ECS_INSTANCE_ID&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;需要控制的 ECS 实例 ID。在控制台获取&lt;/td&gt;
+&lt;td&gt;i-xxxxxxxxxxxx&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;TRAFFIC_THRESHOLD_GB&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;流量阈值（单位：GB），超过此值将停止实例&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;180&lt;/code&gt; (默认为 180)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;我们需要前往 https://ram.console.aliyun.com/profile/access-keys 创建一个RAM用户，你就会得到 &lt;code&gt;ACCESS_KEY_ID&lt;/code&gt; 和 &lt;code&gt;ACCESS_KEY_SECRET&lt;/code&gt; ，并且分配权限：&lt;code&gt;AliyunECSFullAccess&lt;/code&gt;  `AliyunCDTFullAccess&lt;/p&gt;
+&lt;p&gt;部署成功后，Cloudflare Worker将在每分钟检查一次CDT，如果超出流量阈值，会将指定ID的ECS停止
+&lt;img src=&quot;https://blog.acofork.com/_astro/aliyun-ecs-4rm-10.4ruO6Jsm.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;h1&gt;计费流程图&lt;/h1&gt;
+&lt;p&gt;带宽费（按固定带宽计费收取）：根据您指定的带宽峰值和计费时长后付费，与实际使用的流量无关。&lt;/p&gt;
+&lt;p&gt;流量费（按使用流量计费收取）：根据每小时公网的实际流量计费。&lt;/p&gt;
+&lt;p&gt;最终，抢占型ECS实例每个小时扣费 &lt;strong&gt;0.005528 元&lt;/strong&gt; ，按照一个月31天，每月扣费 &lt;strong&gt;4.112832 元&lt;/strong&gt; ，而弹性公网IP一经绑定便不再计费，CDT每月免费200G海外流量，不超出不计费，OSS免费存储5G，传入流量不计费，我们也没有传出流量，或者保险起见你也可以将其删除&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;最终每月成本：不到5元！&lt;/strong&gt;
+&lt;img src=&quot;https://blog.acofork.com/_astro/5a8cea3f1afaab3e37ba8c2464f4c6e3.oX7IWN0u.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+</content:encoded></item><item><title>你真的玩懂了Cloudflare SaaS吗？为什么经由SaaS的流量可以做优选？</title><link>https://blog.acofork.com/posts/cf-saas/</link><guid isPermaLink="true">https://blog.acofork.com/posts/cf-saas/</guid><description>我们都知道，可以通过SaaS来做优选，但是为什么用SaaS就能做优选呢，为什么直接CNAME就不能优选呢？这篇文章带你一窥真相！</description><pubDate>Fri, 16 Jan 2026 20:16:09 GMT</pubDate><content:encoded>&lt;h1&gt;前言&lt;/h1&gt;
+&lt;p&gt;Cloudflare SaaS是一个不需要你改变一个域名的NS服务器，就可以让其受益于Cloudflare网络&lt;/p&gt;
+&lt;h1&gt;原理&lt;/h1&gt;
+&lt;p&gt;首先我们要知道CDN是如何通过不同域名给不同内容的&lt;/p&gt;
+&lt;p&gt;我们可以将其抽象为2层，规则层和解析层。当我们普通的在Cloudflare添加一条开启了小黄云的解析。Cloudflare会为我们做两件事，1是帮我们写一条DNS解析指向Cloudflare，2是在Cloudflare创建一条路由规则&lt;/p&gt;
+&lt;p&gt;如果说你想要优选，实际上你是要手动更改这个DNS解析，使其指向一个更快的Cloudflare节点&lt;/p&gt;
+&lt;p&gt;但是，一旦你将小黄云关闭，路由规则也会被删除，再访问就会显示DNS直接指向IP&lt;/p&gt;
+&lt;p&gt;再但是，如果你使用SaaS，你就会发现Cloudflare不再帮你做这两件事了，这两件事你都可以自己做了&lt;/p&gt;
+&lt;p&gt;写一条SaaS规则+你自己写一条CNAME解析到优选节点，完全就可以做到优选了&lt;/p&gt;
+&lt;p&gt;具体如何创建一个SaaS规则可以前往 &lt;a href=&quot;/posts/cf-fastip/&quot;&gt;Cloudflare 优选&lt;/a&gt; 查看&lt;/p&gt;
+&lt;h1&gt;SaaS后，就是一家人了&lt;/h1&gt;
+&lt;p&gt;如果一个域名已经被SaaS到一个已经在Cloudflare的域名，将完整受益所有Cloudflare服务&lt;/p&gt;
+&lt;p&gt;如我将 umami.acofork.com SaaS 到 2x.nz ，我就可以在 2x.nz 里为 umami.acofork.com 写规则了
+&lt;img src=&quot;https://blog.acofork.com/_astro/cf-saas-1.D1WBx5uc.png&quot; alt=&quot;&quot; /&gt;
+&lt;img src=&quot;https://blog.acofork.com/_astro/cf-saas-2.Bi6RGY1_.png&quot; alt=&quot;&quot; /&gt;
+&lt;img src=&quot;https://blog.acofork.com/_astro/cf-saas-3.CuR_HHk0.png&quot; alt=&quot;&quot; /&gt;
+Worker中的路由规则也适用
+&lt;img src=&quot;https://blog.acofork.com/_astro/cf-saas-4.Jw-0vgWk.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+</content:encoded></item><item><title>EO VS ESA，谁才是国内CDNの王？！</title><link>https://blog.acofork.com/posts/eovsesa/</link><guid isPermaLink="true">https://blog.acofork.com/posts/eovsesa/</guid><description>EdgeOne和ESA都是非常好的免费国内CDN，常规用起来几乎一模一样，今天我们就来让他俩一决雌雄！</description><pubDate>Fri, 16 Jan 2026 16:53:08 GMT</pubDate><content:encoded>&lt;h1&gt;前言&lt;/h1&gt;
+&lt;p&gt;首先，EdgeOne是来的最早的，于25年7月就开始测试了，而ESA是10月才开放的。&lt;/p&gt;
+&lt;p&gt;虽然EdgeOne在早期需要兑换码换免费套餐，而兑换码从早期的发推特然后找官方领码，再到Discord群组每天固定时间发码，最后到测速分享直接拿兑换码，门槛逐渐放低，功能逐渐齐全。&lt;/p&gt;
+&lt;p&gt;而ESA由于是后来者，直接给每个阿里云账户发了一个免费的ESA套餐，如果你有多站点接入的需求，也可以通过拉人头来得到更多的免费套餐。&lt;/p&gt;
+&lt;p&gt;就当前（26年1月）来说，两家的体验大差不差，但是EdgeOne和ESA的底层逻辑是有点区别的。&lt;/p&gt;
+&lt;h1&gt;底层逻辑对比&lt;/h1&gt;
+&lt;p&gt;EdgeOne这个项目，特别是Page，在24年就已经初具雏形并且能够像那些大厂如Cloudflare Page，Github Page，Vercel等静态托管平台一样使用了，但是当时一是腾讯是悄咪咪上的，二是节点实在是太烂了，只有海外新加坡节点，也不支持国内节点。&lt;/p&gt;
+&lt;p&gt;而ESA大概率是从老的DCDN和云函数FC改过来的，控制台就已经露出鸡脚了。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://blog.acofork.com/_astro/eovsesa-1.CdN7VYw5.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;h1&gt;规则引擎与WAF&lt;/h1&gt;
+&lt;p&gt;ESA的很多东西直接是照抄Cloudflare的，比如：&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://blog.acofork.com/_astro/eovsesa-3.DwGCjSkY.png&quot; alt=&quot;&quot; /&gt;
+&lt;img src=&quot;https://blog.acofork.com/_astro/eovsesa-2.DGI0a9Nl.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;并且还将每条规则（嵌套子规则也算一条）全部砍了一刀，免费套餐仅支持5条规则。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://blog.acofork.com/_astro/eovsesa-4.DhLEUDby.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;h2&gt;EdgeOne 的优势&lt;/h2&gt;
+&lt;p&gt;反观EdgeOne，它没有照抄Cloudflare，而是自己写了一套规则引擎，所有类型的规则都在一处地方配置，并且可以互相联动。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://blog.acofork.com/_astro/eovsesa-5.BduE46Vn.png&quot; alt=&quot;&quot; /&gt;
+&lt;img src=&quot;https://blog.acofork.com/_astro/eovsesa-6.DcgIiedC.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;甚至你还可以对不合法请求在L7给空。（不推荐，规则引擎的假拦截也算正常请求）
+&lt;img src=&quot;https://blog.acofork.com/_astro/1f63e461bfa538605c7734042edd68f6.Cw97cduq.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://blog.acofork.com/_astro/eovsesa-7.hVWcE4QO.png&quot; alt=&quot;&quot; /&gt;
+&lt;img src=&quot;https://blog.acofork.com/_astro/eovsesa-8.BCwahwj3.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;h3&gt;优先级陷阱&lt;/h3&gt;
+&lt;p&gt;并且要注意一点，虽然你可以在规则引擎里伪装一个WAF拦截，但是在EdgeOne中，流量会先经由规则引擎，再经过WAF，也就是如果你在WAF写了个非CN拦截，然后在规则引擎里写个非CN给空，海外IP访问只能看到空响应，看不到拦截页面，流量也照记（难绷）。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://blog.acofork.com/_astro/eovsesa-9.Bd2nzSp7.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;h2&gt;ESA 的策略&lt;/h2&gt;
+&lt;p&gt;而ESA这边，WAF的优先级始终是最高的，流量会先被WAF网关审查，通过后才应用规则，但是免费套餐不支持在WAF中设置地域级别的拦截（难绷）。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://blog.acofork.com/_astro/eovsesa-10.CPZVIktS.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;h3&gt;曲线救国方案&lt;/h3&gt;
+&lt;p&gt;但是有个曲线救国的方案，就是先写个规则将流量全拦截，然后再写个白名单规则，将可信流量绕过该规则。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://blog.acofork.com/_astro/eovsesa-11.eUgmGLfJ.png&quot; alt=&quot;&quot; /&gt;
+&lt;img src=&quot;https://blog.acofork.com/_astro/eovsesa-12.CFrqoqSg.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;h1&gt;回源配置&lt;/h1&gt;
+&lt;p&gt;再接着就是因为ESA照抄Cloudflare，所以创建加速站点的时候默认是HTTP走80，HTTPS走443回源，如果你要更改回源的端口，还需要浪费一个回源规则。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://blog.acofork.com/_astro/eovsesa-13.kBUpMH-_.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;而EdgeOne可以在创建站点的时候直接就设置回源端口以及回源Host。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://blog.acofork.com/_astro/eovsesa-14.DFftznfJ.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;h1&gt;SSL 证书签发&lt;/h1&gt;
+&lt;p&gt;再到SSL签发，首先两家都支持默认的CNAME签发，也就是你把域名解析到我这，我帮你签SSL，但是EdgeOne的CNAME签发是每一个站点单独签一次。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://blog.acofork.com/_astro/eovsesa-15.DcbsehW_.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;而ESA是统一管理，你给我个DCV，我直接给你签一个泛域名，之后你就用去吧。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://blog.acofork.com/_astro/eovsesa-16.DK9b0pyT.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;h1&gt;规则隔离与互通&lt;/h1&gt;
+&lt;p&gt;然后就是最重磅的，EdgeOne独属的左右脑互搏时刻。&lt;/p&gt;
+&lt;p&gt;在EdgeOne CDN和EdgeOne Page中，他俩的规则竟然不是互通的，CDN业务走CDN的规则，Page的规则走Page的规则，也行吧，他想做干湿分离，我配两套没问题。&lt;/p&gt;
+&lt;h2&gt;功能阉割&lt;/h2&gt;
+&lt;p&gt;但是！阉割是什么意思，为什么CDN可以写地域判断，Page就只能写IP？&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://blog.acofork.com/_astro/eovsesa-17.DDPbPEi7.png&quot; alt=&quot;&quot; /&gt;
+&lt;img src=&quot;https://blog.acofork.com/_astro/eovsesa-18.C_LM5LSw.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;那么也没有什么让Page吃上CDN规则的方法呢？有的，兄弟有的（但是这样会在控制台看到双倍流量，如果你的Page纯静态，可以写个全缓存缓解一下）。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://blog.acofork.com/_astro/eovsesa-19.DrlaJ5zR.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;h1&gt;Page 服务对比&lt;/h1&gt;
+&lt;p&gt;接着到Page部分。&lt;/p&gt;
+&lt;p&gt;EdgeOne的Page你可以直接看作是Cloudflare Page的本地化，甚至突破了核心代码，直接可以在Page里面跑Nodejs服务，要知道，Cloudflare Page也只有一个V8环境（Umami也可以！SSR函数小于等于128MB即可）并且可以托管海量大和多的文件。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://blog.acofork.com/_astro/eovsesa-20.q8bPeFxU.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;而ESA Page非常像云函数FC改过来的，虽然也支持函数吧，但没有完整的Nodejs环境，甚至最近WebSocket也被砍了（关闭后就打不开了），并且托管的文件数以及单文件大小如下限制。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://blog.acofork.com/_astro/eovsesa-21.DF2ERbfw.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;h1&gt;速度与限速&lt;/h1&gt;
+&lt;p&gt;最后就是速度相关，根据多方数据以及自测，两个CDN都会在长时间的单IP上下行请求逐渐将速率削减至大约 500KB/s，但如果只是正常业务使用，短时间的突发速率都可以飙到50MB/s左右（但不能长期），所以这俩CDN都不适合反向代理对象存储以及大文件分发，如果有类似业务需求还是老实用Cloudflare，CF是不限速的。&lt;/p&gt;
+</content:encoded></item><item><title>完全免费！搭建一个自己的短链服务！</title><link>https://blog.acofork.com/posts/static-redirect-group/</link><guid isPermaLink="true">https://blog.acofork.com/posts/static-redirect-group/</guid><description>利用Cloudflare Worker+Github搭建一个纯静态，刷不死的短链吧！</description><pubDate>Wed, 14 Jan 2026 23:39:31 GMT</pubDate><content:encoded>&lt;h1&gt;前言&lt;/h1&gt;
+&lt;p&gt;本来不应该有这篇文章的，因为这篇文章就是一个该项目的简单自部署教程，应该写到仓库的README中，本来应该是让AI代工的，但是我发现它非常执着于那个b Github Page+Cloudflare Worker的神奇前后端分离，而且徒增了不少工作。其实该项目仅需一个Cloudflare Worker就行了，所以既然都要我手写了，我氵篇文章也是合情合理的吧&lt;/p&gt;
+&lt;h1&gt;项目原理&lt;/h1&gt;
+&lt;p&gt;该项目和上一个短链项目差不多，但是更简化了一些东西&lt;/p&gt;
+&lt;p&gt;首先就是，这个项目我们将前后端揉在了一起，前端几乎不校验东西，所有校验在后端，也不用两个项目来回加规则了&lt;/p&gt;
+&lt;p&gt;由于该项目前端非常简单，就两个html（一个创建页面，一个重定向页面），所以将他们揉在一起也并不臃肿&lt;/p&gt;
+&lt;p&gt;再来，该项目不再使用Cloudflare服务端的 301/302 重定向，也就突破了2000个静态重定向的限制，理论上是无限，而是直接使用CDN对于静态资产命中404时会fullback到 404.html 再在该文件用 JavaScript 做短链查询和重定向（也就跟Nginx伪静态差不多）&lt;/p&gt;
+&lt;p&gt;再接着，如果一个pathname没命中任何规则，也会被catch到一个默认的回退源，可以兼容类似 https://2x.nz/posts/pin/ --&amp;gt; https://blog.acofork.com/posts/pin/&lt;/p&gt;
+&lt;p&gt;然后就是创建短链的逻辑，其实跟上一个项目差不多，就是Worker代理访问Github，改一下js，添加一条新的短链规则，然后推送，这会自动触发Cloudflare Worker的重新构建，稍等片刻后，访问新的 pathname 就可以得到正确的重定向了&lt;/p&gt;
+&lt;p&gt;最后就是我们支持了有效期，原理也非常简单，前端创建短链的时候给后端传一个什么时候过期的字段，后端再写入文件，最后借助 Github Action 的定时巡查清除过期短链&lt;/p&gt;
+&lt;h1&gt;在哪搞个短链&lt;/h1&gt;
+&lt;p&gt;我的 2x.nz 是在 https://porkbun.com 买的，一年一百左右。其他后缀也不错，如 &lt;code&gt;.im&lt;/code&gt; &lt;code&gt;.mk&lt;/code&gt;&lt;/p&gt;
+&lt;h1&gt;正式搭建你的短链服务&lt;/h1&gt;
+&lt;p&gt;首先，Fork仓库&lt;/p&gt;
+&lt;p&gt;::github{repo=&quot;afoim/Static_Redirect_Group&quot;}&lt;/p&gt;
+&lt;p&gt;接下来，先更改一些硬编码的东西，由于Cloudflare Worker对于静态资产不能使用环境变量，所以有些东西是硬编码的，请在所有HTML文件中尝试搜索 &lt;code&gt;afoim&lt;/code&gt; 进行更改，改成你的（你也可以多加一层，写一个配置，然后通过构建来注入内容，随你）&lt;/p&gt;
+&lt;p&gt;然后，请编辑js文件夹里面的短链，改为你想要的&lt;/p&gt;
+&lt;p&gt;再接着，创建一个Github Token，只需要有 &lt;code&gt;repo&lt;/code&gt; 权限即可&lt;/p&gt;
+&lt;p&gt;继续，绑定机密环境变量，使用 &lt;code&gt;wrangler secret put XXX&lt;/code&gt;&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;变量名&lt;/th&gt;
+&lt;th&gt;值&lt;/th&gt;
+&lt;th&gt;说明&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;GITHUB_TOKEN&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;ghp_xxxx...&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;刚才申请的 Token&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;GITHUB_OWNER&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;你的GitHub用户名&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;例如 &lt;code&gt;afoim&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;GITHUB_REPO&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;Static_Redirect_Group&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;你的仓库名&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;BASE_DOMAIN&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;你的短链域名&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;例如 &lt;code&gt;u.2x.nz&lt;/code&gt; 或 Worker 的默认域名 &lt;code&gt;xxx.workers.dev&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;此时，访问 &lt;code&gt;/_url&lt;/code&gt; 即可创建你的短链&lt;/p&gt;
+&lt;h1&gt;防护&lt;/h1&gt;
+&lt;p&gt;建议保护创建短链的短链，防刷（或Cloudflare Turnstile、速率限制... 随你）&lt;/p&gt;
+&lt;p&gt;在Cloudflare创建一个WAF规则&lt;/p&gt;
+&lt;p&gt;当传入请求匹配时...&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;(http.host eq &quot;你的域名&quot; and (
+  http.request.uri.path eq &quot;/_url&quot;
+  or http.request.uri.path wildcard &quot;/api/*&quot;
+))
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;然后采取措施…&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;交互式质询&lt;/strong&gt;&lt;/p&gt;
+</content:encoded></item><item><title>利用自定义HTTP请求头Host字段实现单节点分流域名的监控</title><link>https://blog.acofork.com/posts/http-header-host/</link><guid isPermaLink="true">https://blog.acofork.com/posts/http-header-host/</guid><description>如果说你有个分流域名，正常来说我们需要两个监测源模拟国内和海外用户访问，但真的需要这么麻烦吗...</description><pubDate>Tue, 13 Jan 2026 17:28:33 GMT</pubDate><content:encoded>&lt;h1&gt;原理&lt;/h1&gt;
+&lt;p&gt;CDN上托管了那么多的网站，那它是如何识别每个用户需要访问哪个网站的呢？&lt;/p&gt;
+&lt;p&gt;针对 HTTPS ，CDN 会检查SSL握手报文中的 &lt;code&gt;Server_Name&lt;/code&gt; 字段。而针对 HTTP ，CDN 会检查请求头中的 &lt;code&gt;Host&lt;/code&gt; 字段&lt;/p&gt;
+&lt;p&gt;也就是说，我们可以通过直接访问CDN节点，如： &lt;code&gt;http://blog.acofork.com.a1.initww.com&lt;/code&gt; 并携带上 &lt;code&gt;Host&lt;/code&gt; 头指定为 &lt;code&gt;blog.acofork.com&lt;/code&gt; ，从而强制指定节点访问业务网站，不走分流&lt;/p&gt;
+&lt;p&gt;那么如果CDN开启了强制HTTPS呢？监测请求会被301到分流域名，这样不就没意义了吗？&lt;/p&gt;
+&lt;p&gt;并不是，我们只需要让它监测301/302是否能正常返回即可，不吃它的重定向。如果说CDN节点被打宕机了，它应该什么状态码都不返回，如果说CDN节点返回拦截页面，那它也不可能返回301/302 ，所以这样监测是有效的&lt;/p&gt;
+&lt;p&gt;经测试，EdgeOne，ESA都是先进行WAF拦截，也就是你使用HTTP访问，若该请求不合法，将会直接被拦截（EO返回418，ESA返回403），不会进行HTTPS升级&lt;/p&gt;
+&lt;h1&gt;正式开始&lt;/h1&gt;
+&lt;p&gt;部署一个Uptime Kuma（或者其他服务，监测源必须在国内。因为EO，ESA我们要做拦截海外策略）&lt;/p&gt;
+&lt;p&gt;如图写监测项目，直接使用HTTP协议监测CDN节点，并且携带Host头，将重定向设为0，只要返回 301/302 就算存活（为了减轻站点压力，建议使用HEAD请求）&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://blog.acofork.com/_astro/http-header-host-1.B9mphNia.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://blog.acofork.com/_astro/http-header-host-2.Buq50Tw2.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;h1&gt;Demo&lt;/h1&gt;
+&lt;p&gt;::url{href=&quot;https://status.acofork.com&quot;}&lt;/p&gt;
+</content:encoded></item><item><title>网站分流怎么做？全球秒开！有点坐牢，但是好玩！</title><link>https://blog.acofork.com/posts/fenliu/</link><guid isPermaLink="true">https://blog.acofork.com/posts/fenliu/</guid><description>网站分流看着很难，实际上一点都不简单，如果你也感兴趣（想坐牢），那就来试试8！</description><pubDate>Mon, 12 Jan 2026 02:09:05 GMT</pubDate><content:encoded>&lt;h1&gt;需分流的网站&lt;/h1&gt;
+&lt;p&gt;博客本体，主站
+::url{href=&quot;https://blog.acofork.com&quot;}
+Umami，用于在网站插入一个JS来进行访客统计以及展示访客信息
+::url{href=&quot;https://umami.acofork.com/share/CdkXbGgZr6ECKOyK&quot;}
+静态随机图，用于置顶文章Cover和整个网站的背景图
+::url{href=&quot;https://pic1.acofork.com&quot;}&lt;/p&gt;
+&lt;hr /&gt;
+&lt;p&gt;其他： https://acofork.com , https://www.acofork.com
+这些都是要 &lt;strong&gt;301&lt;/strong&gt; 重定向到 https://blog.acofork.com 的域名，我们也需要为其配置分流&lt;/p&gt;
+&lt;h1&gt;各CDN SSL申请方案&lt;/h1&gt;
+&lt;h3&gt;EdgeOne&lt;/h3&gt;
+&lt;p&gt;由于NS直接在EdgeOne，故直接申请
+&lt;img src=&quot;https://blog.acofork.com/_astro/fenliu-1.Dmj-83Hk.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;h3&gt;ESA&lt;/h3&gt;
+&lt;p&gt;使用DCV委派
+&lt;img src=&quot;https://blog.acofork.com/_astro/fenliu-2.BNhYUghp.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;h3&gt;Cloudflare&lt;/h3&gt;
+&lt;p&gt;使用HTTP验证，由于ACME验证节点在国外，所以它只会看到CNAME到Cloudflare的记录，从而签发SSL
+&lt;img src=&quot;https://blog.acofork.com/_astro/fenliu-3.D5AYFaIQ.png&quot; alt=&quot;&quot; /&gt;
+针对重定向的域名，由于默认所有请求都会被重定向到新域，ACME自然无法验证，所以我们需要写一条排除规则，让ACME验证路径直接返回200 OK，其余的路径再重定向
+&lt;img src=&quot;https://blog.acofork.com/_astro/fenliu-17.Dyc1olNb.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;h1&gt;源站类型&lt;/h1&gt;
+&lt;h3&gt;静态型&lt;/h3&gt;
+&lt;p&gt;国内使用对应CDN的Page业务，海外使用Cloudflare Worker。至于为什么不将 &lt;code&gt;blog.acofork.com&lt;/code&gt; 也放在EdgeOne Page，一是因为EdgeOne CDN和Page的WAF规则是分开的，而Page业务的WAF规则不是很好做海外封锁，二是因为EO在之前被打的时候将这个子域封了。而ESA Page可以很简单做到海外封禁
+&lt;img src=&quot;https://blog.acofork.com/_astro/fenliu-4.DUEIQKTB.png&quot; alt=&quot;&quot; /&gt;
+&lt;img src=&quot;https://blog.acofork.com/_astro/fenliu-5.D_qAaE-D.png&quot; alt=&quot;&quot; /&gt;
+&lt;img src=&quot;https://blog.acofork.com/_astro/fenliu-16.DLYoxOZ0.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;h3&gt;动态型&lt;/h3&gt;
+&lt;p&gt;国内使用IPv6回源（用户 - IPv4 - EO/ESA CDN - IPv6 - 源站）。至于为什么不用ESA，是因为ESA CDN回源非标端口需要像Cloudflare一样写一条回源规则，占用免费规则集5条中的其中之一
+&lt;img src=&quot;https://blog.acofork.com/_astro/fenliu-6.CSAHx97r.png&quot; alt=&quot;&quot; /&gt;
+海外采用Cloudflare Tunnel（用户 - IPv4 - CF CDN - 内部连接 - 源站）
+&lt;img src=&quot;https://blog.acofork.com/_astro/fenliu-7.CDNqN6Fj.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;h1&gt;浏览器客户端实现监看当前访问节点&lt;/h1&gt;
+&lt;p&gt;利用浏览器JavaScript发送HEAD请求拿取对端响应头Server字段并回显（若跨域则需要设置 &lt;strong&gt;Access-Control-Expose-Headers&lt;/strong&gt; 响应头，值为 &lt;strong&gt;server&lt;/strong&gt;
+&lt;img src=&quot;https://blog.acofork.com/_astro/fenliu-12.CvLyctZ6.png&quot; alt=&quot;&quot; /&gt;
+&lt;img src=&quot;https://blog.acofork.com/_astro/60f715e9a1d1ac7bf1abafc3341029f3.D_wVC-8p.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;h1&gt;注意事项&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;ESA Page对超多资源和大文件支持很差。例如静态随机图项目无法部署到ESA Page（超出了2000个静态资产）&lt;/li&gt;
+&lt;li&gt;ESA CDN针对于回源非标端口和Cloudflare一样要通过写回源规则实现，很浪费规则，推荐使用EdgeOne CDN，可以随意指定回源端口
+&lt;img src=&quot;https://blog.acofork.com/_astro/fenliu-8.BOWbqj51.png&quot; alt=&quot;&quot; /&gt;&lt;/li&gt;
+&lt;li&gt;如果你要做分流业务，必须将域名NS托管在国内的DNS解析服务商，因为Cloudflare不支持域名分流解析，并且请将默认解析给CF，将境内解析给国内节点，不要反着来
+&lt;img src=&quot;https://blog.acofork.com/_astro/fenliu-9.DscvL3Re.png&quot; alt=&quot;&quot; /&gt;&lt;/li&gt;
+&lt;li&gt;分流的原理是DNS看查询的源IP，如果是国内则返回国内节点，海外则返回海外。也就是说你的出口IP决定访问的节点，若你开梯子（如美国），就算你在国内，访问到的也是海外节点&lt;/li&gt;
+&lt;li&gt;DCV委派只能写一条，如果你的NS在EO，可以写DCV给ESA，而Cloudflare使用HTTP验证，这一切都将是一劳永逸，全自动化的&lt;/li&gt;
+&lt;li&gt;Cloudflare SaaS 在接入外部域名时，非常建议选择 HTTP验证来签发SSL，下文会详细说明该验证模式的好处。我们都知道，Cloudflare SaaS 在创建的时候，对于申请SSL默认选项是 TXT验证，但是该方式并不好，我们都知道，使用TXT验证的确可以签发证书，但在3月后（上一个SSL证书过期后），我们需要及时更新TXT记录来重新申领新的SSL证书，但是HTTP验证就不是这样了，Cloudflare CDN会自动在边缘节点放上HTTP验证的文件，并且Cloudflare可以随时更改，这样，你就不需要在申领新SSL的时候做任何事情了，一切都由Cloudflare自动实现&lt;/li&gt;
+&lt;li&gt;Cloudflare SaaS接入外部域名后，对于该外部域名是可以享有所有Cloudflare单域名下服务（也包括Cloudflare Worker，参见： &lt;a href=&quot;/posts/cf-fastip/#%E9%92%88%E5%AF%B9%E4%BA%8Ecloudflare-workers/&quot;&gt;Cloudflare Worker 优选&lt;/a&gt;）。也可以配置规则等业务，你最终访问的是哪个域名就写哪个主机名，不要写回退源的主机名，除非你想让该规则仅在直接访问回退源时生效
+&lt;img src=&quot;https://blog.acofork.com/_astro/fenliu-11.BZ8Zi1wq.png&quot; alt=&quot;&quot; /&gt;
+&lt;img src=&quot;https://blog.acofork.com/_astro/fenliu-10.B1RtvgAN.png&quot; alt=&quot;&quot; /&gt;&lt;/li&gt;
+&lt;li&gt;Cloudflare Tunnel实际上是可以自定义生效的域名的，并非仅局限于账户内域名（虽然你在控制台看着是这样），我们可以通过抓包更改请求体来实现各种各样的域名，它没有验证，详见：&lt;a href=&quot;/posts/cf-fastip/#%E9%92%88%E5%AF%B9%E4%BA%8Ecloudflare-tunnelzerotrust/&quot;&gt;Cloudflare Tunnel 优选&lt;/a&gt;
+&lt;img src=&quot;https://blog.acofork.com/_astro/fenliu-13.BSKZTTVE.png&quot; alt=&quot;&quot; /&gt;&lt;/li&gt;
+&lt;li&gt;分流做完后，一定要针对国内节点启用封锁海外模式，这能大大降低被DDoS致使CDN商给你域名取消接入的概率。Cloudflare随你，因为打不死，如果你的源站Hold不住，也请配置点策略。因为刷子（DDoS发起者可以通过强行绑定域名和IP来通过便宜量大的海外IP来攻击你脆弱的国内节点，如果什么防护都不做，很可能被刷几个TB的异常流量然后被CDN取消接入）
+&lt;img src=&quot;https://blog.acofork.com/_astro/fenliu-14.93MlT4fl.png&quot; alt=&quot;&quot; /&gt;
+&lt;img src=&quot;https://blog.acofork.com/_astro/fenliu-15.sk0bc08h.png&quot; alt=&quot;&quot; /&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1&gt;成果展示&lt;/h1&gt;
+&lt;h3&gt;博客本体&lt;/h3&gt;
+&lt;p&gt;&lt;img src=&quot;../assets/images/https___blogacoforkcom__%E5%A4%9A%E5%9C%B0%E5%8C%BA%E5%A4%9A%E7%BA%BF%E8%B7%AFHTTP%E6%B5%8B%E9%80%9F(1).png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;h3&gt;Umami&lt;/h3&gt;
+&lt;p&gt;&lt;img src=&quot;../assets/images/https___umamiacoforkcom__%E5%A4%9A%E5%9C%B0%E5%8C%BA%E5%A4%9A%E7%BA%BF%E8%B7%AFHTTP%E6%B5%8B%E9%80%9F.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;h3&gt;随机图&lt;/h3&gt;
+&lt;p&gt;&lt;img src=&quot;../assets/images/https___picacoforkcom__%E5%A4%9A%E5%9C%B0%E5%8C%BA%E5%A4%9A%E7%BA%BF%E8%B7%AFHTTP%E6%B5%8B%E9%80%9F.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+</content:encoded></item><item><title>试试Cloudflare IP优选！让Cloudflare在国内再也不是减速器！</title><link>https://blog.acofork.com/posts/cf-fastip/</link><guid isPermaLink="true">https://blog.acofork.com/posts/cf-fastip/</guid><description>使用SaaS、Worker以及各种奇技淫巧来让你的网站解析的IP进行分流优选，提高网站可用性和速度</description><pubDate>Sun, 11 Jan 2026 00:00:00 GMT</pubDate><content:encoded>&lt;blockquote&gt;
+&lt;p&gt;本教程初始发布时间为 25年6月&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h4&gt;未优选&lt;/h4&gt;
+&lt;p&gt;&lt;img src=&quot;https://blog.acofork.com/_astro/3a85da616bfa2db51625b22601bee040.BYd5ucrt.webp&quot; alt=&quot;QmZoinxZgAzu7Skh7BqsxmDQGU1sXtLLskJcyQuRAQNKww.webp&quot; /&gt;&lt;/p&gt;
+&lt;h4&gt;已优选&lt;/h4&gt;
+&lt;p&gt;&lt;img src=&quot;https://blog.acofork.com/_astro/cf-fastip-11.Bnc0DTIE.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;hr /&gt;
+&lt;p&gt;结论：可见，优选过的网站响应速度有很大提升，并且出口IP也变多了。这能让你的网站可用性大大提高，并且加载速度显著变快。&lt;/p&gt;
+&lt;h3&gt;Cloudflare优选域名： https://cf.090227.xyz&lt;/h3&gt;
+&lt;hr /&gt;
+&lt;h1&gt;Worker路由反代全球并优选（新）&lt;/h1&gt;
+&lt;blockquote&gt;
+&lt;p&gt;本方法的原理为通过Worker反代你的源站，然后将Worker的入口节点进行优选。此方法不是传统的优选，源站接收到的Hosts头仍然是直接指向源站的解析&lt;/p&gt;
+&lt;p&gt;以下代码是原Github全站反代代码的二改以实现Worker路由接入优选，可能有多余逻辑或者不完全适配于优选需求&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;创建一个Cloudflare Worker，写入代码&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;// 域名前缀映射配置
+const domain_mappings = {
+  &apos;源站.com&apos;: &apos;最终访问头.&apos;,
+//例如：
+//&apos;gitea.072103.xyz&apos;: &apos;gitea.&apos;,
+//则你设置Worker路由为gitea.*都将会反代到gitea.072103.xyz
+};
+
+addEventListener(&apos;fetch&apos;, event =&amp;gt; {
+  event.respondWith(handleRequest(event.request));
+});
+
+async function handleRequest(request) {
+  const url = new URL(request.url);
+  const current_host = url.host;
+
+  // 强制使用 HTTPS
+  if (url.protocol === &apos;http:&apos;) {
+    url.protocol = &apos;https:&apos;;
+    return Response.redirect(url.href, 301);
+  }
+
+  const host_prefix = getProxyPrefix(current_host);
+  if (!host_prefix) {
+    return new Response(&apos;Proxy prefix not matched&apos;, { status: 404 });
+  }
+
+  // 查找对应目标域名
+  let target_host = null;
+  for (const [origin_domain, prefix] of Object.entries(domain_mappings)) {
+    if (host_prefix === prefix) {
+      target_host = origin_domain;
+      break;
+    }
+  }
+
+  if (!target_host) {
+    return new Response(&apos;No matching target host for prefix&apos;, { status: 404 });
+  }
+
+  // 构造目标 URL
+  const new_url = new URL(request.url);
+  new_url.protocol = &apos;https:&apos;;
+  new_url.host = target_host;
+
+  // 创建新请求
+  const new_headers = new Headers(request.headers);
+  new_headers.set(&apos;Host&apos;, target_host);
+  new_headers.set(&apos;Referer&apos;, new_url.href);
+
+  try {
+    const response = await fetch(new_url.href, {
+      method: request.method,
+      headers: new_headers,
+      body: request.method !== &apos;GET&apos; &amp;amp;&amp;amp; request.method !== &apos;HEAD&apos; ? request.body : undefined,
+      redirect: &apos;manual&apos;
+    });
+
+    // 复制响应头并添加CORS
+    const response_headers = new Headers(response.headers);
+    response_headers.set(&apos;access-control-allow-origin&apos;, &apos;*&apos;);
+    response_headers.set(&apos;access-control-allow-credentials&apos;, &apos;true&apos;);
+    response_headers.set(&apos;cache-control&apos;, &apos;public, max-age=600&apos;);
+    response_headers.delete(&apos;content-security-policy&apos;);
+    response_headers.delete(&apos;content-security-policy-report-only&apos;);
+
+    return new Response(response.body, {
+      status: response.status,
+      statusText: response.statusText,
+      headers: response_headers
+    });
+  } catch (err) {
+    return new Response(`Proxy Error: ${err.message}`, { status: 502 });
+  }
+}
+
+function getProxyPrefix(hostname) {
+  for (const prefix of Object.values(domain_mappings)) {
+    if (hostname.startsWith(prefix)) {
+      return prefix;
+    }
+  }
+  return null;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;创建路由&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://blog.acofork.com/_astro/6b4484770910d01fc6487b985328a6d8.CzkuRTP6.webp&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;类似这样填写&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://blog.acofork.com/_astro/c4fdf0763e875de938b6f5d5a8689d6c.BZfb0DXO.webp&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;最后写一条DNS解析 &lt;code&gt;CNAME gitea.afo.im --&amp;gt; 社区优选域名，如 cf.090227.xyz&lt;/code&gt; 即可&lt;/p&gt;
+&lt;h1&gt;传统优选&lt;/h1&gt;
+&lt;blockquote&gt;
+&lt;p&gt;[!WARNING]
+Cloudflare最近将新接入的域名SSL默认设为了完全，记得将 SSL 改为灵活。
+&lt;img src=&quot;https://blog.acofork.com/_astro/cf-fastip-1.ByRDtsAZ.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;我们需要&lt;strong&gt;一个域名或两个域名&lt;/strong&gt;（单域名直接用子域名即可。双域名比如：onani.cn和acofork.cn）。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;如果在同一CF账号下不可用，请尝试将俩域名放置在不同账号&lt;/strong&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;这里我们让onani.cn成为主力域名，让acofork.cn成为辅助域名&lt;/p&gt;
+&lt;p&gt;单域名效果
+&lt;img src=&quot;https://blog.acofork.com/_astro/cf-fastip.CCFyge3n.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;hr /&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;首先新建一个DNS解析，指向你的&lt;strong&gt;源站&lt;/strong&gt;，&lt;strong&gt;开启cf代理&lt;/strong&gt;
+&lt;img src=&quot;https://blog.acofork.com/_astro/9e4256c6a873ca0d31bdcbbf91814d06.DQJBWagu.webp&quot; alt=&quot;QmfBKgDe77SpkUpjGdmsxqwU2UabvrDAw4c3bgFiWkZCna.webp&quot; /&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;前往&lt;strong&gt;辅助域名&lt;/strong&gt;的 SSL/TLS -&amp;gt; 自定义主机名。设置回退源为你刚才的DNS解析的域名：xlog.acofork.cn（推荐 &lt;strong&gt;HTTP 验证&lt;/strong&gt; ）&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;点击添加自定义主机名。设置一个自定义主机名，比如 &lt;code&gt;onani.cn&lt;/code&gt; ，然后选择&lt;strong&gt;自定义源服务器&lt;/strong&gt;，填写第一步的域名，即 &lt;code&gt;xlog.acofork.cn&lt;/code&gt; 。&lt;/p&gt;
+&lt;p&gt;如果你想要创建多个优选也就这样添加，一个自定义主机名对应一个自定义源服务器。如果你将源服务器设为默认，则源服务器是回退源指定的服务器，即 &lt;code&gt;xlog.acofork.cn&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://blog.acofork.com/_astro/f0b83a83ca8e1973d3fcba24d6af4ff1.Bev-ciX-.webp&quot; alt=&quot;QmRYrwjeDMDQCj8G9RYkpjC3X4vpwE77wpNpbqKURwBber.webp&quot; /&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;继续在你的辅助域名添加一条解析。CNAME到优选节点：如cloudflare.182682.xyz，&lt;strong&gt;不开启cf代理&lt;/strong&gt;
+&lt;img src=&quot;https://blog.acofork.com/_astro/bab81f56a6c5c6d8be5e86a3fc6b00d4.Dk0vVwZD.webp&quot; alt=&quot;QmNwkMqDEkCGMu5jsgE6fj6qpupiqMrqqQtWeAmAJNJbC4.webp&quot; /&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;最后在你的主力域名添加解析。域名为之前在辅助域名的自定义主机名（onani.cn），目标为刚才的cdn.acofork.cn，&lt;strong&gt;不开启cf代理&lt;/strong&gt;
+&lt;img src=&quot;https://blog.acofork.com/_astro/aa800bf5272b8a139339ce361d23ecd8.BlVW1RqY.webp&quot; alt=&quot;QmeK3AZghae4J4LcJdbPMxBcmoNEeF3hXNBmtJaDki8HYt.webp&quot; /&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;优选完毕，确保优选有效后尝试访问
+&lt;img src=&quot;https://blog.acofork.com/_astro/cf-fastip-10.BYCdqQDH.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;（可选）你也可以将cdn子域的NS服务器更改为阿里云\华为云\腾讯云云解析做线路分流解析&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;优选工作流：用户访问 -&amp;gt; 由于最终访问的域名设置了CNAME解析，所以实际上访问了cdn.acofork.cn，并且携带 &lt;strong&gt;源主机名：onani.cn&lt;/strong&gt; -&amp;gt; 到达cloudflare.182682.xyz进行优选 -&amp;gt; 优选结束，cf边缘节点识别到了携带的 &lt;strong&gt;源主机名：onani.cn&lt;/strong&gt; 查询发现了回退源 -&amp;gt; 回退到回退源内容（xlog.acofork.cn） -&amp;gt; 访问成功&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h1&gt;针对于Cloudflare Page&lt;/h1&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;你可以直接将你绑定到Page的子域名直接更改NS服务器到阿里云\华为云\腾讯云云解析做线路分流解析&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;将您的Page项目升级为Worker项目，使用下面的Worker优选方案（更简单）。详细方法见： 【CF Page一键迁移到Worker？好处都有啥？-哔哩哔哩】 https://b23.tv/t5Bfaq1&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h1&gt;针对于Cloudflare Workers&lt;/h1&gt;
+&lt;ol&gt;
+&lt;li&gt;在Workers中添加路由，然后直接将你的路由域名从指向&lt;code&gt;xxx.worker.dev&lt;/code&gt;改为&lt;code&gt;cloudflare.182682.xyz&lt;/code&gt;等优选域名即可&lt;/li&gt;
+&lt;li&gt;如果是外域，SaaS后再添加路由即可，就像
+&lt;img src=&quot;https://blog.acofork.com/_astro/cf-fastip-12.cj8MBK0W.png&quot; alt=&quot;&quot; /&gt;
+&lt;img src=&quot;https://blog.acofork.com/_astro/cf-fastip-13.CebJYUyj.png&quot; alt=&quot;&quot; /&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h1&gt;针对于Cloudflare Tunnel（ZeroTrust）&lt;/h1&gt;
+&lt;p&gt;请先参照 &lt;a href=&quot;#%E4%BC%A0%E7%BB%9F%E4%BC%98%E9%80%89&quot;&gt;常规SaaS优选&lt;/a&gt; 设置完毕，源站即为 Cloudflare Tunnel。正常做完SaaS接入即可
+&lt;img src=&quot;https://blog.acofork.com/_astro/cf-fastip-2.BMNXaq4L.png&quot; alt=&quot;&quot; /&gt;
+&lt;img src=&quot;https://blog.acofork.com/_astro/cf-fastip-3.BnSFOiaj.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;接下来我们需要让打到 Cloudflare Tunnel 的流量正确路由，否则访问时主机名不在Tunnel中，会触发 &lt;strong&gt;catch: all&lt;/strong&gt; 规则，总之就是没法访问。首先随便点开一个隧道编辑
+&lt;img src=&quot;https://blog.acofork.com/_astro/cf-fastip-4.CYqXR03x.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;打开浏览器F12，直接保存，抓包请求
+&lt;img src=&quot;https://blog.acofork.com/_astro/cf-fastip-5.645fyi53.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;抓包 &lt;strong&gt;PUT&lt;/strong&gt; 请求，右键复制为 &lt;strong&gt;cURL&lt;/strong&gt;
+&lt;img src=&quot;https://blog.acofork.com/_astro/cf-fastip-6.CwIQ75tF.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://blog.acofork.com/_astro/cf-fastip-7.Bise5Hci.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;打开 &lt;strong&gt;Postman&lt;/strong&gt; 粘贴整个请求，导航到 &lt;strong&gt;Body&lt;/strong&gt; 页，添加一个新项目， &lt;strong&gt;hostname&lt;/strong&gt; 为你优选后（最终访问）的域名， &lt;strong&gt;service&lt;/strong&gt; 为一个正确的源。然后 &lt;strong&gt;Send&lt;/strong&gt; ！
+&lt;img src=&quot;https://blog.acofork.com/_astro/cf-fastip-8.CCTVQVyI.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;接下来，控制台会自动多出来一个新的域名，再次访问就正常了&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;至于为什么要这么做，因为你要添加的域名可能并不在你的 Cloudflare 账户中，而控制台的添加仅能添加CF账户内的域名，所以需要抓包曲线救国&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://blog.acofork.com/_astro/cf-fastip-9.ZAu8td6L.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;hr /&gt;
+&lt;h1&gt;针对于使用了各种CF规则的网站&lt;/h1&gt;
+&lt;p&gt;你只需要让规则针对于你的最终访问域名，因为CF的规则是看主机名的，而不是看是由谁提供的&lt;/p&gt;
+&lt;h1&gt;针对于虚拟主机&lt;/h1&gt;
+&lt;p&gt;保险起见，建议将源站和优选域名同时绑定到你的虚拟主机，保证能通再一个个删&lt;/p&gt;
+</content:encoded></item><item><title>你可曾想过，直接将BitWarden部署到Cloudflare Worker？</title><link>https://blog.acofork.com/posts/warden-worker/</link><guid isPermaLink="true">https://blog.acofork.com/posts/warden-worker/</guid><description>warden-worker就是这样一个项目，它将Rust编译为WASM，然后部署到Cloudflare Worker，无需VPS，无需家里云，只需点点鼠标就可免费用上自己的密码托管！</description><pubDate>Fri, 09 Jan 2026 17:00:52 GMT</pubDate><content:encoded>&lt;h1&gt;原理&lt;/h1&gt;
+&lt;p&gt;项目参考开源的 &lt;a href=&quot;https://github.com/dani-garcia/vaultwarden&quot;&gt;dani-garcia/vaultwarden: Unofficial Bitwarden compatible server written in Rust, formerly known as bitwarden_rs&lt;/a&gt; 将Rust源码编译为WASM以支持在Cloudflare Worker上运行。其中Worker负责REST API，D1负责存储加密后的数据&lt;/p&gt;
+&lt;h1&gt;实战&lt;/h1&gt;
+&lt;p&gt;打开Cloudflare https://dash.cloudflare.com/&lt;/p&gt;
+&lt;p&gt;登录后复制这里的 &lt;strong&gt;账户ID&lt;/strong&gt; （CLOUDFLARE_ACCOUNT_ID）
+&lt;img src=&quot;https://blog.acofork.com/_astro/warden-worker-2.BY9Rvy_q.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;右上角进入配置文件
+&lt;img src=&quot;https://blog.acofork.com/_astro/warden-worker-1.B493mPxm.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;左上角选择API令牌
+&lt;img src=&quot;https://blog.acofork.com/_astro/warden-worker-3.Bwq2gftN.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;点击创建令牌
+&lt;img src=&quot;https://blog.acofork.com/_astro/warden-worker-4.CXnYi37b.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;选择 编辑Cloudflare Workers
+&lt;img src=&quot;https://blog.acofork.com/_astro/warden-worker-5.Da5URiyY.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;创建后 &lt;strong&gt;复制API 令牌&lt;/strong&gt; （只会展示一次）（CLOUDFLARE_API_TOKEN）
+&lt;img src=&quot;https://blog.acofork.com/_astro/warden-worker-6.BzWSUX2a.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;回到主页，进入D1数据库
+&lt;img src=&quot;https://blog.acofork.com/_astro/warden-worker-7.CvBENiCR.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;选择 创建数据库
+&lt;img src=&quot;https://blog.acofork.com/_astro/warden-worker-8.HYtoS-Du.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;创建完成后，进入，复制 &lt;strong&gt;D1 数据库 ID&lt;/strong&gt;（D1_DATABASE_ID）&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;由于原项目坑点太多（如：依赖不固定版本导致编译报错，必须设置的环境变量不写白，SQL初始化遇到问题直接跳过）&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;这里我Fork并二改了一个我的版本，跟着我的步骤走，包你成功！&lt;/p&gt;
+&lt;p&gt;Fork我的仓库（别忘了点个 &lt;strong&gt;Star&lt;/strong&gt; ） &lt;a href=&quot;https://github.com/afoim/warden-worker/&quot;&gt;afoim/warden-worker: A Bitwarden-compatible server for Cloudflare Workers&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;在仓库设置中添加上述三个机密环境变量&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;CLOUDFLARE_ACCOUNT_ID&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;CLOUDFLARE_API_TOKEN&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;D1_DATABASE_ID&lt;/code&gt;
+&lt;img src=&quot;https://blog.acofork.com/_astro/warden-worker-9.D5DkXDX4.png&quot; alt=&quot;&quot; /&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;点击 Action，运行Build工作流
+&lt;img src=&quot;https://blog.acofork.com/_astro/warden-worker-10.CoSZvd_D.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;Build结束，全绿
+&lt;img src=&quot;https://blog.acofork.com/_astro/warden-worker-11.BvzfLWtn.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;打开Cloudflare D1，查看数据库表
+&lt;img src=&quot;https://blog.acofork.com/_astro/warden-worker-12.CKi9YcO6.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;如果这里是空的，我们就手动建表
+&lt;img src=&quot;https://blog.acofork.com/_astro/warden-worker-13.BYKjU67V.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;查看这个文件 &lt;a href=&quot;https://github.com/afoim/warden-worker/blob/main/sql/schema.sql&quot;&gt;warden-worker/sql/schema.sql at main · afoim/warden-worker&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;依次将这3个SQL块进行执行（一定要依次，不能一把梭）。每执行一次你应该都能看到新表的出现
+&lt;img src=&quot;https://blog.acofork.com/_astro/warden-worker-14.DEJoF5ns.png&quot; alt=&quot;&quot; /&gt;
+&lt;img src=&quot;https://blog.acofork.com/_astro/warden-worker-15.B6tE-n11.png&quot; alt=&quot;&quot; /&gt;&lt;img src=&quot;https://blog.acofork.com/_astro/warden-worker-16.DhoCdIq2.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;进入Workers
+&lt;img src=&quot;https://blog.acofork.com/_astro/warden-worker-17.BW5hP-RW.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;进入 warden-worker
+&lt;img src=&quot;https://blog.acofork.com/_astro/warden-worker-18.BP7WNz-i.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;先添加 &lt;strong&gt;自定义域&lt;/strong&gt; ，填你的域名，因为 Worker 默认给的域名国内无法访问
+&lt;img src=&quot;https://blog.acofork.com/_astro/warden-worker-19.C7I-Oux0.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;再添加&lt;strong&gt;机密环境变量&lt;/strong&gt; （注意不要有空格）&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;ALLOWED_EMAILS&lt;/code&gt; your-email@example.com&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;JWT_SECRET&lt;/code&gt; 随机的长字符串&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;JWT_REFRESH_SECRET&lt;/code&gt; 随机的长字符串&lt;/li&gt;
+&lt;/ul&gt;
+&lt;blockquote&gt;
+&lt;p&gt;[!CAUTION]
+必须使用Wrangler CLI命令添加机密环境变量，如： &lt;code&gt;wrangler secret put JWT_SECRET&lt;/code&gt; 这样添加的环境变量不会在新的部署中被覆盖&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;img src=&quot;https://blog.acofork.com/_astro/warden-worker-22.DMMxYgEx.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://blog.acofork.com/_astro/warden-worker-23.39PZyBlU.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;此时打开手机上的 &lt;strong&gt;BitWarden&lt;/strong&gt; 软件，在你的自托管上创建账号即可（注意：密码一经设置将无法更改）
+&lt;img src=&quot;https://blog.acofork.com/_astro/7c2cbe876e3f2febdde9795d8d4615d0.CbtVFRh5.jpg&quot; alt=&quot;&quot; /&gt;&lt;img src=&quot;https://blog.acofork.com/_astro/8708faa4b5f5e90b846e1c219cf73e81.CHk7tnh1.jpg&quot; alt=&quot;&quot; /&gt;&lt;img src=&quot;https://blog.acofork.com/_astro/97da71d9226623a5cae22c08b10aedcb.B6AEGYcf.jpg&quot; alt=&quot;&quot; /&gt;&lt;img src=&quot;https://blog.acofork.com/_astro/cce328f2081c37e58caf9451439e4a6f.E3Kr9QCU.jpg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;[!CAUTION]
+&lt;s&gt;值得注意的是，该项目似乎仅实现了手机端的大部分API，而针对于电脑浏览器插件使用的API暂未支持，我们目前正在尝试用AI补全... Just a moment...&lt;/s&gt;&lt;/p&gt;
+&lt;p&gt;更多注意事项请参阅仓库README&lt;/p&gt;
+&lt;p&gt;已支持电脑端浏览器插件&lt;/p&gt;
+&lt;/blockquote&gt;
+</content:encoded></item><item><title>你有一个全球网站？如何做好监控？</title><link>https://blog.acofork.com/posts/double-monitior/</link><guid isPermaLink="true">https://blog.acofork.com/posts/double-monitior/</guid><description>如果你正好在运营一个全球性的网站，它可能在不同地区有不同节点，我们要如何做好宕机提醒？</description><pubDate>Fri, 09 Jan 2026 11:26:02 GMT</pubDate><content:encoded>&lt;h1&gt;正式开始&lt;/h1&gt;
+&lt;blockquote&gt;
+&lt;p&gt;视频： https://www.bilibili.com/video/BV14dqwBVEa5/&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;比如说我的博客
+::url{href=https://blog.acofork.com}&lt;/p&gt;
+&lt;p&gt;它在国内的节点是 &lt;strong&gt;阿里云 ESA Pages/EdgeOne Pages&lt;/strong&gt; ，而在国外的节点是 &lt;strong&gt;Cloudflare Page&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;我使用的方案是在国内自托管一个 &lt;strong&gt;Uptime Kuma&lt;/strong&gt; 服务，而在海外使用一些大厂的云监控，如 &lt;strong&gt;BetterStack&lt;/strong&gt; &lt;strong&gt;UptimeRobot&lt;/strong&gt; 等等，并且让他们互相监控&lt;/p&gt;
+&lt;p&gt;对于大厂的监控，我们不必做防护，但对于你自托管的监控，推荐套 &lt;strong&gt;Cloudflare Tunnel&lt;/strong&gt; ，防止被DDoS&lt;/p&gt;
+&lt;p&gt;国内监控：
+::url{href=https://kuma.2x.nz}&lt;/p&gt;
+&lt;p&gt;海外监控：
+::url{href=https://vps.2x.nz}&lt;/p&gt;
+</content:encoded></item><item><title>无需服务器！从零教你自建一个短链服务！</title><link>https://blog.acofork.com/posts/shorter-url/</link><guid isPermaLink="true">https://blog.acofork.com/posts/shorter-url/</guid><description>你是否有一个短域名？没有也没关系，马上教你从域名开始搭建一个短链服务！</description><pubDate>Fri, 09 Jan 2026 10:55:33 GMT</pubDate><content:encoded>&lt;h1&gt;视频&lt;/h1&gt;
+&lt;p&gt;https://www.bilibili.com/video/BV1BCi1B7E1q/&lt;/p&gt;
+&lt;h1&gt;Demo&lt;/h1&gt;
+&lt;p&gt;https://2x.nz/s&lt;/p&gt;
+&lt;h1&gt;拿域名！&lt;/h1&gt;
+&lt;p&gt;我们需要一个短域名，来作为我们的短链服务的入口&lt;/p&gt;
+&lt;p&gt;我们可以前往这些地方购买短域名，建议后缀 &lt;code&gt;.nz&lt;/code&gt; &lt;code&gt;.mk&lt;/code&gt; &lt;code&gt;.im&lt;/code&gt; ，建议2-3位长度的域名&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https://www.spaceship.com/zh/&quot;&gt;迈向未来 - Spaceship&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://porkbun.com/&quot;&gt;porkbun.com | An oddly satisfying experience.&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://www.quyu.net/&quot;&gt;【趣域网】域名注册网站哪个好_注册域名查询购买_whois信息查询_域名交易网_ - 趣域网&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1&gt;基础思路&lt;/h1&gt;
+&lt;p&gt;Cloudflare Page/Worker的重定向文件提供了基于文件的重定向功能，参考 &lt;a href=&quot;/posts/cfpage-redirect/&quot;&gt;这篇文章&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;接下来我们再利用 Cloudflare Worker 连接Github帮我们去更新这个文件，顺便搓一个前端出来让用户能够生成短链即可&lt;/p&gt;
+&lt;h1&gt;防护措施&lt;/h1&gt;
+&lt;blockquote&gt;
+&lt;p&gt;[!CAUTION]
+必须在最终重定向时不直接重定向到业务域名，需要配置中间页，否则你的域名一定会在后期被举报为 &lt;strong&gt;滥用/钓鱼/诈骗网站&lt;/strong&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;重定向文件限制静态重定向 &lt;strong&gt;2000&lt;/strong&gt; ，动态重定向 &lt;strong&gt;100&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;单行字符串不超过 &lt;strong&gt;1024&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1&gt;服务架构图&lt;/h1&gt;
+&lt;p&gt;&lt;img src=&quot;https://blog.acofork.com/_astro/f561dbbf7f8aae7a2f36efe25e0f2974.DaCu2KVo.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+</content:encoded></item><item><title>超高校级的监控服务：UptimeFlare！基于CF Worker！自托管！声明式！新手友好！</title><link>https://blog.acofork.com/posts/uptimeflare/</link><guid isPermaLink="true">https://blog.acofork.com/posts/uptimeflare/</guid><description>谁不想拥有一个监控自己服务的服务呢？</description><pubDate>Sat, 03 Jan 2026 03:10:53 GMT</pubDate><content:encoded>&lt;h1&gt;从KV迁移&lt;/h1&gt;
+&lt;p&gt;由于原项目于26/1/3将数据存储从KV迁移到了D1，并且配备了完备的i18n，如果你仍在运营旧版的UptimeFlare，建议升级，下面是迁移教程&lt;/p&gt;
+&lt;p&gt;首先，将你之前配置的Cloudflare API令牌添加一个新的权限 &lt;strong&gt;编辑D1&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;然后备份根目录的 &lt;code&gt;uptime.config.ts&lt;/code&gt; ，直接 把原仓库删了（但是不要删KV，Worker，Page），Fork我的仓库&lt;/p&gt;
+&lt;p&gt;::github{repo=&quot;afoim/UptimeFlare&quot;}&lt;/p&gt;
+&lt;p&gt;接下来编辑新的 &lt;code&gt;uptime.config.ts&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;参阅 &lt;a href=&quot;https://github.com/afoim/UptimeFlare/blob/main/uptime.config.ts&quot;&gt;UptimeFlare/uptime.config.ts at main · afoim/UptimeFlare&lt;/a&gt; 主要就是将自定义callback迁移到官方的WebHook方法&lt;/p&gt;
+&lt;p&gt;编辑后推送，会自动触发Github Action的自动部署，它会自动将KV内的数据迁移到D1&lt;/p&gt;
+&lt;p&gt;这迁移到D1何意味
+&lt;img src=&quot;https://blog.acofork.com/_astro/uptimeflare-16.DOE6xDob.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;h1&gt;前言&lt;/h1&gt;
+&lt;p&gt;本来这个教程应该是永远都不会出的，因为在此之前，我曾经给大家介绍了一个无需自托管的监控服务：&lt;a href=&quot;/posts/uptimerobot/&quot;&gt;UptimeRobot&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;但是，就在最近我再次查看控制台，发现之前创建的监控全部都没了，咱也不知道是被官方删了还是号被黑客大手子肘击了，总之，我现在不得不要重建监控服务了&lt;/p&gt;
+&lt;h1&gt;原理&lt;/h1&gt;
+&lt;p&gt;首先，UptimeFlare是一个基于Cloudflare Worker+D1的监控服务&lt;/p&gt;
+&lt;p&gt;它的原理非常简单，一共由三个部分组成&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;前端&lt;/strong&gt;：放在Cloudflare Page，用于给用户展示zhandianzhuangt&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;后端&lt;/strong&gt;：放在Cloudflare Worker，通过 Worker 自带的 &lt;strong&gt;Cron&lt;/strong&gt; 每分钟 检查站点状态，并将状态持久化进 &lt;strong&gt;D1&lt;/strong&gt;
+&lt;img src=&quot;https://blog.acofork.com/_astro/uptimeflare-1.BKhlEp5q.png&quot; alt=&quot;&quot; /&gt;
+&lt;img src=&quot;https://blog.acofork.com/_astro/uptimeflare-14.DgUuEFgo.png&quot; alt=&quot;&quot; /&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1&gt;正式开始&lt;/h1&gt;
+&lt;p&gt;首先我们需要 &lt;strong&gt;Fork&lt;/strong&gt; 项目，建议Fork我的项目（由于原项目不知道为什么不给在某些地方注入环境变量，所以建议Fork我的）&lt;/p&gt;
+&lt;p&gt;::github{repo=&quot;afoim/UptimeFlare&quot;}&lt;/p&gt;
+&lt;p&gt;首先，我们先尝试将其部署到Cloudflare&lt;/p&gt;
+&lt;p&gt;创建一个Cloudflare API Token &lt;strong&gt;编辑Workers&lt;/strong&gt; 和 &lt;strong&gt;D1&lt;/strong&gt;
+&lt;img src=&quot;https://blog.acofork.com/_astro/msedge_HwStEUKYVx1.u1Stq37R.gif&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;接下来将该Token绑定到你的Github仓库
+&lt;img src=&quot;https://blog.acofork.com/_astro/uptimeflare-4.BdTLYcyD.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;最后，来到 &lt;code&gt;Action&lt;/code&gt; 页面，手动创建一个 &lt;code&gt;Deploy to Cloudflare&lt;/code&gt; 的工作流
+&lt;img src=&quot;https://blog.acofork.com/_astro/uptimeflare-5.YDQBA7E2.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;等待工作流运行结束，你应该可以在Cloudflare仪表板看见一个新的Page，新的Worker和新的D1
+&lt;img src=&quot;https://blog.acofork.com/_astro/uptimeflare-6.KrGuTtk1.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;点开 Page，注意不要点错了
+&lt;img src=&quot;https://blog.acofork.com/_astro/uptimeflare-8.BFS0l2ZW.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;绑定你的域名，尝试访问
+&lt;img src=&quot;https://blog.acofork.com/_astro/uptimeflare-9.Bcx-kiwy.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;如果你能看到一个初始的监控页面，则正常
+&lt;img src=&quot;https://blog.acofork.com/_astro/uptimeflare-10.CYOFmuCg.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;接下来，我们开始自定义该监控&lt;/p&gt;
+&lt;p&gt;编辑根目录的 &lt;code&gt;uptime.config.ts&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;如果服务故障如何做通知？&lt;/p&gt;
+&lt;p&gt;UptimeFlare非常自由，你可以在 &lt;code&gt;callbacks&lt;/code&gt; 中编写故障时要做的任何事情，这里以发送 &lt;code&gt;POST&lt;/code&gt; 请求让 &lt;code&gt;Resend&lt;/code&gt; 发送邮件给你举例&lt;/p&gt;
+&lt;p&gt;首先前往 https://resend.com/&lt;/p&gt;
+&lt;p&gt;添加一个域名（作为你的发信域名）
+&lt;img src=&quot;https://blog.acofork.com/_astro/uptimeflare-11.BGV9fH6W.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;创建一个发信API Key
+&lt;img src=&quot;https://blog.acofork.com/_astro/uptimeflare-12.BJnKCA9W.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;添加环境变量： &lt;code&gt;RESEND_API_KEY&lt;/code&gt; 将其绑定到 &lt;strong&gt;Action&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://blog.acofork.com/_astro/uptimeflare-13.C5fIUV0y.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;编辑 &lt;code&gt;uptime.config.ts&lt;/code&gt; 的 &lt;code&gt;webhook.payload&lt;/code&gt; 部分&lt;/p&gt;
+&lt;p&gt;示例代码：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;        payload: {
+        &quot;from&quot;: &quot;系统状态更新 &amp;lt;uptimeflare@update.2x.nz&amp;gt;&quot;,
+        &quot;to&quot;: [&quot;acofork@foxmail.com&quot;],
+        &quot;subject&quot;: &quot;UptimeFlare 状态更新&quot;,
+        &quot;text&quot;: &quot;$MSG&quot;
+      },
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;接下来，当服务故障/重新上线就会通知你啦~
+&lt;img src=&quot;https://blog.acofork.com/_astro/1dc1a98a404db83e909c1f87e8a115cf.CVNrDOmh.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;最终效果：
+::url{href=&quot;https://ok.2x.nz&quot;}&lt;/p&gt;
+</content:encoded></item><item><title>完全免费！从架构，开发到部署，一条龙实打实的教你做一言/随机图等随机URL的最佳实践</title><link>https://blog.acofork.com/posts/random-url-gen/</link><guid isPermaLink="true">https://blog.acofork.com/posts/random-url-gen/</guid><description>我曾于2024搭建了第一个随机图网站，最近几周又深度研究了类似项目，发现这类项目有很多坑也有很多神秘的捷径，并且某些架构还可以做到“永生”...</description><pubDate>Mon, 29 Dec 2025 10:10:40 GMT</pubDate><content:encoded>&lt;h1&gt;探索架构&lt;/h1&gt;
+&lt;p&gt;我们先不讲一个抽象的概念，我们首先来做一个小项目&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;一个随机图API，每次请求都返回不同的图片&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;你会怎么做？&lt;/p&gt;
+&lt;p&gt;有非常多的解决方案，就拿最简单的一说，我们可以先搞来一个服务器，然后往里面塞图片，最后写一个脚本创建一个Web服务器，接收客户端请求，每一个请求都从图片库里抽一张图返回&lt;/p&gt;
+&lt;p&gt;能实现吗？&lt;/p&gt;
+&lt;p&gt;当然可以！这是你的流程图！
+&lt;img src=&quot;https://blog.acofork.com/_astro/random-url-gen-5.Bxs9LXZa.png&quot; alt=&quot;&quot; /&gt;
+但也会带来一些问题，比如，图片存在本地，给客户端响应图片的时候走的是你机子的流量，那么你就需要一个 &lt;strong&gt;高带宽&lt;/strong&gt; 的服务器，这无疑是一个 &lt;strong&gt;高昂&lt;/strong&gt; 的成本&lt;/p&gt;
+&lt;p&gt;那可能你会有新的方案： &lt;strong&gt;前后端分离&lt;/strong&gt; （逻辑与资产分离），只将返回这个图片的逻辑存放在服务器上，而图片存到其他地方，如对象存储（Cloudflare R2）、IPFS等等
+&lt;img src=&quot;https://blog.acofork.com/_astro/random-url-gen-6.BXJdm3Jw.png&quot; alt=&quot;&quot; /&gt;
+那么问题又来了，假如说你的项目太多人用了，那你的服务器性能可能不够，在后期，你仍然需要一个 &lt;strong&gt;高昂&lt;/strong&gt; 的 &lt;strong&gt;维护成本&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;那么那么那么，现在是 &lt;strong&gt;2025&lt;/strong&gt; 年，传统的架构已经无法满足我们了，我们不妨可以试试 &lt;strong&gt;云函数&lt;/strong&gt;
+仍然是前后端分离，我们现在将逻辑放到一个函数上面，如Cloudflare Worker、EdgeOne Function、Vercel Function等等
+&lt;img src=&quot;https://blog.acofork.com/_astro/random-url-gen-8.CwUVrcPa.png&quot; alt=&quot;&quot; /&gt;
+那么现在是不是无敌了？&lt;/p&gt;
+&lt;p&gt;并非，虽然前端因为使用了 &lt;strong&gt;云函数&lt;/strong&gt; 也就是直接接入了CDN，高并发已经不是问题了，但是由于资产并不直接托管在 &lt;strong&gt;云函数&lt;/strong&gt; 中，&lt;strong&gt;云函数&lt;/strong&gt; 仍然需要创建一个长连接从你的后端，如对象存储获取图片，这样一折腾，你的服务可能并不算快&lt;/p&gt;
+&lt;p&gt;有人就会说了，那既然现在我都把我服务器丢了，前端在云，后端也在云，为什么不直接让前端的云直接存储后端的资产呢？&lt;/p&gt;
+&lt;p&gt;当然可以！你已经非常接近最佳实践了！&lt;/p&gt;
+&lt;p&gt;绝大部分 &lt;strong&gt;云函数&lt;/strong&gt; 都支持动静结合，也就是支持你在他们的云存放一些动态脚本，再顺便 &lt;strong&gt;存放静态资产&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;那么接下来，你就得到了一个完全不需要你买服务器托管，也不需要你担心存储爆仓导致天价账单的随机图...了吗？&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://blog.acofork.com/_astro/random-url-gen-4.k7btNjVk.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;h1&gt;探索随机图（随机URL）的本质&lt;/h1&gt;
+&lt;p&gt;我们刚刚只是在抽象的说明某种架构 &lt;strong&gt;好像&lt;/strong&gt; 可行，&lt;strong&gt;好像&lt;/strong&gt; 又有什么问题，然后又有一种什么新思路 &lt;strong&gt;好像&lt;/strong&gt; 可以解决这个问题&lt;/p&gt;
+&lt;p&gt;但我们要走的路才刚刚开始，我们不妨思考一下，随机图，又或者说随机URL这类项目，服务器（如果有）究竟发送了什么给客户端，客户端又对服务器发回的报文执行了什么动作&lt;/p&gt;
+&lt;p&gt;你肯定知道，如果想要客户端每次请求同一个URL，都返回不同的东西，那肯定是服务器针对每一个请求都返回了不同的响应，它可以是内部的，比如直接在响应体塞图片，又或者也可以是 &lt;strong&gt;重定向&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;直接在响应体塞图片很简单，在客户端是不可见的，当客户端请求API时，服务器直接将选中的图片作为响应体发出，在客户端看来，就好像是请求了一张图片，只不过每次刷新都不一样&lt;/p&gt;
+&lt;p&gt;而响应 &lt;strong&gt;重定向&lt;/strong&gt; 就更简单了，只需要让服务器发送一个 &lt;strong&gt;临时重定向&lt;/strong&gt; 的状态码，比如 &lt;strong&gt;302&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;有人就会说了，为什么必须要 &lt;strong&gt;临时重定向&lt;/strong&gt; ？&lt;/p&gt;
+&lt;p&gt;因为你肯定是想要客户端每次刷新都返回不同的图，一旦你使用了 &lt;strong&gt;永久重定向&lt;/strong&gt; 如 &lt;strong&gt;301&lt;/strong&gt; ，客户端在收到 &lt;strong&gt;301&lt;/strong&gt; 的那一刻就会在浏览器里写一个记录：&lt;strong&gt;下次访问这个URL直接重定向，不再请求服务器&lt;/strong&gt; ，这就会导致你的随机图API真的就变成一张图片了&lt;/p&gt;
+&lt;p&gt;那么，这两种方法哪种更好呢？&lt;/p&gt;
+&lt;p&gt;各有利弊，一句话说明：&lt;strong&gt;直接返回MIME类型是连请求复用，仅需一次请求即可得到图片。而返回302重定向至少需要客户端请求两次&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;这得看你的实际架构，如果说你是前后端分离，即逻辑和资产不在一个地方，肯定是 302 好，因为如果你直接在响应体塞图片，就相当于你的服务器作为 &lt;strong&gt;代理&lt;/strong&gt; 让客户端访问你的资产，流量全部走你服务器&lt;/p&gt;
+&lt;p&gt;而如果说你前后端都在一起，正常情况下来说，一次请求复用肯定是比两次连接更快的，不过为了方便管理和统计，我的大部分API仍然使用 &lt;strong&gt;302 重定向&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;::github{repo=&quot;afoim/EdgeOne_Function_PicAPI&quot;}&lt;/p&gt;
+&lt;p&gt;上线的API： https://eopfapi.acofork.com/pic?img=ua&lt;/p&gt;
+&lt;h1&gt;奇技淫巧1：利用Cloudflare Origin Rules实现无计费的随机URL&lt;/h1&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Video: https://www.bilibili.com/video/BV19ZBzB8EDQ/
+起因于有一天一位粉丝在我视频下留言
+&lt;img src=&quot;https://blog.acofork.com/_astro/random-url-gen-9.DMuf-bAG.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;他提到的仓库为&lt;/p&gt;
+&lt;p&gt;::github{repo=&quot;Mabbs/cf-hitokoto&quot;}&lt;/p&gt;
+&lt;p&gt;大致为，Cloudflare在规则提供一个方法，该方法可以在规则层生成一个UUID，而UUID每次都是随机的，我们可以依据此来在规则层做随机URL&lt;/p&gt;
+&lt;p&gt;理论可行，实践开始&lt;/p&gt;
+&lt;p&gt;首先，我们要知道UUID是一串带有连字符的随机数，而每一位有16种可能，我们可以仅截取前4位，也就是 16^4 ，共能存储65536张图，每一张图可以分配到一个唯一的UUID，接下来让CF边缘在收到请求的时候，生成UUID，然后直接拼接URL请求静态资产，如 &lt;code&gt;/img/0000.jpg&lt;/code&gt; ，再返回给客户端即可&lt;/p&gt;
+&lt;p&gt;那如果说我图比这多呢？加一位，16^5 = 1048576，够用了吧
+那如果说我图比这少呢？那我们可以让图片填充，说个极端的例子，假如你只有2张图，每张图创建32768个副本即可，依此类推&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://blog.acofork.com/_astro/random-url-gen-10.BNTdCfq9.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;::github{repo=&quot;afoim/cf-rule-random-url&quot;}&lt;/p&gt;
+&lt;p&gt;上线的API： https://img.072103.xyz/h | https://img.072103.xyz/v&lt;/p&gt;
+&lt;h1&gt;奇技淫巧2：丢掉后端，让前端JS自己拼URL&lt;/h1&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Video: https://www.bilibili.com/video/BV1tNB4BEEaE/
+Video2: https://www.bilibili.com/video/BV1mMBKBREkB/&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;把思路打开，我们真的需要一个 &lt;strong&gt;请求一个端点，返回一个随机内容&lt;/strong&gt; 的东西吗&lt;/p&gt;
+&lt;p&gt;如果只是想在我们的网站上用上随机图，那是不是可以让客户端JavaScript代劳呢&lt;/p&gt;
+&lt;p&gt;大致原理为编写一个客户端JS，生成一个随机数，然后拼接URL得到最终的随机图，然后寻找需要替换为随机图的img容器或者背景图容器，替换其中内容&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://blog.acofork.com/_astro/random-url-gen-11.JmLISSe4.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;::github{repo=&quot;afoim/Static_RandomPicAPI&quot;}&lt;/p&gt;
+&lt;p&gt;上线的 API： https://pic1.acofork.com&lt;/p&gt;
+&lt;h1&gt;总结&lt;/h1&gt;
+&lt;p&gt;我们共探索了三种流派&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;传统派：中规中矩，在边缘函数找图，取图&lt;/li&gt;
+&lt;li&gt;极客派：通过CF的规则实现在边缘找图，取图，但是不计费&lt;/li&gt;
+&lt;li&gt;环保派：通过客户端JS直接在浏览器上实现找图，取图，改图&lt;/li&gt;
+&lt;/ul&gt;
+</content:encoded></item><item><title>本站遭受了建站以来规模最大的一次DDoS攻击，总流量6.65TB，峰值瞬发1.95GB/s</title><link>https://blog.acofork.com/posts/ddos-6t/</link><guid isPermaLink="true">https://blog.acofork.com/posts/ddos-6t/</guid><description>不是哥们，静态也打？</description><pubDate>Tue, 16 Dec 2025 08:28:59 GMT</pubDate><content:encoded>&lt;h1&gt;引言&lt;/h1&gt;
+&lt;p&gt;本站建站初使用 &lt;strong&gt;静态&lt;/strong&gt; 架构就是防止别有用心之人进行DDoS&lt;/p&gt;
+&lt;p&gt;你想啊，一个静态网站，所有攻击流量都是打在 &lt;strong&gt;CDN的边缘节点&lt;/strong&gt; 上，也就是等于攻打 &lt;strong&gt;整个CDN厂商&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;一是很难打死，二是没必要，毕竟静态网站的背后没有源站，也不涉及利益，纯粹是白打&lt;/p&gt;
+&lt;p&gt;但在昨天，就有位神人试图攻打 &lt;strong&gt;EdgeOne/ESA&lt;/strong&gt; 并且还真给他打死了，待我娓娓道来&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;如果你就是那位神人，请联系我，我给您颁个奖&lt;/em&gt;&lt;/p&gt;
+&lt;h1&gt;初见端倪&lt;/h1&gt;
+&lt;p&gt;于 &lt;strong&gt;2025年12月16号 11:13&lt;/strong&gt;，我在和我的朋友测试项目的时候，有一个知识点他忘记了，我提议他前往我的博客查看，却被告知博客访问报 &lt;strong&gt;570&lt;/strong&gt; 状态码&lt;/p&gt;
+&lt;p&gt;我立即使用 https://itdog.cn 测试了我的博客网站 https://acofork.com 发现大部分节点都为 &lt;strong&gt;570&lt;/strong&gt; 状态码
+&lt;img src=&quot;https://blog.acofork.com/_astro/4f3b8517527460574d03479cc64655be.DOI8pAZP.png&quot; alt=&quot;&quot; /&gt;
+因为当时我的网站部署在 &lt;strong&gt;EdgeOne&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;随后，我向腾讯客服求证，了解到该状态码是一个 &lt;strong&gt;单节点限频访问&lt;/strong&gt; 的状态码
+&lt;img src=&quot;https://blog.acofork.com/_astro/5082a73ffa31ee435c9c7894263ae4cd.B_hiNgCA.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;我的朋友甚至还在调侃说： &lt;strong&gt;你网站🔥了&lt;/strong&gt;
+&lt;img src=&quot;https://blog.acofork.com/_astro/ddos-6t-1.wRwoGQYM.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;但是事情貌似还有一些诡异，为什么海外都是 &lt;strong&gt;200 OK&lt;/strong&gt; ？&lt;/p&gt;
+&lt;p&gt;我开始怀疑被打了
+&lt;img src=&quot;https://blog.acofork.com/_astro/ddos-6t-2.CplrSdiw.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;可能玩静态久了，没有第一时间上到 &lt;strong&gt;EdgeOne&lt;/strong&gt; 查看请求数和流量，想着都是静态，谁没事打呢&lt;/p&gt;
+&lt;p&gt;然后我就回家，暂时切了一下逻辑&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;之前： &lt;strong&gt;EdgeOne Pages&lt;/strong&gt; 直接提供服务，但是570&lt;/li&gt;
+&lt;li&gt;现在： &lt;strong&gt;EdgeOne CDN&lt;/strong&gt; 回源 &lt;strong&gt;Cloudflare Pages&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;切完后逐步好转，虽然速度有些慢，然后我就睡觉了&lt;/p&gt;
+&lt;h1&gt;茅塞顿开&lt;/h1&gt;
+&lt;p&gt;睡醒后我越想越奇怪，于是就登上了 &lt;strong&gt;EdgeOne Pages&lt;/strong&gt; 控制台，然后一看，我嘞个大雷
+&lt;img src=&quot;https://blog.acofork.com/_astro/2f4df8e383a1b41625ad02eb70375465.DMF2bZXr.png&quot; alt=&quot;&quot; /&gt;
+&lt;img src=&quot;https://blog.acofork.com/_astro/0e6e2ae7b2fed5b09405340dd8fb7d31.q55tWphh.png&quot; alt=&quot;&quot; /&gt;
+&lt;img src=&quot;https://blog.acofork.com/_astro/2f14d9700cb9a564ed034b2947d086df.BbLtod7l.png&quot; alt=&quot;&quot; /&gt;
+&lt;img src=&quot;https://blog.acofork.com/_astro/01f15a24f395a3731010c8046cb2008c.DzX7lLL2.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;随后我抱着好奇的心态想看看ESA防御咋样，没想到刚切过去阿里云就给我发消息了
+&lt;img src=&quot;https://blog.acofork.com/_astro/83cc9a8935cde96e0c08c399787fdb2d.C7NjFxlx.jpg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;于是...
+&lt;img src=&quot;https://blog.acofork.com/_astro/2e2cdb2fa332fb81ee41185ae500d619.DlByEAYQ.png&quot; alt=&quot;&quot; /&gt;&lt;img src=&quot;https://blog.acofork.com/_astro/c4b6bdd2c39ae7585b9d3ecc5dbe9c6d.DQs9HFBU.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;依旧是熟悉的印度尼西亚
+&lt;img src=&quot;https://blog.acofork.com/_astro/5a86eb051d48615259e8dcecb0fe8185.BRuLrf6x.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;那没招了，随后我于10分钟内极速 &lt;strong&gt;完全切到Cloudflare Pages&lt;/strong&gt;
+&lt;img src=&quot;https://blog.acofork.com/_astro/ddos-6t-3.slKOngr_.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;目前来看 &lt;strong&gt;Cloudflare Pages&lt;/strong&gt; 也挺绿的
+&lt;img src=&quot;https://blog.acofork.com/_astro/image_2025-12-16_08-24-54.BEtwrmBA.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;最后发了一个被打的B站视频，然后得知&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;我去！大手子来了！&lt;/strong&gt;
+&lt;img src=&quot;https://blog.acofork.com/_astro/338d7ce7eae41dc79632e92c8eae933b.Bfql2rrl.jpg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;h1&gt;赛后总结&lt;/h1&gt;
+&lt;p&gt;&lt;img src=&quot;https://blog.acofork.com/_astro/a91345e2674075104acb80f55ea4525c.D_Y8WAub.png&quot; alt=&quot;&quot; /&gt;
+&lt;img src=&quot;https://blog.acofork.com/_astro/3c33b054a3180932ae87bea8bd06c3ed.DjKTmsFh.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;本站遭受了建站以来规模最大的一次DDoS攻击，总流量6.65TB，峰值瞬发1.95GB/s&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;目前 &lt;strong&gt;acofork.com&lt;/strong&gt; 域名所有主要业务重定向为 &lt;strong&gt;2x.nz&lt;/strong&gt; ，所有业务采用 &lt;strong&gt;Cloudflare CDN&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;如果各位大牛有防御方案/缓解措施，欢迎留言！&lt;/p&gt;
+</content:encoded></item><item><title>想要一个匿名文件上载器？一行命令装好！</title><link>https://blog.acofork.com/posts/py-uploadserver/</link><guid isPermaLink="true">https://blog.acofork.com/posts/py-uploadserver/</guid><description>有时候我们可能出门在外想要带文件回家，但是U盘插来插去并不优雅，那么，我们可以尝试在自家电脑启动一个匿名文件上载器，然后将其暴露到公网！</description><pubDate>Thu, 11 Dec 2025 09:08:55 GMT</pubDate><content:encoded>&lt;h1&gt;安装&lt;/h1&gt;
+&lt;p&gt;确保你安装了 &lt;strong&gt;Python&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;安装 &lt;strong&gt;uploadserver&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;pip install --user uploadserver
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;接下来，创建并进入一个新文件夹，作为 &lt;strong&gt;上传目录&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;mkdir upload
+cd upload
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;运行，并监听 &lt;strong&gt;IPv4&lt;/strong&gt; 的 &lt;strong&gt;8000端口&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;python -m uploadserver 8000
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;又或者，监听 &lt;strong&gt;IPv6&lt;/strong&gt; 的 &lt;strong&gt;8000端口&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;python -m uploadserver --bind :: 8000
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;接下来，你就可以在内网环境使用这个 &lt;strong&gt;文件上载器&lt;/strong&gt; 了
+&lt;img src=&quot;https://blog.acofork.com/_astro/py-uploadserver.Dw28SIG5.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;再然后，我们就可以将其打到公网了&lt;/p&gt;
+&lt;h1&gt;打到公网&lt;/h1&gt;
+&lt;h3&gt;方案一：使用EdgeOne进行IPv6回源&lt;/h3&gt;
+&lt;p&gt;将你的IPv6做 &lt;strong&gt;DDNS&lt;/strong&gt; ，然后使用EdgeOne回源
+&lt;img src=&quot;https://blog.acofork.com/_astro/py-uploadserver-1.BRWxfuTL.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;h3&gt;方案二：STUN（仅NAT1可用）&lt;/h3&gt;
+&lt;p&gt;当你的家庭网络为 &lt;strong&gt;NAT1&lt;/strong&gt; ，则可以使用类似这样的软件将你的 &lt;strong&gt;内网端口&lt;/strong&gt; 直接打到 &lt;strong&gt;公网端口&lt;/strong&gt; （貌似该程序对TCP分片敏感，会导致RST） &lt;a href=&quot;https://github.com/MikeWang000000/Natter&quot;&gt;MikeWang000000/Natter: Expose your TCP/UDP port behind full-cone NAT to the Internet.&lt;/a&gt;
+&lt;img src=&quot;https://blog.acofork.com/_astro/py-uploadserver-2.DRE3TbK0.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+</content:encoded></item><item><title>Umami Cloud迁移到本地踩坑记录</title><link>https://blog.acofork.com/posts/umami-migration/</link><guid isPermaLink="true">https://blog.acofork.com/posts/umami-migration/</guid><description>早期的我很有先见之明，在使用Umami的时候是自建的，但是不久后因为想要全上云，又用回了Umami Cloud，但是现在访问记录激增，我又不得不迁移到本地...</description><pubDate>Fri, 05 Dec 2025 10:13:34 GMT</pubDate><content:encoded>&lt;h1&gt;正式开始&lt;/h1&gt;
+&lt;p&gt;首先，我们想要迁移，首先肯定是要拿到原来的Umami Cloud存放的数据&lt;/p&gt;
+&lt;p&gt;在 &lt;a href=&quot;https://cloud.umami.is/settings/data&quot;&gt;Umami Cloud Data | Settings&lt;/a&gt; 中，我们可以选择，导出数据（Export）
+&lt;img src=&quot;https://blog.acofork.com/_astro/umami-migration-1.uJp6pug6.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;当数据准备好后（几分钟左右），你的邮箱会收到一封Umami Cloud发来的邮件
+&lt;img src=&quot;https://blog.acofork.com/_astro/umami-migration-2.DTZD0voa.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;下载下来的文件是一个以UUID命名的ZIP压缩包，将其解压可以得到3个CSV文件
+&lt;img src=&quot;https://blog.acofork.com/_astro/umami-migration-3.BnW3znWh.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;其中，只有 &lt;code&gt;website_event.csv&lt;/code&gt; 有用，其他两个文件仅有表头，无数据&lt;/p&gt;
+&lt;p&gt;这样，我们就成功拿到了旧Umami数据&lt;/p&gt;
+&lt;p&gt;接下来，我们需要在本地部署Umami PostgreSQL版本的 &lt;strong&gt;最新版&lt;/strong&gt; （目前版本为 3.x）（部署教程略）&lt;/p&gt;
+&lt;p&gt;然后我们还需要安装一个CSV编辑软件： &lt;a href=&quot;https://smoothcsv.com/&quot;&gt;SmoothCSV - The ultimate CSV editor for macOS &amp;amp; Windows&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;在本地Umami中新建一个网站，Umami会随机为你生成一个UUID&lt;/p&gt;
+&lt;p&gt;接下来我们需要在你的终端安装一个图形化管理PostgreSQL的软件： &lt;a href=&quot;https://www.pgadmin.org/&quot;&gt;pgAdmin - PostgreSQL Tools&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;然后连上数据库，你将可以看到这些表
+&lt;img src=&quot;https://blog.acofork.com/_astro/umami-migration-4.Bf_6rmGu.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;接下来我们查看 &lt;code&gt;website&lt;/code&gt; 这张表，将 &lt;code&gt;website_event.csv&lt;/code&gt; 打开，查看旧的 &lt;code&gt;website_id&lt;/code&gt; 将新的ID改为旧的，这样才能数据匹配
+&lt;img src=&quot;https://blog.acofork.com/_astro/umami-migration-5.BwVUMKHi.png&quot; alt=&quot;&quot; /&gt;
+&lt;img src=&quot;https://blog.acofork.com/_astro/umami-migration-6.BIWQqR3J.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;接下来，我们正式开始数据导入，由于导入后的数据有两个 &lt;code&gt;session_id&lt;/code&gt; 字段，而在Umami自我管理的过程中这个 &lt;code&gt;session_id&lt;/code&gt; 字段是 &lt;strong&gt;唯一约束的&lt;/strong&gt; ，我们需要先解除这个限制，在正式上线前还要再加回这个限制（后面会说）&lt;/p&gt;
+&lt;p&gt;让我们删除主键约束和索引&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;ALTER TABLE session DROP CONSTRAINT session_pkey;
+DROP INDEX session_session_id_key;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;接下来，我们需要将数据配对，我们先查看 &lt;code&gt;website_event.csv&lt;/code&gt; 这张表。这里应该只有表头，没有数据（我有是因为我已经导入完成了，教程是后写的）&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;注意顺序&lt;/strong&gt; 如： &lt;code&gt;event_id&lt;/code&gt; &lt;code&gt;website_id&lt;/code&gt; &lt;code&gt;session_id&lt;/code&gt; ...&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://blog.acofork.com/_astro/umami-migration-7.BoFsUvCG.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;编辑CSV文件，你需要将顺序配对，并且删除表中没有的列，如： &lt;code&gt;browser&lt;/code&gt; &lt;code&gt;os&lt;/code&gt; ...
+&lt;img src=&quot;https://blog.acofork.com/_astro/umami-migration-8.y76uzC9T.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;确保数据库中的表头顺序和CSV文件中的表头顺序一一对应，顺序一致，不多不少后，&lt;strong&gt;Ctrl + S 保存&lt;/strong&gt; CSV文件，我们开始导入并在选项中勾选 &lt;strong&gt;标题&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://blog.acofork.com/_astro/umami-migration-9.CsvUdMnd.png&quot; alt=&quot;&quot; /&gt;
+&lt;img src=&quot;https://blog.acofork.com/_astro/umami-migration-10.COtfjwPj.png&quot; alt=&quot;&quot; /&gt;
+&lt;img src=&quot;https://blog.acofork.com/_astro/umami-migration-11.-MojYeeV.png&quot; alt=&quot;&quot; /&gt;
+导入成功后如图
+&lt;img src=&quot;https://blog.acofork.com/_astro/umami-migration-12.D-xPsgmz.png&quot; alt=&quot;&quot; /&gt;
+&lt;img src=&quot;https://blog.acofork.com/_astro/umami-migration-13.50Z2eTBd.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;再编辑 &lt;code&gt;session&lt;/code&gt; 这张表，手法同上，导入成功后如图
+&lt;img src=&quot;https://blog.acofork.com/_astro/umami-migration-14.u-CrUDDg.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;接下来打开本地Umami的WebUI，查看数据是否有异常
+&lt;img src=&quot;https://blog.acofork.com/_astro/umami-migration-15.B8e8TWGj.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;确保导入后数据无异常后，我们开始删除另一条 &lt;code&gt;session_id&lt;/code&gt; 记录并回锁主键。否则上线后Umami将无法再向表中插入数据&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;SELECT session_id, COUNT(*) 
+FROM public.session
+GROUP BY session_id
+HAVING COUNT(*) &amp;gt; 1;
+
+-- 保留最早的 created_at
+DELETE FROM public.session
+WHERE ctid NOT IN (
+    SELECT MIN(ctid)
+    FROM public.session
+    GROUP BY session_id
+);
+
+ALTER TABLE public.session
+ADD CONSTRAINT session_id_unique UNIQUE (session_id);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;至此，迁移工作结束&lt;/p&gt;
+</content:encoded></item><item><title>上手米哈游AI，然后把它逆了！</title><link>https://blog.acofork.com/posts/anuneko/</link><guid isPermaLink="true">https://blog.acofork.com/posts/anuneko/</guid><description>AnuNeko是一只会哈气的橘猫...其实不是，AnuNeko是由米哈游创始人做的AI大模型，会哈气。于是便做个QQBot给群友玩</description><pubDate>Tue, 02 Dec 2025 09:11:40 GMT</pubDate><content:encoded>&lt;h1&gt;这是What&lt;/h1&gt;
+&lt;p&gt;这是橘猫，会哈气（见封面&lt;/p&gt;
+&lt;p&gt;你可以前往 &lt;a href=&quot;https://anuneko.com/#/chat&quot;&gt;AnuNeko&lt;/a&gt; 逗猫&lt;/p&gt;
+&lt;h1&gt;逆！&lt;/h1&gt;
+&lt;p&gt;okok，注意到登陆后的请求头中有 &lt;code&gt;x-token&lt;/code&gt; 字段
+&lt;img src=&quot;https://blog.acofork.com/_astro/anuneko-1.DWTZVhm6.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;手搓个请求发发，&lt;code&gt;data&lt;/code&gt; 携带内容&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;curl --location &apos;https://anuneko.com/api/v1/msg/会话id/stream&apos; \
+--header &apos;x-token: 账号Token&apos; \
+--header &apos;Content-Type: text/plain&apos; \
+--header &apos;Cookie: 自动拿取&apos; \
+--data &apos;{&quot;contents&quot;:[&quot;test&quot;]}&apos;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;通了
+&lt;img src=&quot;https://blog.acofork.com/_astro/anuneko-2.J0wOCVp6.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;然后还有一种情况，在遇到Pick的时候，我们要发送要选择的回复编号
+&lt;img src=&quot;https://blog.acofork.com/_astro/anuneko-3.DyuhBgC-.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;发个如图请求帮橘猫选择&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;curl --location &apos;https://anuneko.com/api/v1/msg/select-choice&apos; \
+--header &apos;x-token: 你的Token&apos; \
+--header &apos;Content-Type: text/plain&apos; \
+--header &apos;Cookie: 自动拿取&apos; \
+--data &apos;{&quot;msg_id&quot;:&quot;会话id&quot;,&quot;choice_idx&quot;:0或1}&apos;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;还有还有，这有个橘猫和黑猫，如何切换一个会话的猫？&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;curl --location &apos;https://anuneko.com/api/v1/user/select_model&apos; \
+--header &apos;x-token: 你的Token&apos; \
+--header &apos;Content-Type: text/plain&apos; \
+--header &apos;Cookie: 自动拿取&apos; \
+--data &apos;{&quot;chat_id&quot;:&quot;会话id&quot;,&quot;model&quot;:&quot;Exotic Shorthair或Orange Cat&quot;}&apos;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;随便写了个适用于NoneBot2的插件，玩吧
+&lt;a href=&quot;https://github.com/afoim/AnuNeko_NoneBot2_Plugins/blob/main/anuneko.py&quot;&gt;AnuNeko_NoneBot2_Plugins/anuneko.py at main · afoim/AnuNeko_NoneBot2_Plugins&lt;/a&gt;&lt;/p&gt;
+</content:encoded></item><item><title>盘点那些好用的Serverless（云函数）！</title><link>https://blog.acofork.com/posts/serverless-function/</link><guid isPermaLink="true">https://blog.acofork.com/posts/serverless-function/</guid><description>你是否为了搭建一个网站而买了一台VPS，然后安装宝塔或1Panel再安装Nginx等等等等？现在这些统统不要！只需要稍加学习，你就可以得到一个免费的高可用的托管服务！</description><pubDate>Tue, 25 Nov 2025 08:33:24 GMT</pubDate><content:encoded>&lt;h1&gt;何为Serverless&lt;/h1&gt;
+&lt;p&gt;就像简介所说，传统来说我们搭建Web服务一般会选择买一个VPS，然后在其上安装管理面板，再安装所需软件，如Nginx，AList，最后运行，开放端口，再设置DNS解析，这样，一个网站就成功上线了&lt;/p&gt;
+&lt;p&gt;而Serverless就简单多了，毕竟 &lt;strong&gt;Server&lt;/strong&gt; 被 &lt;strong&gt;Less&lt;/strong&gt; 掉了&lt;/p&gt;
+&lt;p&gt;这又是什么意思呢？在Serverless服务里，你不再需要管理传统的VPS，而是直接将业务代码上传到目标平台，再由平台的CI/CD自动部署你的服务&lt;/p&gt;
+&lt;p&gt;举个不恰当的例子就比如你正在观看的这个 &lt;a href=&quot;https://2x.nz&quot;&gt;博客&lt;/a&gt; ，首先我将源码上传到 &lt;a href=&quot;https://cloud.tencent.com/document/product/1552/118260&quot;&gt;边缘安全加速平台 EO Pages_腾讯云&lt;/a&gt; ，再经由平台构建出最终的HTML页面，然后再在平台上绑定域名，直接访问就可以了&lt;/p&gt;
+&lt;p&gt;不难看出，在上一个例子中，我并没有去从零开始搭建这个服务，而是仅做了两件事：1. 源码上传 2. 绑定域名，而其他事情全部交给平台的自动化，这不仅极大减少了运维成本，并且在做版本控制的时候也更加容易&lt;/p&gt;
+&lt;h1&gt;Serverless的利与弊&lt;/h1&gt;
+&lt;p&gt;在Serverless中，你不再需要管理基础设施，只需要确保你的代码能跑，然后直接上传到平台，平台会帮你做好后续工作&lt;/p&gt;
+&lt;p&gt;并且，这往往是 &lt;strong&gt;免费&lt;/strong&gt; 的，或者说，大部分Serverless平台都有 &lt;strong&gt;免费层&lt;/strong&gt; 。因为在平台看来，你只是租用了你所需要的东西，相比于哪些大客户，你的开销可以说是忽略不计&lt;/p&gt;
+&lt;p&gt;并且在Serverless中，你永远只是用户，但是如果你买的是VPS，一般来说你是可以完全控制这台VPS的，如设置防火墙，或是重装系统，而这种代价是高昂的，这也是为什么你能看到许许多多免费的Serverless服务，但是几乎看不到免费的VPS提供商&lt;/p&gt;
+&lt;p&gt;但这也有一些弊端，Serverless往往有严格的用量限制，在传统的VPS中，往往IDC会限制你的 &lt;strong&gt;最大带宽&lt;/strong&gt;、&lt;strong&gt;公网IP&lt;/strong&gt;  和 &lt;strong&gt;总流量&lt;/strong&gt; ，但是在Serverless中，往往只会限制你的 &lt;strong&gt;总流量&lt;/strong&gt; ，但可能还会有一些限制，如：&lt;strong&gt;CPU最长执行时间&lt;/strong&gt; 、&lt;strong&gt;总请求数&lt;/strong&gt; 、&lt;strong&gt;函数总请求数&lt;/strong&gt; 、&lt;strong&gt;函数最长执行时间&lt;/strong&gt; 等等等等&lt;/p&gt;
+&lt;p&gt;因为当你在用Serverless的时候，你的服务直接跑在其平台的CDN上的，你将直接享有所属平台的CDN IP段以及带宽，这也让平台的管理更加方便，不需要大量购入物理机开虚拟机做VPS，只需要做一个小集群并做好用户分配即可&lt;/p&gt;
+&lt;p&gt;Serverless也比Server更容易做版本控制和Debug，由于Serverless和Git是天生一体的。在用户看来，只需要先将代码托管到Github，再将代码库连接到Serverless平台，此后，你的服务每一次更新就只需要更新源码了，平台会自动帮你构建。当你想要回滚版本的时候，直接将部署回退为之前的提交即可，而Debug无需再连到服务器上做，只需要有一台电脑，将代码拉下来，本地Dev Debug后，再将修复后的代码提交，平台就能自动部署了&lt;/p&gt;
+&lt;h1&gt;好用的Serverless平台&lt;/h1&gt;
+&lt;h3&gt;&lt;a href=&quot;https://pages.edgeone.ai/zh&quot;&gt;边缘全栈开发平台 - EdgeOne Pages&lt;/a&gt;&lt;/h3&gt;
+&lt;p&gt;:::caution
+请不要在其上部署日流量超 &lt;strong&gt;10M&lt;/strong&gt; 的服务，很有可能会被停用账号
+:::&lt;/p&gt;
+&lt;p&gt;支持原生JS和Node Function，如果你的项目是基于Node打造的，仅需修改一下函数出入口即可无缝迁移。并且目前的 &lt;strong&gt;Pages Function&lt;/strong&gt; 是 &lt;strong&gt;不计请求也不计费&lt;/strong&gt; 的，非常适合部署一些仅自己用的服务&lt;/p&gt;
+&lt;p&gt;不过其自带的构建服务性能较低，上线速度可能稍慢&lt;/p&gt;
+&lt;p&gt;示例服务：  &lt;a href=&quot;/posts/unknown-upload/&quot;&gt;自建一个匿名文件上传终结点 - AcoFork Blog&lt;/a&gt;&lt;/p&gt;
+&lt;h3&gt;&lt;a href=&quot;https://vercel.com/docs/functions&quot;&gt;Vercel Functions&lt;/a&gt;&lt;/h3&gt;
+&lt;p&gt;支持非常多的语言，如 Node.js、Python、Go、Wasm 等等。构建服务非常强劲！&lt;strong&gt;默认分配 4C8G&lt;/strong&gt; 帮你构建！&lt;/p&gt;
+&lt;p&gt;用量限制非常宽松，并且可以超过限制的 &lt;strong&gt;2倍&lt;/strong&gt; 以上仍保持正常访问
+&lt;img src=&quot;https://blog.acofork.com/_astro/serverless-function-1.BOmSui9j.png&quot; alt=&quot;&quot; /&gt;
+示例服务： &lt;a href=&quot;/posts/onedrive-index/&quot;&gt;来！让我们用Vercel来分享你的OneDrive！ - AcoFork Blog&lt;/a&gt;&lt;/p&gt;
+&lt;h3&gt;&lt;a href=&quot;https://www.netlify.com/platform/core/functions/&quot;&gt;Netlify Functions&lt;/a&gt;&lt;/h3&gt;
+&lt;p&gt;支持 JS/TS 和 Go。用量限制更宽松！仅限制每个月100G传输流量，但是一旦超限，即刻宕机&lt;/p&gt;
+&lt;p&gt;示例服务： https://nf-gh.072103.xyz/afoim&lt;/p&gt;
+&lt;h3&gt;&lt;a href=&quot;https://www.cloudflare-cn.com/developer-platform/products/workers/&quot;&gt;Cloudflare Workers | 利用易于使用的开发工具构建和部署代码 | Cloudflare&lt;/a&gt;&lt;/h3&gt;
+&lt;p&gt;支持众多语言，但是对JS/TS的支持最好，特别注意不支持完整的 &lt;strong&gt;Node.js&lt;/strong&gt; 环境。Python目前无法通过pip安装包。优点在于可以和更多Cloudflare产品做协同，如Cloudflare R2 对象存储、Cloudflare KV 键值对存储、Cloudflare D1 SQL数据库&lt;/p&gt;
+&lt;p&gt;每天限制 &lt;strong&gt;10W&lt;/strong&gt; 请求，但是超了并不会 &lt;strong&gt;始终返回&lt;/strong&gt; 不可用，而是 &lt;strong&gt;可能会请求错误&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;示例服务： &lt;a href=&quot;/posts/warden-worker/&quot;&gt;你可曾想过，直接将BitWarden部署到Cloudflare Worker？ - AcoFork Blog&lt;/a&gt;&lt;/p&gt;
+&lt;h3&gt;&lt;a href=&quot;https://huggingface.co/&quot;&gt;Hugging Face – The AI community building the future.&lt;/a&gt;&lt;/h3&gt;
+&lt;p&gt;:::caution
+请不要在其上部署 &lt;strong&gt;AList&lt;/strong&gt; ！秒封！
+:::&lt;/p&gt;
+&lt;p&gt;严格意义上来说，这是个帮你跑AI大模型服务的平台，但是由于它支持跑 &lt;strong&gt;Docker&lt;/strong&gt; ，可玩性还是很高的&lt;/p&gt;
+&lt;p&gt;不过访问链接需要你拼一下： https://用户名-Space名.hf.space/&lt;/p&gt;
+&lt;p&gt;示例服务： &lt;a href=&quot;https://acofork1-netease.hf.space/&quot;&gt;网易云音乐工具箱&lt;/a&gt;&lt;/p&gt;
+&lt;h3&gt;&lt;a href=&quot;https://run.claw.cloud/&quot;&gt;ClawCloud Run | Build, Deploy, Manage &amp;amp; Run in Cloud-Native Platform&lt;/a&gt;&lt;/h3&gt;
+&lt;p&gt;之前被干爆过，目前亚太爆炸，每个月有 &lt;strong&gt;5 美元&lt;/strong&gt; 余额，直接跑Docker，按你分配的CPU核心数和内存来计费。不过 Hobby 计划还蛮便宜的，常用的话可以买
+&lt;img src=&quot;https://blog.acofork.com/_astro/serverless-function-2.B3UO-Q3d.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;h3&gt;&lt;a href=&quot;https://render.com/&quot;&gt;Render&lt;/a&gt;&lt;/h3&gt;
+&lt;p&gt;&lt;img src=&quot;https://blog.acofork.com/_astro/serverless-function-3.Bs28so9x.png&quot; alt=&quot;&quot; /&gt;
+&lt;strong&gt;每月免费100G流量&lt;/strong&gt;，支持非常多的服务，如：静态网站、Web服务（Docker）、定时服务、PostgreSQL数据库、Key Vaule存储&lt;/p&gt;
+&lt;p&gt;唯一的缺点，性能不高&lt;/p&gt;
+&lt;h3&gt;&lt;a href=&quot;https://zeabur.com/zh-CN/&quot;&gt;Zeabur&lt;/a&gt;&lt;/h3&gt;
+&lt;p&gt;&lt;img src=&quot;https://blog.acofork.com/_astro/serverless-function-4.hmvrzZtR.png&quot; alt=&quot;&quot; /&gt;
+&lt;strong&gt;每月免费5刀额度&lt;/strong&gt; ，免费计划有两个地域可选
+&lt;img src=&quot;https://blog.acofork.com/_astro/serverless-function-5.DIvgyxtf.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;最重磅的在于你可以将自己的VPS托管给Zeabur，它会在你的服务器上安装k3s等服务，之后你就可以直接在Zeabur的仪表盘上进行运维了&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;最小服务器要求：2GB 内存，1 核 CPU。&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://blog.acofork.com/_astro/serverless-function-6.DxOZL36X.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;h1&gt;结语&lt;/h1&gt;
+&lt;p&gt;Serverless不像传统的VPS，你并不完全拥有它，所以有些服务是不能跑的， &lt;strong&gt;特别是在免费层&lt;/strong&gt; ，如特别吃IO和网络的 &lt;strong&gt;AList&lt;/strong&gt; ，或是并发请求特别高以及商用服务。如果你用的舒心，请考虑购买各大平台的付费版套餐&lt;/p&gt;
+</content:encoded></item><item><title>出门在外，如何优雅、高效、流畅地远程自家电脑？</title><link>https://blog.acofork.com/posts/remote/</link><guid isPermaLink="true">https://blog.acofork.com/posts/remote/</guid><description>当今，我们出门在外，几乎哪哪都能摸到电脑，但是我们大部分的工作文件一般都在自家电脑，为了保持工作流的一致，我们自然就有了远控自家电脑的需求了</description><pubDate>Mon, 24 Nov 2025 18:04:57 GMT</pubDate><content:encoded>&lt;h1&gt;前言&lt;/h1&gt;
+&lt;p&gt;你可能觉得，这人不是XX吗，远控当然下载个类似UU远程、向日葵这种软件不就行了，这还要出一篇文章？&lt;/p&gt;
+&lt;p&gt;那我问你，如果你用的电脑是32位而不是64位，当你用的公司网络NAT类型并不开放又或者没有IPv6？我们要如何优雅、高效、流畅的使用远程呢？&lt;/p&gt;
+&lt;h1&gt;正式开始&lt;/h1&gt;
+&lt;p&gt;我们分两步走，一个是针对于64位的电脑，较简单，而另一个是针对于32位的电脑，稍微复杂&lt;/p&gt;
+&lt;h3&gt;64位&lt;/h3&gt;
+&lt;p&gt;首先，将家里的路由器的 &lt;strong&gt;UPnP&lt;/strong&gt; 功能打开，然后直接下载 &lt;a href=&quot;https://uuyc.163.com/&quot;&gt;网易UU远程官网_真4K、真免费、真好用&lt;/a&gt; ，登录账号直接连接，绝大部分情况都是P2P（点对点连接，即控制和被控端直接连接）&lt;/p&gt;
+&lt;h3&gt;32位&lt;/h3&gt;
+&lt;p&gt;由于UU远程仅支持64位的电脑，我们就要想点花招了&lt;/p&gt;
+&lt;p&gt;我用的办法比较极客，就是将家里设备的 &lt;strong&gt;RDP&lt;/strong&gt; 端口打到公网上来，也就是利用 &lt;strong&gt;STUN&lt;/strong&gt; ，但是这种方法要求家庭网络的NAT类型为1（Full Cone）&lt;/p&gt;
+&lt;p&gt;那么首先，我将家中的路由器的 &lt;strong&gt;DMZ&lt;/strong&gt; 主机设置为家里电脑的IP
+&lt;img src=&quot;https://blog.acofork.com/_astro/remote.cbdpc5cd.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;DMZ启用后，所有打到路由器上所有端口（除路由器自身占用端口）的流量全部转发给DMZ主机&lt;/p&gt;
+&lt;p&gt;用人话来说，你访问路由器的3389端口就能直接访问到电脑的3389端口&lt;/p&gt;
+&lt;p&gt;这样设置之后，你就可以使用 &lt;strong&gt;STUN&lt;/strong&gt; 协议，将路由器的3389端口转发到ISP给你分配的公网上&lt;/p&gt;
+&lt;p&gt;用人话来说，STUN后，访问你正在用的 &lt;code&gt;公网IP:随机端口&lt;/code&gt; ，就能访问到路由器的3389端口，又因为配置了DMZ，就又能访问到电脑的3389端口&lt;/p&gt;
+&lt;p&gt;那么如何简单的开一个 &lt;strong&gt;STUN隧道&lt;/strong&gt; 呢？&lt;/p&gt;
+&lt;p&gt;我这里使用的是 &lt;a href=&quot;https://github.com/MikeWang000000/Natter&quot;&gt;MikeWang000000/Natter: Expose your TCP/UDP port behind full-cone NAT to the Internet.&lt;/a&gt; ，它是一个Python编写的程序，确保你的网络为NAT1后，你可以使用一个简单的命令，如： &lt;code&gt;python natter.py -p 3389&lt;/code&gt; 来创建STUN隧道
+&lt;img src=&quot;https://blog.acofork.com/_astro/remote-1.BWeIBJPw.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;观察 &lt;code&gt;WAN &amp;gt; 112.32.39.77:55265    [ OPEN ]&lt;/code&gt; 证明你已经可以通过该 &lt;code&gt;公网IP:端口&lt;/code&gt; 来在世界各地，只要连上了 &lt;strong&gt;互联网&lt;/strong&gt; ，就能连上家里的电脑&lt;/p&gt;
+&lt;p&gt;最后，&lt;code&gt;Win+R&lt;/code&gt; 调出运行，输入 &lt;code&gt;mstsc&lt;/code&gt; 打开远程控制的窗口，开始你的远程之旅吧&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://blog.acofork.com/_astro/9207_1_112_29_106_130_gdqwd8.DURt4upv.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://blog.acofork.com/_astro/9207_112_29_106_130_rx7fsq.CvKU81NV.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+</content:encoded></item></channel></rss>
