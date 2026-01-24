@@ -141,7 +141,7 @@ export const expressiveCodeConfig: ExpressiveCodeConfig = {
 
 export const gitHubEditConfig: GitHubEditConfig = {
 	enable: false,
-	baseUrl: "仓库链接",
+	baseUrl: "https://github.com/TyrEamon/my-blog/blob/main/src/content/posts",
 };
 
 // todoConfig removed from here
