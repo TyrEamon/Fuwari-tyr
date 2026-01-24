@@ -1,0 +1,117 @@
+﻿---
+import MainGridLayout from "@layouts/MainGridLayout.astro";
+import { siteConfig } from "@/config";
+import type { Sponsor } from "@/types/data";
+
+const sponsorFiles = import.meta.glob<{ default: Sponsor }>(
+	"/src/data/sponsors/*.json",
+	{ eager: true },
+);
+
+const sponsors = Object.values(sponsorFiles).map(
+	(mod) => (mod as { default: Sponsor }).default ?? (mod as Sponsor),
+) as Sponsor[];
+
+sponsors.sort((a, b) => {
+	const aDate = new Date(a.date).getTime() || 0;
+	const bDate = new Date(b.date).getTime() || 0;
+	return bDate - aDate;
+});
+---
+
+<MainGridLayout title="赞助支持">
+	<div class="card-base p-6 mb-4">
+		<h1 class="text-2xl font-bold text-black dark:text-white mb-2">赞助支持</h1>
+		<p class="text-black/70 dark:text-white/70 text-sm">
+			所有赞助将用于网站维护、服务器费用以及内容创作。
+		</p>
+	</div>
+
+	<div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+		<div class="donate-card">
+			<div class="text-center text-black/80 dark:text-white/80 font-medium mb-3">微信赞助</div>
+			<div class="relative w-48 h-48 mx-auto rounded-lg overflow-hidden" style={`--theme-hue: ${siteConfig.themeColor.hue}`}>
+				<img src="/sponsors/wechat.svg" alt="WeChat Pay" class="w-full h-full object-cover" />
+			</div>
+			<p class="text-xs text-black/60 dark:text-white/60 text-center mt-3">备注：你的昵称</p>
+		</div>
+		<div class="donate-card">
+			<div class="text-center text-black/80 dark:text-white/80 font-medium mb-3">支付宝赞助</div>
+			<div class="relative w-48 h-48 mx-auto rounded-lg overflow-hidden" style={`--theme-hue: ${siteConfig.themeColor.hue}`}>
+				<img src="/sponsors/alipay.svg" alt="Alipay" class="w-full h-full object-cover" />
+			</div>
+			<p class="text-xs text-black/60 dark:text-white/60 text-center mt-3">备注：你的昵称</p>
+		</div>
+	</div>
+
+	<div class="card-base p-6">
+		<div class="flex items-center justify-between mb-4">
+			<span class="font-bold text-black/90 dark:text-white/90">已赞助的小伙伴</span>
+		</div>
+		<p class="text-black/70 dark:text-white/70 text-sm mb-4">
+			如果您已赞助，并且想加入赞助名单，
+			<a target="_blank" href="https://赞助提交" class="transition link text-[var(--primary)] font-medium underline">请点击这里提交</a>
+		</p>
+
+		{sponsors.length === 0 ? (
+			<div class="text-sm text-black/60 dark:text-white/60">暂无赞助，欢迎成为第一个。</div>
+		) : (
+			<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+				{sponsors.map((sponsor) => (
+					<div class="sponsor-card">
+						<div class="sponsor-avatar">
+							{sponsor.avatar ? (
+								<img src={sponsor.avatar} alt={sponsor.name} class="w-full h-full object-cover" loading="lazy" />
+							) : (
+								<span>{sponsor.name?.slice(0, 1)}</span>
+							)}
+						</div>
+						<div class="min-w-0">
+							<div class="font-bold text-black/90 dark:text-white/90 truncate">{sponsor.name}</div>
+							<div class="text-xs text-black/60 dark:text-white/60">{sponsor.amount}</div>
+							<div class="text-xs text-black/50 dark:text-white/50">{sponsor.date}</div>
+						</div>
+					</div>
+				))}
+			</div>
+		)}
+	</div>
+</MainGridLayout>
+
+<style>
+	.donate-card {
+		padding: 1.25rem;
+		border-radius: 1rem;
+		border: 1px solid var(--line-divider);
+		background: var(--card-bg);
+		transition: transform 0.2s ease, box-shadow 0.2s ease;
+	}
+
+	.donate-card:hover {
+		transform: translateY(-2px);
+		box-shadow: var(--card-shadow);
+	}
+
+	.sponsor-card {
+		display: flex;
+		align-items: center;
+		gap: 0.75rem;
+		padding: 0.75rem 1rem;
+		border-radius: 0.75rem;
+		border: 1px solid var(--line-divider);
+		background: var(--card-bg);
+	}
+
+	.sponsor-avatar {
+		width: 2.5rem;
+		height: 2.5rem;
+		border-radius: 9999px;
+		overflow: hidden;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		font-weight: 700;
+		color: var(--primary);
+		background: color-mix(in srgb, var(--card-bg) 70%, var(--primary) 30%);
+	}
+</style>

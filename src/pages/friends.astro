@@ -1,0 +1,73 @@
+﻿---
+import { Icon } from "astro-icon/components";
+import MainGridLayout from "@layouts/MainGridLayout.astro";
+import { siteConfig } from "@/config";
+import type { Friend } from "@/types/data";
+
+const friendFiles = import.meta.glob<{ default: Friend }>(
+	"/src/data/friends/*.json",
+	{ eager: true },
+);
+
+const friends = Object.values(friendFiles).map(
+	(mod) => (mod as { default: Friend }).default ?? (mod as Friend),
+) as Friend[];
+
+friends.sort((a, b) => a.name.localeCompare(b.name, "zh-Hans-CN"));
+---
+
+<MainGridLayout title="友链">
+	<div class="card-base p-6 md:p-8 mb-4">
+		<div class="flex items-center gap-2 mb-6">
+			<div class="h-8 w-8 rounded-lg bg-[var(--primary)] flex items-center justify-center text-white dark:text-black/70">
+				<Icon name="material-symbols:diversity-3" class="text-[1.5rem]" />
+			</div>
+			<h1 class="text-2xl font-bold text-90">友链</h1>
+		</div>
+
+		<p class="text-sm text-50">
+			如果您也想加入友链名单，
+			<a target="_blank" href="https://友链提交" class="transition link text-[var(--primary)] font-medium underline">请点击这里提交</a>
+		</p>
+	</div>
+
+	{friends.length === 0 ? (
+		<div class="card-base p-6 text-sm text-50">
+			暂无友链，欢迎成为第一个。
+		</div>
+	) : (
+		<div class="grid grid-cols-2 gap-4">
+			{friends.map((friend) => (
+				<a href={friend.url} target="_blank" rel="noopener" class="friend-card">
+					<div class="flex items-center gap-2">
+						<div class="relative w-5 h-5 rounded overflow-hidden" style={`--theme-hue: ${siteConfig.themeColor.hue}`}>
+							<img src={friend.avatar} loading="lazy" class="w-full h-full object-cover transition-opacity duration-500" alt={`${friend.name}的头像`} />
+						</div>
+						<div class="font-bold text-90">{friend.name}</div>
+					</div>
+					<div class="text-sm text-50">{friend.description}</div>
+				</a>
+			))}
+		</div>
+	)}
+</MainGridLayout>
+
+<style>
+	.friend-card {
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+		padding: 1rem;
+		border-radius: 1rem;
+		border: 1px solid var(--line-divider);
+		background: var(--card-bg);
+		transition: transform 0.2s ease, box-shadow 0.2s ease;
+	}
+
+	.friend-card:hover {
+		transform: translateY(-2px);
+		box-shadow: var(--card-shadow);
+	}
+</style>
+
+
