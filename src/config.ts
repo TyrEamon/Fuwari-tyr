@@ -49,7 +49,7 @@ export const siteConfig: SiteConfig = {
 	},
 	favicon: [
 		{
-			src: "https://r2.0106010.xyz/clean.png",
+			src: "https://pan.0106010.xyz/file/Logo/Blog/1769235233816_IMG_20260124_141233.jpg",
 		},
 	],
 	officialSites: [],
@@ -91,7 +91,7 @@ export const navBarConfig: NavBarConfig = {
 export const profileConfig: ProfileConfig = {
 	avatar: "https://pan.0106010.xyz/file/MyFlie/NFSW/sex/1769180763512_preview.jpg", // Relative to the /src directory. Relative to the /public directory if it starts with '/'
 	name: "TyrEamon",
-	bio: "你的简介",
+	bio: "一个爱折腾的小白,似乎什么都不会,那就好好学吧！小子.\nCurated, as you see | : )",
 	links: [
 		{
 			name: "QQ",
