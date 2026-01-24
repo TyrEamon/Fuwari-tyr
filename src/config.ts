@@ -12,8 +12,8 @@ import { LinkPreset } from "./types/config";
 
 export const siteConfig: SiteConfig = {
 	title: "RuneByte Blog",
-	subtitle: "你的副标题",
-	description: "你的站点简介",
+	subtitle: "tyreamon的个人博客",
+	description: "素未谋面的你,我是Tyr。欢迎来到我的博客，我将向你分享我的学习之路和日常琐事，如果你也对此感兴趣，不妨留下一的评论吧！v(^_^)v",
 
 	keywords: ["你的关键词"],
 	lang: "zh_CN", // 'en', 'zh_CN', 'zh_TW', 'ja', 'ko', 'es', 'th'
@@ -36,7 +36,7 @@ export const siteConfig: SiteConfig = {
 	},
 	background: {
 		enable:true, // Enable background image
-		src: "https://t.alcy.cc/ycy", // Background image URL (supports HTTPS)
+		src: "/random/h", // Background image URL (supports HTTPS)
 		position: "center", // Background position: 'top', 'center', 'bottom'
 		size: "cover", // Background size: 'cover', 'contain', 'auto'
 		repeat: "no-repeat", // Background repeat: 'no-repeat', 'repeat', 'repeat-x', 'repeat-y'
@@ -51,6 +51,10 @@ export const siteConfig: SiteConfig = {
 		{
 			src: "https://pan.0106010.xyz/file/Logo/Blog/1769235233816_IMG_20260124_141233.jpg",
 		},
+	],
+	preconnect: [
+		"https://umamii.zeabur.app",
+		"https://pic.0w0.us.ci",
 	],
 	officialSites: [],
 	server: [],

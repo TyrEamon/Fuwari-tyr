@@ -38,6 +38,7 @@ export type SiteConfig = {
 	};
 
 	favicon: Favicon[];
+	preconnect?: string[];
 	officialSites?: (string | { url: string; alias: string })[];
 	server?: {
 		url: string;

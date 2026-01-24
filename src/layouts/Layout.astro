@@ -113,7 +113,9 @@ const bannerOffset =
 
 		<meta name="viewport" content="width=device-width" />
 		<meta name="generator" content={Astro.generator} />
-		<link rel="preconnect" href="https://umamii.zeabur.app" />
+		{siteConfig.preconnect?.map((href) => (
+			<link rel="preconnect" href={href} />
+		))}
 		<script src="/js/umami-share.js" defer></script>
 		<script
 			defer
@@ -121,6 +123,7 @@ const bannerOffset =
 			data-website-id="0e070921-670c-4363-90fb-943fafc9ee2e"
 			data-swup-ignore-script
 		></script>
+		<script data-swup-ignore-script src="https://pic.0w0.us.ci/random.js" defer></script>
 		
 		
 		{/* <!-- Content Security Policy -->
