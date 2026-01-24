@@ -91,7 +91,7 @@ export const navBarConfig: NavBarConfig = {
 export const profileConfig: ProfileConfig = {
 	avatar: "https://pan.0106010.xyz/file/MyFlie/NFSW/sex/1769180763512_preview.jpg", // Relative to the /src directory. Relative to the /public directory if it starts with '/'
 	name: "TyrEamon",
-	bio: "一个爱折腾的小白,似乎什么都不会,那就好好学吧！小子.\nCurated, as you see | : )",
+	bio: "爱折腾的小白,似乎什么都不会\n那就好好学吧！小子\n--------------\nCurated, as you see | : )",
 	links: [
 		{
 			name: "QQ",

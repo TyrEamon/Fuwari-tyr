@@ -1,7 +1,7 @@
 ---
-title: 该博客模板fork自二叉树树，正在个人改动中。（该Blog文章暂留）
+title: 该博客模板fork自二叉树树，正在个人改动中。（该Blog文章暂留,如果你也喜欢该模板。根据本章关注他吧！）
 image: https://t.alcy.cc/ycy
-published: 2025-05-24
+published: 2026-1-24
 pinned: true
 category: 置顶
 tags:
