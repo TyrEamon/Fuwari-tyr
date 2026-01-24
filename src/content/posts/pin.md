@@ -1,5 +1,5 @@
 ---
-title: 加群向导
+title: 该博客模板fork自二叉树树，正在个人改动中。（该Blog文章暂留）
 image: https://t.alcy.cc/ycy
 published: 2025-05-24
 pinned: true
