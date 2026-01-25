@@ -8,19 +8,14 @@
 
 				function applyResponsiveBg() {
 					var bgBox = document.getElementById("bg-box");
+					if (!bgBox) return;
 					var isMobile = window.matchMedia && window.matchMedia("(max-width: 768px)").matches;
 					var url = getBgUrl(isMobile);
 					if (!url) return;
 					var img = new Image();
 					img.onload = function () {
-						if (bgBox) {
-							bgBox.style.backgroundImage = "url('" + url + "')";
-							bgBox.classList.add("loaded");
-						}
-						var syncImgs = document.querySelectorAll('img[data-sync-bg="1"]');
-						syncImgs.forEach(function (el) {
-							el.src = url;
-						});
+						bgBox.style.backgroundImage = "url('" + url + "')";
+						bgBox.classList.add("loaded");
 					};
 					img.src = url;
 				}
