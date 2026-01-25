@@ -22,11 +22,6 @@ const isLocal = !(
 	src.startsWith("data:")
 );
 const isPublic = src.startsWith("/");
-const isRandom =
-	!isLocal && (src.includes("/random/h") || src.includes("/random/v"));
-const randomAlt = src.includes("/random/v") ? "random:v" : "random:h";
-const transparentGif =
-	"data:image/gif;base64,R0lGODlhAQABAAAAACwAAAAAAQABAAA=";
 
 // TODO temporary workaround for images dynamic import
 // https://github.com/withastro/astro/issues/3373
@@ -55,8 +50,8 @@ const imageStyle = `object-position: ${position}`;
     {isLocal && img && <Image src={img} alt={alt || ""} class={`${imageClass} image-content`} style={imageStyle}/>}
     {!isLocal && (
         imageFallbackConfig.enable && src.includes(imageFallbackConfig.originalDomain) ? 
-            <img src={isRandom ? transparentGif : (isPublic ? url(src) : src)} alt={isRandom ? randomAlt : (alt || "")} class={`${imageClass} image-content`} style={imageStyle} onerror={`this.onerror=null; this.src='${(isPublic ? url(src) : src).replace(imageFallbackConfig.originalDomain, imageFallbackConfig.fallbackDomain)}';`}/> :
-            <img src={isRandom ? transparentGif : (isPublic ? url(src) : src)} alt={isRandom ? randomAlt : (alt || "")} class={`${imageClass} image-content`} style={imageStyle}/>
+            <img src={isPublic ? url(src) : src} alt={alt || ""} class={`${imageClass} image-content`} style={imageStyle} onerror={`this.onerror=null; this.src='${(isPublic ? url(src) : src).replace(imageFallbackConfig.originalDomain, imageFallbackConfig.fallbackDomain)}';`}/> :
+            <img src={isPublic ? url(src) : src} alt={alt || ""} class={`${imageClass} image-content`} style={imageStyle}/>
     )}
 </div>
 
