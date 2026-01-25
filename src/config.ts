@@ -85,8 +85,8 @@ export const navBarConfig: NavBarConfig = {
 			external: true,
 		},
 		{
-			name: "监控",
-			url: "https://监控",
+			name: "网页导航",
+			url: "https://www.6858686.xyz/",
 			external: true,
 		},
 				{
