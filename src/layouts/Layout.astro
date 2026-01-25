@@ -1,4 +1,4 @@
-﻿---
+---
 import "@fontsource/roboto/400.css";
 import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
@@ -123,46 +123,7 @@ const bannerOffset =
 			data-website-id="0e070921-670c-4363-90fb-943fafc9ee2e"
 			data-swup-ignore-script
 		></script>
-
 		<script data-swup-ignore-script src="https://pic.0w0.us.ci/random.js" defer></script>     {/*不用r2的随机图api就注释掉*/}
-		<script is:inline>
-			(function () {
-				function getBgUrl(isMobile) {
-					if (isMobile && window.getRandomPicV) return window.getRandomPicV();
-					if (!isMobile && window.getRandomPicH) return window.getRandomPicH();
-					return isMobile ? "/random/v" : "/random/h";
-				}                                                    {/*不用r2的随机图api就注释掉*/}
-
-				function applyResponsiveBg() {
-					var bgBox = document.getElementById("bg-box");
-					if (!bgBox) return;
-					var isMobile = window.matchMedia && window.matchMedia("(max-width: 768px)").matches;
-					var url = getBgUrl(isMobile);
-					if (!url) return;
-					var img = new Image();
-					img.onload = function () {
-						bgBox.style.backgroundImage = "url('" + url + "')";
-						bgBox.classList.add("loaded");
-					};
-					img.src = url;
-				}
-
-				function debounce(fn, delay) {
-					var timer;
-					return function () {
-						clearTimeout(timer);
-						timer = setTimeout(fn, delay);
-					};
-				}
-
-				window.addEventListener("load", applyResponsiveBg);
-				window.addEventListener("resize", debounce(applyResponsiveBg, 200));
-				document.addEventListener("swup:contentReplaced", applyResponsiveBg);
-				if (window.swup && window.swup.hooks) {
-					window.swup.hooks.on("content:replace", applyResponsiveBg);
-				}
-			})();
-		</script>
 		
 		
 		{/* <!-- Content Security Policy -->
@@ -686,5 +647,4 @@ if (window.swup) {
     </filter>
   </defs>
 </svg>
-
 
