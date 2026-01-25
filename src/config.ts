@@ -36,7 +36,7 @@ export const siteConfig: SiteConfig = {
 	},
 	background: {
 		enable:true, // Enable background image
-		src: "/random/h", // Background image URL (supports HTTPS)
+		src: "https://t.alcy.cc/ycy",   //备用随机图：https://t.alcy.cc/ycy Background image URL (supports HTTPS)
 		position: "center", // Background position: 'top', 'center', 'bottom'
 		size: "cover", // Background size: 'cover', 'contain', 'auto'
 		repeat: "no-repeat", // Background repeat: 'no-repeat', 'repeat', 'repeat-x', 'repeat-y'
@@ -54,7 +54,7 @@ export const siteConfig: SiteConfig = {
 	],
 	preconnect: [
 		"https://umamii.zeabur.app",
-		"https://pic.0w0.us.ci",
+		//"https://pic.0w0.us.ci",
 	],
 	officialSites: [],
 	server: [],
