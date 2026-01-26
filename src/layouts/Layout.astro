@@ -134,14 +134,14 @@ const bannerOffset =
 
 				function applyResponsiveBg() {
 					var bgBox = document.getElementById("bg-box");
+					var isMobile = window.matchMedia && window.matchMedia("(max-width: 768px)").matches;
+					var url = getBgUrl(isMobile);
 					var url = getBgUrl();
 					if (!url) return;
 					var img = new Image();
 					img.onload = function () {
-						if (bgBox) {
-							bgBox.style.backgroundImage = "url('" + url + "')";
-							bgBox.classList.add("loaded");
-						}
+						bgBox.style.backgroundImage = "url('" + url + "')";
+						bgBox.classList.add("loaded");
 					};
 					img.src = url;
 				}
