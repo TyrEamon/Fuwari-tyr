@@ -127,22 +127,21 @@ const bannerOffset =
 		<script data-swup-ignore-script src="https://pic.0w0.us.ci/random.js" defer></script>     {/*不用r2的随机图api就注释掉*/}
 		<script is:inline>
 			(function () {
-				function getBgUrl(isMobile) {
-					if (isMobile && window.getRandomPicV) return window.getRandomPicV();
-					if (!isMobile && window.getRandomPicH) return window.getRandomPicH();
-					return isMobile ? "/random/v" : "/random/h";
+				function getBgUrl() {
+					if (window.getRandomPicH) return window.getRandomPicH();
+					return "/random/h";
 				}                                                    {/*不用r2的随机图api就注释掉*/}
 
 				function applyResponsiveBg() {
 					var bgBox = document.getElementById("bg-box");
-					if (!bgBox) return;
-					var isMobile = window.matchMedia && window.matchMedia("(max-width: 768px)").matches;
-					var url = getBgUrl(isMobile);
+					var url = getBgUrl();
 					if (!url) return;
 					var img = new Image();
 					img.onload = function () {
-						bgBox.style.backgroundImage = "url('" + url + "')";
-						bgBox.classList.add("loaded");
+						if (bgBox) {
+							bgBox.style.backgroundImage = "url('" + url + "')";
+							bgBox.classList.add("loaded");
+						}
 					};
 					img.src = url;
 				}
@@ -156,7 +155,7 @@ const bannerOffset =
 				}
 
 				window.addEventListener("load", applyResponsiveBg);
-				window.addEventListener("resize", debounce(applyResponsiveBg, 200));
+				// no mobile/desktop switch anymore
 				document.addEventListener("swup:contentReplaced", applyResponsiveBg);
 				if (window.swup && window.swup.hooks) {
 					window.swup.hooks.on("content:replace", applyResponsiveBg);
