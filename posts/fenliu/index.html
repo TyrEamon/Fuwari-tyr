@@ -1,26 +1,20 @@
 <!DOCTYPE html><html lang="zh-CN" class="bg-[var(--page-bg)] transition text-[12px] md:text-[16px] dark" data-overlayscrollbars-initialize data-astro-cid-sckkx6r4 style="--bannerOffset: 15vh;--banner-height-home: 65vh;--banner-height: 35vh;--configHue: 361;--page-width: 75rem;--bg-url: url(/random/h);--bg-enable: 1;--bg-position: center;--bg-size: cover;--bg-repeat: no-repeat;--bg-attachment: fixed;--bg-opacity: 1;--configHue: 361;"> <!-- 手机端适配 --> <head><title>网站分流怎么做？全球秒开！有点坐牢，但是好玩！ - RuneByte Blog</title><meta charset="UTF-8"><meta name="description" content="网站分流看着很难，实际上一点都不简单，如果你也感兴趣（想坐牢），那就来试试8！"><meta name="author" content="TyrEamon"><meta name="keywords" content="你的关键词"><meta property="og:site_name" content="RuneByte Blog"><meta property="og:url" content="https://blog.acofork.com/posts/fenliu/"><meta property="og:title" content="网站分流怎么做？全球秒开！有点坐牢，但是好玩！ - RuneByte Blog"><meta property="og:description" content="网站分流看着很难，实际上一点都不简单，如果你也感兴趣（想坐牢），那就来试试8！"><meta property="og:type" content="article"><meta name="twitter:card" content="summary_large_image"><meta property="twitter:url" content="https://blog.acofork.com/posts/fenliu/"><meta name="twitter:title" content="网站分流怎么做？全球秒开！有点坐牢，但是好玩！ - RuneByte Blog"><meta name="twitter:description" content="网站分流看着很难，实际上一点都不简单，如果你也感兴趣（想坐牢），那就来试试8！"><meta name="viewport" content="width=device-width"><meta name="generator" content="Astro v5.7.9"><link rel="preconnect" href="https://umamii.zeabur.app"><link rel="preconnect" href="https://pic.0w0.us.ci"><script src="/js/umami-share.js" defer></script><script defer src="https://umamii.zeabur.app/script.js" data-website-id="0e070921-670c-4363-90fb-943fafc9ee2e" data-swup-ignore-script></script><script data-swup-ignore-script src="https://pic.0w0.us.ci/random.js" defer></script><script>
 			(function () {
-				function getBgUrl(isMobile) {
-					if (isMobile && window.getRandomPicV) return window.getRandomPicV();
-					if (!isMobile && window.getRandomPicH) return window.getRandomPicH();
-					return isMobile ? "/random/v" : "/random/h";
+				function getBgUrl() {
+					if (window.getRandomPicH) return window.getRandomPicH();
+					return "/random/h";
 				}                                                    {/*不用r2的随机图api就注释掉*/}
 
 				function applyResponsiveBg() {
 					var bgBox = document.getElementById("bg-box");
 					var isMobile = window.matchMedia && window.matchMedia("(max-width: 768px)").matches;
 					var url = getBgUrl(isMobile);
+					var url = getBgUrl();
 					if (!url) return;
 					var img = new Image();
 					img.onload = function () {
-						if (bgBox) {
-							bgBox.style.backgroundImage = "url('" + url + "')";
-							bgBox.classList.add("loaded");
-						}
-						var syncImgs = document.querySelectorAll('img[data-sync-bg="1"]');
-						syncImgs.forEach(function (el) {
-							el.src = url;
-						});
+						bgBox.style.backgroundImage = "url('" + url + "')";
+						bgBox.classList.add("loaded");
 					};
 					img.src = url;
 				}
@@ -34,7 +28,7 @@
 				}
 
 				window.addEventListener("load", applyResponsiveBg);
-				window.addEventListener("resize", debounce(applyResponsiveBg, 200));
+				// no mobile/desktop switch anymore
 				document.addEventListener("swup:contentReplaced", applyResponsiveBg);
 				if (window.swup && window.swup.hooks) {
 					window.swup.hooks.on("content:replace", applyResponsiveBg);
@@ -85,7 +79,7 @@ const forceDarkMode = false;
 <style>.markdown-content img{margin:0!important}.post-container[data-astro-cid-egg7nqdx] img{opacity:0;transition:opacity .5s ease-out}.post-container[data-astro-cid-egg7nqdx] img.loaded{opacity:1}
 </style>
 <link rel="stylesheet" href="/_astro/_page_.DTOpoBcC.css">
-<link rel="stylesheet" href="/_astro/_page_.CAr_rdch.css">
+<link rel="stylesheet" href="/_astro/_page_.DQNE5O8R.css">
 <link rel="stylesheet" href="/_astro/about.BtniRLn_.css">
 <link rel="stylesheet" href="/_astro/_page_.C_JXNosn.css">
 <style>.friend-card[data-astro-cid-spp2p3no]{display:flex;flex-direction:column;gap:.5rem;padding:1rem;border-radius:1rem;border:1px solid var(--line-divider);background:var(--card-bg);transition:transform .2s ease,box-shadow .2s ease}.friend-card[data-astro-cid-spp2p3no]:hover{transform:translateY(-2px);box-shadow:var(--card-shadow)}
@@ -307,14 +301,14 @@ const umamiConfig = {"enable":true,"baseUrl":"https://umamii.zeabur.app","shareI
     } else {
         fetchPageViews();
     }
-})();</script>  </div> <!-- always show cover as long as it has one --> <div id="post-cover" class="mb-8 rounded-xl banner-container onload-animation overflow-hidden relative image-wrapper" style="--theme-hue: 361" data-astro-cid-i2xmscho> <img src="/_astro/fenliu.p_QvZ-2u.png" alt style="object-position: center" data-astro-cid-i2xmscho="true" width="542" height="441" loading="lazy" decoding="async" class="w-full h-full object-cover image-content">  </div>  <div data-pagefind-body class="prose dark:prose-invert prose-base !max-w-none custom-md mb-6 markdown-content onload-animation"> <!--<div class="prose dark:prose-invert max-w-none custom-md">--> <!--<div class="max-w-none custom-md">-->  <section><h1 id="需分流的网站">需分流的网站<a class="anchor" href="#需分流的网站"><span class="anchor-icon" data-pagefind-ignore="">#</span></a></h1><p>博客本体，主站</p><a id="UCt2tpge-card" class="card-url fetch-waiting no-styling" href="https://blog.acofork.com" target="_blank" url="https://blog.acofork.com" rel="nofollow"><div id="UCt2tpge-container" class="uc-container"><div class="uc-content"><div class="uc-titlebar"><div class="uc-titlebar-left"><div id="UCt2tpge-favicon" class="uc-favicon"></div><div class="uc-domain">blog.acofork.com</div></div></div><div id="UCt2tpge-title" class="uc-title-text">Loading...</div><div id="UCt2tpge-description" class="uc-description">Waiting for api.microlink.io...</div></div><div id="UCt2tpge-image" class="uc-image"></div></div><script id="UCt2tpge-script" type="text/javascript" defer>
+})();</script>  </div> <!-- always show cover as long as it has one --> <div id="post-cover" class="mb-8 rounded-xl banner-container onload-animation overflow-hidden relative image-wrapper" style="--theme-hue: 361" data-astro-cid-i2xmscho> <img src="/_astro/fenliu.p_QvZ-2u.png" alt style="object-position: center" data-astro-cid-i2xmscho="true" width="542" height="441" loading="lazy" decoding="async" class="w-full h-full object-cover image-content">  </div>  <div data-pagefind-body class="prose dark:prose-invert prose-base !max-w-none custom-md mb-6 markdown-content onload-animation"> <!--<div class="prose dark:prose-invert max-w-none custom-md">--> <!--<div class="max-w-none custom-md">-->  <section><h1 id="需分流的网站">需分流的网站<a class="anchor" href="#需分流的网站"><span class="anchor-icon" data-pagefind-ignore="">#</span></a></h1><p>博客本体，主站</p><a id="UC328d6k-card" class="card-url fetch-waiting no-styling" href="https://blog.acofork.com" target="_blank" url="https://blog.acofork.com" rel="nofollow"><div id="UC328d6k-container" class="uc-container"><div class="uc-content"><div class="uc-titlebar"><div class="uc-titlebar-left"><div id="UC328d6k-favicon" class="uc-favicon"></div><div class="uc-domain">blog.acofork.com</div></div></div><div id="UC328d6k-title" class="uc-title-text">Loading...</div><div id="UC328d6k-description" class="uc-description">Waiting for api.microlink.io...</div></div><div id="UC328d6k-image" class="uc-image"></div></div><script id="UC328d6k-script" type="text/javascript" defer>
       fetch('https://api.microlink.io?url=https%3A%2F%2Fblog.acofork.com').then(response => response.json()).then(data => {
         if (data.status === 'success') {
             const meta = data.data;
-            document.getElementById('UCt2tpge-title').innerText = meta.title || "https://blog.acofork.com";
-            document.getElementById('UCt2tpge-description').innerText = meta.description || "No description available";
+            document.getElementById('UC328d6k-title').innerText = meta.title || "https://blog.acofork.com";
+            document.getElementById('UC328d6k-description').innerText = meta.description || "No description available";
             
-            const faviconEl = document.getElementById('UCt2tpge-favicon');
+            const faviconEl = document.getElementById('UC328d6k-favicon');
             if (meta.logo?.url) {
                 faviconEl.style.backgroundImage = 'url(' + meta.logo.url + ')';
                 faviconEl.style.backgroundColor = 'transparent';
@@ -322,34 +316,34 @@ const umamiConfig = {"enable":true,"baseUrl":"https://umamii.zeabur.app","shareI
                  faviconEl.style.display = 'none';
             }
 
-            const imageEl = document.getElementById('UCt2tpge-image');
+            const imageEl = document.getElementById('UC328d6k-image');
             if (meta.image?.url) {
                 imageEl.style.backgroundImage = 'url(' + meta.image.url + ')';
             } else {
                 imageEl.style.display = 'none';
-                document.getElementById('UCt2tpge-container').classList.add('no-image');
+                document.getElementById('UC328d6k-container').classList.add('no-image');
             }
 
-            document.getElementById('UCt2tpge-card').classList.remove("fetch-waiting");
-            console.log("[URL-CARD] Loaded card for https://blog.acofork.com | UCt2tpge.")
+            document.getElementById('UC328d6k-card').classList.remove("fetch-waiting");
+            console.log("[URL-CARD] Loaded card for https://blog.acofork.com | UC328d6k.")
         } else {
             throw new Error('Microlink API failed');
         }
       }).catch(err => {
-        const c = document.getElementById('UCt2tpge-card');
+        const c = document.getElementById('UC328d6k-card');
         c?.classList.add("fetch-error");
-        document.getElementById('UCt2tpge-title').innerText = "Error loading preview";
-        document.getElementById('UCt2tpge-description').innerText = "Failed to fetch metadata for https://blog.acofork.com";
-        console.warn("[URL-CARD] (Error) Loading card for https://blog.acofork.com | UCt2tpge.", err)
+        document.getElementById('UC328d6k-title').innerText = "Error loading preview";
+        document.getElementById('UC328d6k-description').innerText = "Failed to fetch metadata for https://blog.acofork.com";
+        console.warn("[URL-CARD] (Error) Loading card for https://blog.acofork.com | UC328d6k.", err)
       })
-    </script></a><p>Umami，用于在网站插入一个JS来进行访客统计以及展示访客信息</p><a id="UCfvlp0s-card" class="card-url fetch-waiting no-styling" href="https://umami.acofork.com/share/CdkXbGgZr6ECKOyK" target="_blank" url="https://umami.acofork.com/share/CdkXbGgZr6ECKOyK" rel="nofollow"><div id="UCfvlp0s-container" class="uc-container"><div class="uc-content"><div class="uc-titlebar"><div class="uc-titlebar-left"><div id="UCfvlp0s-favicon" class="uc-favicon"></div><div class="uc-domain">umami.acofork.com</div></div></div><div id="UCfvlp0s-title" class="uc-title-text">Loading...</div><div id="UCfvlp0s-description" class="uc-description">Waiting for api.microlink.io...</div></div><div id="UCfvlp0s-image" class="uc-image"></div></div><script id="UCfvlp0s-script" type="text/javascript" defer>
+    </script></a><p>Umami，用于在网站插入一个JS来进行访客统计以及展示访客信息</p><a id="UC9sz5g2-card" class="card-url fetch-waiting no-styling" href="https://umami.acofork.com/share/CdkXbGgZr6ECKOyK" target="_blank" url="https://umami.acofork.com/share/CdkXbGgZr6ECKOyK" rel="nofollow"><div id="UC9sz5g2-container" class="uc-container"><div class="uc-content"><div class="uc-titlebar"><div class="uc-titlebar-left"><div id="UC9sz5g2-favicon" class="uc-favicon"></div><div class="uc-domain">umami.acofork.com</div></div></div><div id="UC9sz5g2-title" class="uc-title-text">Loading...</div><div id="UC9sz5g2-description" class="uc-description">Waiting for api.microlink.io...</div></div><div id="UC9sz5g2-image" class="uc-image"></div></div><script id="UC9sz5g2-script" type="text/javascript" defer>
       fetch('https://api.microlink.io?url=https%3A%2F%2Fumami.acofork.com%2Fshare%2FCdkXbGgZr6ECKOyK').then(response => response.json()).then(data => {
         if (data.status === 'success') {
             const meta = data.data;
-            document.getElementById('UCfvlp0s-title').innerText = meta.title || "https://umami.acofork.com/share/CdkXbGgZr6ECKOyK";
-            document.getElementById('UCfvlp0s-description').innerText = meta.description || "No description available";
+            document.getElementById('UC9sz5g2-title').innerText = meta.title || "https://umami.acofork.com/share/CdkXbGgZr6ECKOyK";
+            document.getElementById('UC9sz5g2-description').innerText = meta.description || "No description available";
             
-            const faviconEl = document.getElementById('UCfvlp0s-favicon');
+            const faviconEl = document.getElementById('UC9sz5g2-favicon');
             if (meta.logo?.url) {
                 faviconEl.style.backgroundImage = 'url(' + meta.logo.url + ')';
                 faviconEl.style.backgroundColor = 'transparent';
@@ -357,34 +351,34 @@ const umamiConfig = {"enable":true,"baseUrl":"https://umamii.zeabur.app","shareI
                  faviconEl.style.display = 'none';
             }
 
-            const imageEl = document.getElementById('UCfvlp0s-image');
+            const imageEl = document.getElementById('UC9sz5g2-image');
             if (meta.image?.url) {
                 imageEl.style.backgroundImage = 'url(' + meta.image.url + ')';
             } else {
                 imageEl.style.display = 'none';
-                document.getElementById('UCfvlp0s-container').classList.add('no-image');
+                document.getElementById('UC9sz5g2-container').classList.add('no-image');
             }
 
-            document.getElementById('UCfvlp0s-card').classList.remove("fetch-waiting");
-            console.log("[URL-CARD] Loaded card for https://umami.acofork.com/share/CdkXbGgZr6ECKOyK | UCfvlp0s.")
+            document.getElementById('UC9sz5g2-card').classList.remove("fetch-waiting");
+            console.log("[URL-CARD] Loaded card for https://umami.acofork.com/share/CdkXbGgZr6ECKOyK | UC9sz5g2.")
         } else {
             throw new Error('Microlink API failed');
         }
       }).catch(err => {
-        const c = document.getElementById('UCfvlp0s-card');
+        const c = document.getElementById('UC9sz5g2-card');
         c?.classList.add("fetch-error");
-        document.getElementById('UCfvlp0s-title').innerText = "Error loading preview";
-        document.getElementById('UCfvlp0s-description').innerText = "Failed to fetch metadata for https://umami.acofork.com/share/CdkXbGgZr6ECKOyK";
-        console.warn("[URL-CARD] (Error) Loading card for https://umami.acofork.com/share/CdkXbGgZr6ECKOyK | UCfvlp0s.", err)
+        document.getElementById('UC9sz5g2-title').innerText = "Error loading preview";
+        document.getElementById('UC9sz5g2-description').innerText = "Failed to fetch metadata for https://umami.acofork.com/share/CdkXbGgZr6ECKOyK";
+        console.warn("[URL-CARD] (Error) Loading card for https://umami.acofork.com/share/CdkXbGgZr6ECKOyK | UC9sz5g2.", err)
       })
-    </script></a><p>静态随机图，用于置顶文章Cover和整个网站的背景图</p><a id="UCa71yp4-card" class="card-url fetch-waiting no-styling" href="https://pic1.acofork.com" target="_blank" url="https://pic1.acofork.com" rel="nofollow"><div id="UCa71yp4-container" class="uc-container"><div class="uc-content"><div class="uc-titlebar"><div class="uc-titlebar-left"><div id="UCa71yp4-favicon" class="uc-favicon"></div><div class="uc-domain">pic1.acofork.com</div></div></div><div id="UCa71yp4-title" class="uc-title-text">Loading...</div><div id="UCa71yp4-description" class="uc-description">Waiting for api.microlink.io...</div></div><div id="UCa71yp4-image" class="uc-image"></div></div><script id="UCa71yp4-script" type="text/javascript" defer>
+    </script></a><p>静态随机图，用于置顶文章Cover和整个网站的背景图</p><a id="UCtoh02t-card" class="card-url fetch-waiting no-styling" href="https://pic1.acofork.com" target="_blank" url="https://pic1.acofork.com" rel="nofollow"><div id="UCtoh02t-container" class="uc-container"><div class="uc-content"><div class="uc-titlebar"><div class="uc-titlebar-left"><div id="UCtoh02t-favicon" class="uc-favicon"></div><div class="uc-domain">pic1.acofork.com</div></div></div><div id="UCtoh02t-title" class="uc-title-text">Loading...</div><div id="UCtoh02t-description" class="uc-description">Waiting for api.microlink.io...</div></div><div id="UCtoh02t-image" class="uc-image"></div></div><script id="UCtoh02t-script" type="text/javascript" defer>
       fetch('https://api.microlink.io?url=https%3A%2F%2Fpic1.acofork.com').then(response => response.json()).then(data => {
         if (data.status === 'success') {
             const meta = data.data;
-            document.getElementById('UCa71yp4-title').innerText = meta.title || "https://pic1.acofork.com";
-            document.getElementById('UCa71yp4-description').innerText = meta.description || "No description available";
+            document.getElementById('UCtoh02t-title').innerText = meta.title || "https://pic1.acofork.com";
+            document.getElementById('UCtoh02t-description').innerText = meta.description || "No description available";
             
-            const faviconEl = document.getElementById('UCa71yp4-favicon');
+            const faviconEl = document.getElementById('UCtoh02t-favicon');
             if (meta.logo?.url) {
                 faviconEl.style.backgroundImage = 'url(' + meta.logo.url + ')';
                 faviconEl.style.backgroundColor = 'transparent';
@@ -392,25 +386,25 @@ const umamiConfig = {"enable":true,"baseUrl":"https://umamii.zeabur.app","shareI
                  faviconEl.style.display = 'none';
             }
 
-            const imageEl = document.getElementById('UCa71yp4-image');
+            const imageEl = document.getElementById('UCtoh02t-image');
             if (meta.image?.url) {
                 imageEl.style.backgroundImage = 'url(' + meta.image.url + ')';
             } else {
                 imageEl.style.display = 'none';
-                document.getElementById('UCa71yp4-container').classList.add('no-image');
+                document.getElementById('UCtoh02t-container').classList.add('no-image');
             }
 
-            document.getElementById('UCa71yp4-card').classList.remove("fetch-waiting");
-            console.log("[URL-CARD] Loaded card for https://pic1.acofork.com | UCa71yp4.")
+            document.getElementById('UCtoh02t-card').classList.remove("fetch-waiting");
+            console.log("[URL-CARD] Loaded card for https://pic1.acofork.com | UCtoh02t.")
         } else {
             throw new Error('Microlink API failed');
         }
       }).catch(err => {
-        const c = document.getElementById('UCa71yp4-card');
+        const c = document.getElementById('UCtoh02t-card');
         c?.classList.add("fetch-error");
-        document.getElementById('UCa71yp4-title').innerText = "Error loading preview";
-        document.getElementById('UCa71yp4-description').innerText = "Failed to fetch metadata for https://pic1.acofork.com";
-        console.warn("[URL-CARD] (Error) Loading card for https://pic1.acofork.com | UCa71yp4.", err)
+        document.getElementById('UCtoh02t-title').innerText = "Error loading preview";
+        document.getElementById('UCtoh02t-description').innerText = "Failed to fetch metadata for https://pic1.acofork.com";
+        console.warn("[URL-CARD] (Error) Loading card for https://pic1.acofork.com | UCtoh02t.", err)
       })
     </script></a><hr><p>其他： <a href="https://acofork.com" rel="nofollow" target="_blank">https://acofork.com</a> , <a href="https://www.acofork.com" rel="nofollow" target="_blank">https://www.acofork.com</a>
 这些都是要 <strong>301</strong> 重定向到 <a href="https://blog.acofork.com" rel="nofollow" target="_blank">https://blog.acofork.com</a> 的域名，我们也需要为其配置分流</p></section>
