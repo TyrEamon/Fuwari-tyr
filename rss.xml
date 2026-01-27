@@ -74,7 +74,7 @@
 &lt;p&gt;&lt;code&gt;注意啊，如果你按教程来，那么那个图库基本上是fork仓库原作者的图（应该有4000多张），我自己是在本地新建的ri文件存的是自己的图。是否要换用自己的图库，看你·_·自己。&lt;/code&gt;&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;我自己就差不多700来张图，自己存的和一些从pixiv上爬我自己的个人收藏图。你问，这个脚本有吗？&lt;strong&gt;&lt;code&gt;有的！兄弟有的 &lt;/code&gt;&lt;/strong&gt;。你可以自己github搜索、搓一个或者我在用的这个&lt;a href=&quot;https://github.com/TyrEamon/Pixiv-mylove&quot;&gt;link&lt;/a&gt;
-&lt;img src=&quot;https://blog.acofork.com/_astro/mmmmm1.EkT6mUzi.png&quot; alt=&quot;&quot; /&gt;&lt;/li&gt;
+&lt;img src=&quot;https://blog.acofork.com/_astro/mmmmm1.CU43b_ha.webp&quot; alt=&quot;&quot; /&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;&lt;em&gt;填完，接下来我们就能本地 build 构建 dist 瞧瞧。&lt;/em&gt;&lt;/p&gt;
 &lt;h3&gt;直接命令行 &lt;code&gt;node build.js&lt;/code&gt; 得到构建产物/dist。（如果你没有装过依赖，你要执行一次 &lt;code&gt;npm install&lt;/code&gt;）&lt;/h3&gt;
@@ -88,7 +88,7 @@ node build.js
 &lt;pre&gt;&lt;code&gt;npx serve dist
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;你会在终端得到 http://localhost:3000 本地预览地址,进行网页访问。
-&lt;img src=&quot;https://blog.acofork.com/_astro/1769493099959.DIGcD-nY.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;img src=&quot;https://blog.acofork.com/_astro/1769493099959.B0NGK9xB.webp&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
 &lt;h3&gt;5) 上传部署（以 Cloudflare R2 为例）&lt;/h3&gt;
 &lt;p&gt;&lt;code&gt;个人用的是rclone，不过推荐用Cyberduck，有GUI界面更直观友好。&lt;/code&gt;
 首先登录cloudflare获取你的：
@@ -128,7 +128,7 @@ node build.js
 &amp;lt;details&amp;gt;
 &amp;lt;summary&amp;gt;点击展开&amp;lt;/summary&amp;gt;&lt;/p&gt;
 &lt;p&gt;这里默认你部署前绑好了。
-&lt;img src=&quot;https://blog.acofork.com/_astro/1769493099959.DIGcD-nY.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;img src=&quot;https://blog.acofork.com/_astro/1769493099959.B0NGK9xB.webp&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
 &lt;p&gt;&amp;lt;/details&amp;gt;&lt;/p&gt;
 &lt;h2&gt;&lt;strong&gt;OK啊，到这里算部署出成功了，接下来就是愉快的玩耍了&lt;/strong&gt;&lt;/h2&gt;
 &lt;h2&gt;6) 最后的后面：尊重原创&lt;/h2&gt;
@@ -137,7 +137,7 @@ node build.js
 &lt;li&gt;如果你也喜欢或正在在用这个项目，可以去关注他的&lt;a href=&quot;https://2x.nz&quot;&gt;二叉树树的博客&lt;/a&gt;。&lt;/li&gt;
 &lt;/ul&gt;
 &lt;hr /&gt;
-&lt;h1&gt;—————————————自此本章完结————————————&lt;/h1&gt;
+&lt;h1&gt;——自此本章完结——&lt;/h1&gt;
 </content:encoded></item><item><title>WTF？！直接将Umami部署到EdgeOne Pages？扔掉VPS！直接跑在云函数！</title><link>https://blog.acofork.com/posts/eo-umami/</link><guid isPermaLink="true">https://blog.acofork.com/posts/eo-umami/</guid><description>我们都知道，EdgeOne Pages有个完整的Node.js环境，那Umami是Next.js也基于Node.js，那我们是不是可以...</description><pubDate>Mon, 19 Jan 2026 10:14:32 GMT</pubDate><content:encoded>&lt;h1&gt;原理探寻&lt;/h1&gt;
 &lt;p&gt;由于 &lt;strong&gt;Umami&lt;/strong&gt; 使用的是 &lt;strong&gt;SSR&lt;/strong&gt; ，我原以为EdgeOne Pages不支持该模式，尝试部署后发现最大的问题在于&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;Error: SSR functions package size exceeds 128MiB limit (157MiB)
