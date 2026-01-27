@@ -54,7 +54,7 @@ export const siteConfig: SiteConfig = {
 	],
 	preconnect: [
 		"https://umamii.zeabur.app",
-		"https://pic.0w0.us.ci", 
+		"https://rapi.0w0.us.ci", 
 	],
 	officialSites: [],
 	server: [],
