@@ -2,7 +2,7 @@
 title: Static.Random.PicAPI的随机图 Gallery的样式性能优化
 published: 2026-01-27T14:43:00
 description: Fork 随机图库项目后，仓库项目似乎还没更新。于是照葫芦画瓢搓了 gallery的（sticky 顶栏、日夜模式、占位防跳动、触底分批加载逻辑），并把部署步骤交给到给你。
-image: ../assets/blogimg/1769493025215.png
+image: ../assets/blogimg/1769493025215.webp
 tags:
   - 项目优化
 draft: false
@@ -68,7 +68,7 @@ lang: ""
 
 `注意啊，如果你按教程来，那么那个图库基本上是fork仓库原作者的图（应该有4000多张），我自己是在本地新建的ri文件存的是自己的图。是否要换用自己的图库，看你·_·自己。`
 - 我自己就差不多700来张图，自己存的和一些从pixiv上爬我自己的个人收藏图。你问，这个脚本有吗？**`有的！兄弟有的 `**。你可以自己github搜索、搓一个或者我在用的这个[link](https://github.com/TyrEamon/Pixiv-mylove)
-![](../assets/blogimg/mmmmm1.png)
+![](../assets/blogimg/mmmmm1.webp)
 
 *填完，接下来我们就能本地 build 构建 dist 瞧瞧。*
 
@@ -85,7 +85,7 @@ node build.js
   npx serve dist
   ```
 你会在终端得到 http://localhost:3000 本地预览地址,进行网页访问。
-![](../assets/blogimg/1769493099959.png)
+![](../assets/blogimg/1769493099959.webp)
 
 ### 5) 上传部署（以 Cloudflare R2 为例）
 `个人用的是rclone，不过推荐用Cyberduck，有GUI界面更直观友好。`
@@ -115,7 +115,7 @@ rclone sync "C:\Users\Tyr.Eamon\Desktop\博客背景文件\随机图\dist" r2:YO
 <summary>点击展开</summary>
 
 这里默认你部署前绑好了。
-![](../assets/blogimg/1769493099959.png)
+![](../assets/blogimg/1769493099959.webp)
 
 </details>
 
@@ -128,4 +128,4 @@ rclone sync "C:\Users\Tyr.Eamon\Desktop\博客背景文件\随机图\dist" r2:YO
 - 如果你也喜欢或正在在用这个项目，可以去关注他的[二叉树树的博客](https://2x.nz)。
 
 ---
-# —————————————自此本章完结————————————
+# ——自此本章完结——
