@@ -24,7 +24,7 @@ lang: ""
 1. 一次性加载太多图片，浏览器会卡
 2. 页面样式不够顺眼（布局、交互、日夜模式等）
 
-## 2) 作者的api是完善过了，但仓库项目似乎还没有更新。
+## 2) 其实作者的api是完善过了，但仓库项目似乎还没有更新。
 >> 原作者的[API](https://pic1.acofork.com): https://pic1.acofork.com
 
 - 干脆直接自己找ai搓来玩，因此把给它“*Transform*”了吧，其实也是造**葫芦画瓢**，也没啥说法就是了。
@@ -57,7 +57,7 @@ lang: ""
 拿到文件，我们先把config.json里的域名，给他改改。改成你R2的存储公共开放域名。
 图1
 
-- 因为我弄了反代用pic和gallery去隐藏了/index.html和/gallery.html的后缀，所以我要多填两个域名,详见博客文章[link](test)。如果你们无所谓那就无所谓吧!你直接填 **你的公共域/index(gallery).html就行了**。
+- 因为我弄了反代用pic和gallery去隐藏了/index.html和/gallery.html的后缀，所以我要多填两个域名,详见博客文章[Link](test)。如果你们无所谓那就无所谓吧!你直接填 **你的公共域/index(gallery).html就行了**。
 ```bash
 {
     "domain": "https://rapi.0w0.us.ci",
@@ -67,7 +67,7 @@ lang: ""
 ```
 
 `注意啊，如果你按教程来，那么那个图库基本上是fork仓库原作者的图（应该有4000多张），我自己是在本地新建的ri文件存的是自己的图。是否要换用自己的图库，看你·_·自己。`
-- 我自己就差不多700来张图，自己存的和一些从pixiv上爬我自己的个人收藏图。你问，这个脚本有吗？**`有的！兄弟有的 `**。你可以自己github搜索、搓一个或者我在用的这个[link](https://github.com/TyrEamon/Pixiv-mylove)
+- 我自己就差不多700来张图，自己存的和一些从pixiv上爬我自己的个人收藏图。你问，这个脚本有吗？**`有的！兄弟有的 `**。你可以自己github搜索、搓一个或者我在用的这个[Pixiv-Tool](https://github.com/TyrEamon/Pixiv-mylove)
 ![](../assets/blogimg/mmmmm1.webp)
 
 *填完，接下来我们就能本地 build 构建 dist 瞧瞧。*
