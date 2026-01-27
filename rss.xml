@@ -90,8 +90,8 @@ node build.js
 &lt;p&gt;你会在终端得到 http://localhost:3000 本地预览地址,进行网页访问。
 &lt;img src=&quot;https://blog.acofork.com/_astro/1769493099959.B0NGK9xB.webp&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
 &lt;h3&gt;5) 上传部署（以 Cloudflare R2 为例）&lt;/h3&gt;
-&lt;p&gt;&lt;code&gt;个人用的是rclone，不过推荐用Cyberduck，有GUI界面更直观友好。&lt;/code&gt;
-首先登录cloudflare获取你的：
+&lt;p&gt;&lt;code&gt;个人用的是rclone，不过推荐用Cyberduck，有GUI界面更直观友好。&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;首先登录cloudflare获取你的：
 &lt;img src=&quot;https://blog.acofork.com/_astro/r2.BIMSVTaQ.png&quot; alt=&quot;在R2页里，创建用户Token&quot; /&gt;
 &lt;img src=&quot;https://blog.acofork.com/_astro/s3s3.4s0mLvKJ.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
 &lt;ul&gt;
