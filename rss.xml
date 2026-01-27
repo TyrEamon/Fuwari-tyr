@@ -16,6 +16,13 @@
 </content:encoded></item><item><title>Static.Random.PicAPI的随机图 Gallery的样式性能优化</title><link>https://blog.acofork.com/posts/sapi/</link><guid isPermaLink="true">https://blog.acofork.com/posts/sapi/</guid><description>Fork 随机图库项目后，仓库项目似乎还没更新。于是照葫芦画瓢搓了 gallery的（sticky 顶栏、日夜模式、占位防跳动、触底分批加载逻辑），并把部署步骤交给到给你。</description><pubDate>Tue, 27 Jan 2026 14:43:00 GMT</pubDate><content:encoded>&lt;blockquote&gt;
 &lt;p&gt;说明：本文基于原作者项目进行二次优化与记录，感谢原作者的思路与代码。本文仅用于学习与个人使用，转载请注明来源。&lt;/p&gt;
 &lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;Github项目地址:&lt;/strong&gt;
+&amp;lt;details&amp;gt;
+&amp;lt;summary&amp;gt;点击展开&amp;lt;/summary&amp;gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;code&gt;https://github.com/TyrEamon/Static_RandomPicAPI&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;&amp;lt;/details&amp;gt;&lt;/p&gt;
 &lt;h2&gt;1) 背景：SRPAPI这个项目原本能做什么？？&lt;/h2&gt;
 &lt;p&gt;这是一个「静态随机图库」项目，构建后输出 &lt;code&gt;dist/&lt;/code&gt;,静态托管即可：&lt;/p&gt;
 &lt;ul&gt;
@@ -123,8 +130,8 @@ node build.js
 &lt;/ul&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;上传文件完全后，直接访问你的R2公开域就能看到SPA的界面了。
-&lt;strong&gt;R2公共域&lt;/strong&gt;
+&lt;p&gt;上传文件完全后，直接访问你的R2公开域就能看到SPA的界面了。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;R2公共域&lt;/strong&gt;
 &amp;lt;details&amp;gt;
 &amp;lt;summary&amp;gt;点击展开&amp;lt;/summary&amp;gt;&lt;/p&gt;
 &lt;p&gt;这里默认你部署前绑好了。
