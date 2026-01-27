@@ -89,12 +89,13 @@ node build.js
 
 ### 5) 上传部署（以 Cloudflare R2 为例）
 `个人用的是rclone，不过推荐用Cyberduck，有GUI界面更直观友好。`
+
 首先登录cloudflare获取你的：
 ![在R2页里，创建用户Token](../assets/blogimg/r2.png)
 ![](../assets/blogimg/s3s3.png)
-- *R2 的 Access Key ID*
-- *R2 的 Secret Access Key*
-- *R2 的 Endpoint（S3 兼容地址）*
+  - *R2 的 Access Key ID*
+  - *R2 的 Secret Access Key*
+  - *R2 的 Endpoint（S3 兼容地址）*
 
 - `rclone` 同步到 R2：
 ```bash
