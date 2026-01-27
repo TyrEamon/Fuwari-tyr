@@ -11,6 +11,14 @@ lang: ""
 
 > 说明：本文基于原作者项目进行二次优化与记录，感谢原作者的思路与代码。本文仅用于学习与个人使用，转载请注明来源。
 
+> **项目地址**
+<details>
+<summary>点击展开</summary>
+
+`https://github.com/TyrEamon/Static_RandomPicAPI`
+
+</details>
+
 ## 1) 背景：SRPAPI这个项目原本能做什么？？
 
 这是一个「静态随机图库」项目，构建后输出 `dist/`,静态托管即可：
@@ -111,6 +119,7 @@ rclone sync "C:\Users\Tyr.Eamon\Desktop\博客背景文件\随机图\dist" r2:YO
 ![](../assets/blogimg/bupl.png)
 
 上传文件完全后，直接访问你的R2公开域就能看到SPA的界面了。
+
 **R2公共域**
 <details>
 <summary>点击展开</summary>
