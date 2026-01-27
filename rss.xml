@@ -28,7 +28,7 @@
 &lt;li&gt;一次性加载太多图片，浏览器会卡&lt;/li&gt;
 &lt;li&gt;页面样式不够顺眼（布局、交互、日夜模式等）&lt;/li&gt;
 &lt;/ol&gt;
-&lt;h2&gt;2) 作者的api是完善过了，但仓库项目似乎还没有更新。&lt;/h2&gt;
+&lt;h2&gt;2) 其实作者的api是完善过了，但仓库项目似乎还没有更新。&lt;/h2&gt;
 &lt;blockquote&gt;
 &lt;blockquote&gt;
 &lt;p&gt;原作者的&lt;a href=&quot;https://pic1.acofork.com&quot;&gt;API&lt;/a&gt;: https://pic1.acofork.com&lt;/p&gt;
@@ -63,7 +63,7 @@
 &lt;p&gt;拿到文件，我们先把config.json里的域名，给他改改。改成你R2的存储公共开放域名。
 图1&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;因为我弄了反代用pic和gallery去隐藏了/index.html和/gallery.html的后缀，所以我要多填两个域名,详见博客文章&lt;a href=&quot;test&quot;&gt;link&lt;/a&gt;。如果你们无所谓那就无所谓吧!你直接填 &lt;strong&gt;你的公共域/index(gallery).html就行了&lt;/strong&gt;。&lt;/li&gt;
+&lt;li&gt;因为我弄了反代用pic和gallery去隐藏了/index.html和/gallery.html的后缀，所以我要多填两个域名,详见博客文章&lt;a href=&quot;test&quot;&gt;Link&lt;/a&gt;。如果你们无所谓那就无所谓吧!你直接填 &lt;strong&gt;你的公共域/index(gallery).html就行了&lt;/strong&gt;。&lt;/li&gt;
 &lt;/ul&gt;
 &lt;pre&gt;&lt;code&gt;{
     &quot;domain&quot;: &quot;https://rapi.0w0.us.ci&quot;,
@@ -73,7 +73,7 @@
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;code&gt;注意啊，如果你按教程来，那么那个图库基本上是fork仓库原作者的图（应该有4000多张），我自己是在本地新建的ri文件存的是自己的图。是否要换用自己的图库，看你·_·自己。&lt;/code&gt;&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;我自己就差不多700来张图，自己存的和一些从pixiv上爬我自己的个人收藏图。你问，这个脚本有吗？&lt;strong&gt;&lt;code&gt;有的！兄弟有的 &lt;/code&gt;&lt;/strong&gt;。你可以自己github搜索、搓一个或者我在用的这个&lt;a href=&quot;https://github.com/TyrEamon/Pixiv-mylove&quot;&gt;link&lt;/a&gt;
+&lt;li&gt;我自己就差不多700来张图，自己存的和一些从pixiv上爬我自己的个人收藏图。你问，这个脚本有吗？&lt;strong&gt;&lt;code&gt;有的！兄弟有的 &lt;/code&gt;&lt;/strong&gt;。你可以自己github搜索、搓一个或者我在用的这个&lt;a href=&quot;https://github.com/TyrEamon/Pixiv-mylove&quot;&gt;Pixiv-Tool&lt;/a&gt;
 &lt;img src=&quot;https://blog.acofork.com/_astro/mmmmm1.CU43b_ha.webp&quot; alt=&quot;&quot; /&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;&lt;em&gt;填完，接下来我们就能本地 build 构建 dist 瞧瞧。&lt;/em&gt;&lt;/p&gt;
