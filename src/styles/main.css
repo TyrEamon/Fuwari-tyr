@@ -184,3 +184,56 @@
   animation: none;
 }
 
+/* Thanks wall (blog cards) */
+.thanks-wall {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+    gap: 8px;
+}
+.thanks-card {
+    padding: 10px 12px;
+    border-radius: 14px;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    font-size: 12px;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.75), rgba(255, 255, 255, 0.35));
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    backdrop-filter: blur(8px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+    transform-style: preserve-3d;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.thanks-card:hover {
+    transform: translateY(-2px) rotateX(2deg) rotateY(-2deg);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12);
+}
+.thanks-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 999px;
+    object-fit: cover;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.12);
+}
+.thanks-tag {
+    display: inline-block;
+    margin-top: 3px;
+    padding: 1px 6px;
+    border-radius: 999px;
+    font-size: 10px;
+    background: linear-gradient(135deg, #ffe4f1, #e7f1ff);
+    border: 1px solid rgba(0, 0, 0, 0.06);
+}
+.dark .thanks-card {
+    background: linear-gradient(135deg, rgba(28, 28, 32, 0.9), rgba(20, 20, 24, 0.6));
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
+}
+.dark .thanks-card:hover {
+    box-shadow: 0 16px 34px rgba(0, 0, 0, 0.5);
+}
+.dark .thanks-tag {
+    background: linear-gradient(135deg, rgba(255, 120, 200, 0.18), rgba(120, 170, 255, 0.18));
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
