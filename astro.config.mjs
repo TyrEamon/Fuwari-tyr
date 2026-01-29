@@ -77,7 +77,7 @@ export default defineConfig({
 		},
 		"/ok": {
 			status: 302,
-			destination: "",
+			destination: "https://ok",
 		},
 		"/donate": {
 			status: 302,
