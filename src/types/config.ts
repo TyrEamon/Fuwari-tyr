@@ -32,6 +32,13 @@ export type SiteConfig = {
 		attachment?: "fixed" | "scroll" | "local";
 		opacity?: number;
 	};
+	splash?: {
+		enable: boolean;
+		title?: string;
+		subtitle?: string;
+		buttonText?: string;
+		autoCloseMs?: number;
+	};
 	toc: {
 		enable: boolean;
 		depth: 1 | 2 | 3;
@@ -61,6 +68,7 @@ export type NavBarLink = {
 	name: string;
 	url: string;
 	external?: boolean;
+	children?: (NavBarLink | LinkPreset)[];
 };
 
 export type NavBarConfig = {

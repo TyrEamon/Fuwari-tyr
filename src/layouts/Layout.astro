@@ -79,6 +79,10 @@ const bannerOffsetByPosition = {
 };
 const bannerOffset =
 	bannerOffsetByPosition[siteConfig.banner.position || "center"];
+
+const splashConfig = siteConfig.splash;
+const splashEnabled = !!splashConfig?.enable;
+const splashAutoCloseMs = splashConfig?.autoCloseMs ?? 1800;
 ---
 
 <!DOCTYPE html>
@@ -208,7 +212,7 @@ const bannerOffset =
 			offset = offset - offset % 4;
 			document.documentElement.style.setProperty('--banner-height-extend', `${offset}px`);
 		</script>
-        
+
         <style define:vars={{ configHue }}>
             /* Fallback for no-js: Apply default theme hue */
             :root {
@@ -269,12 +273,85 @@ const bannerOffset =
 			}
 		</style>
 
+		<style>
+			.splash-screen {
+				position: fixed;
+				inset: 0;
+				z-index: 9999;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				background: var(--page-bg);
+				opacity: 0;
+				animation: splash-fade-in 0.25s ease forwards;
+			}
+
+			.splash-screen.splash-exit {
+				opacity: 0;
+				transition: opacity 0.4s ease;
+			}
+
+			.splash-spinner {
+				width: 68px;
+				height: 68px;
+				border: 2px solid var(--primary);
+				animation: splash-rotate 1.6s ease-in-out infinite;
+				transform-style: preserve-3d;
+				will-change: transform;
+			}
+
+			@keyframes splash-rotate {
+				0% {
+					transform: perspective(140px) rotateX(0deg) rotateY(0deg);
+				}
+				33% {
+					transform: perspective(140px) rotateX(-180deg) rotateY(0deg);
+				}
+				66% {
+					transform: perspective(140px) rotateX(-180deg) rotateY(-180deg);
+				}
+				100% {
+					transform: perspective(140px) rotateX(-360deg) rotateY(-180deg);
+				}
+			}
+
+			@keyframes splash-fade-in {
+				to {
+					opacity: 1;
+				}
+			}
+
+			#page-root {
+				transition: opacity 0.6s ease, transform 0.6s ease;
+			}
+
+			body.splash-active #page-root {
+				opacity: 0;
+				transform: translateY(8px);
+			}
+
+			body.splash-done #page-root {
+				opacity: 1;
+				transform: none;
+			}
+
+			@media (prefers-reduced-motion: reduce) {
+				.splash-screen,
+				#page-root {
+					transition: none;
+				}
+				.splash-spinner {
+					animation: none;
+				}
+			}
+		</style>
+
 		<slot name="head"></slot>
 
 
 		<link rel="alternate" type="application/rss+xml" title={profileConfig.name} href={`${Astro.site}rss.xml`}/>
 		</head>
-	<body class=" min-h-screen transition " class:list={[{"lg:is-home": isHomePage, "enable-banner": enableBanner}]}
+	<body class=" min-h-screen transition " class:list={[{"lg:is-home": isHomePage, "enable-banner": enableBanner, "splash-active": splashEnabled}]}
 		  data-overlayscrollbars-initialize
 	>
 		<noscript>
@@ -285,11 +362,43 @@ const bannerOffset =
 			</style>
 		</noscript>
 		<div id="bg-box"></div>
-		<ConfigCarrier></ConfigCarrier>
-		<slot />
+		{ splashEnabled && (
+			<div id="splash-screen" class="splash-screen">
+				<div class="splash-spinner" aria-hidden="true"></div>
+			</div>
+		)}
+		<div id="page-root">
+			<ConfigCarrier></ConfigCarrier>
+			<slot />
 
-		<!-- increase the page height during page transition to prevent the scrolling animation from jumping -->
-		<div id="page-height-extend" class="hidden h-[300vh]"></div>
+			<!-- increase the page height during page transition to prevent the scrolling animation from jumping -->
+			<div id="page-height-extend" class="hidden h-[300vh]"></div>
+		</div>
+
+		<script is:inline define:vars={{ splashEnabled, splashAutoCloseMs }}>
+			(function () {
+				if (!splashEnabled) return;
+				var overlay = document.getElementById("splash-screen");
+				if (!overlay) return;
+				var closed = false;
+
+				function closeSplash() {
+					if (closed) return;
+					closed = true;
+					if (overlay) overlay.classList.add("splash-exit");
+					document.body.classList.remove("splash-active");
+					document.body.classList.add("splash-done");
+					setTimeout(function () {
+						if (overlay) overlay.remove();
+					}, 450);
+				}
+
+				overlay.addEventListener("click", closeSplash);
+				if (splashAutoCloseMs && splashAutoCloseMs > 0) {
+					setTimeout(closeSplash, splashAutoCloseMs);
+				}
+			})();
+		</script>
 
 		
 	</body>

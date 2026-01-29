@@ -43,6 +43,13 @@ export const siteConfig: SiteConfig = {
 		attachment: "fixed", // Background attachment: 'fixed', 'scroll', 'local'
 		opacity: 1, // Background opacity (0-1)
 	},
+	splash: {
+		enable: true,
+		title: "欢迎来到 RuneByte Blog",
+		subtitle: "TyrEamon 的小站，记录折腾与日常",
+		buttonText: "进入",
+		autoCloseMs: 3200,
+	},
 	toc: {
 		enable: true, // Display the table of contents on the right side of the post
 		depth: 2, // Maximum heading depth to show in the table, from 1 to 3
@@ -85,14 +92,21 @@ export const navBarConfig: NavBarConfig = {
 			external: true,
 		},
 		{
-			name: "网页导航",
-			url: "https://www.6858686.xyz/",
-			external: true,
-		},
+			name: "资源",
+			url: "#",
+			external: false,
+			children: [
 				{
-			name: "图站",
-			url: "https://b.0106010.xyz",
-			external: true,
+					name: "网页导航",
+					url: "https://www.6858686.xyz/",
+					external: true,
+				},
+				{
+					name: "图站",
+					url: "https://b.0106010.xyz",
+					external: true,
+				},
+			],
 		},
 	],
 };
