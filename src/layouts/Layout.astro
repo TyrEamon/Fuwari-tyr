@@ -285,6 +285,7 @@ const splashAutoCloseMs = splashConfig?.autoCloseMs ?? 1800;
 				justify-content: center;
 				background-color: var(--page-bg);
 				background-image:
+.					linear-gradient(var(--splash-tint), var(--splash-tint)),
 					linear-gradient(
 						90deg,
 						rgba(0, 0, 0, 0.3) 1px,
@@ -295,8 +296,9 @@ const splashAutoCloseMs = splashConfig?.autoCloseMs ?? 1800;
 						transparent 1px
 					),
 					radial-gradient(circle at top, rgba(0, 0, 0, 0.06), transparent 55%);
-				background-repeat: repeat, repeat, no-repeat;
+				background-repeat: repeat, repeat, repeat, no-repeat;
 				background-size:
+					100% 100%,
 					var(--grid-size) var(--grid-size),
 					var(--grid-size) var(--grid-size),
 					100% 100%;
@@ -308,6 +310,7 @@ const splashAutoCloseMs = splashConfig?.autoCloseMs ?? 1800;
 			:root.dark .splash-screen {
 				--splash-tint: rgba(0, 0, 0, 0.45);
 				background-image:
+					linear-gradient(var(--splash-tint), var(--splash-tint)),
 					linear-gradient(
 						90deg,
 						rgba(255, 255, 255, 0.35) 1px,
@@ -323,6 +326,7 @@ const splashAutoCloseMs = splashConfig?.autoCloseMs ?? 1800;
 			.splash-screen.splash-after {
 				background-color: transparent;
 				background-image:
+					linear-gradient(var(--splash-tint), var(--splash-tint)),
 					linear-gradient(
 						90deg,
 						rgba(0, 0, 0, 0.3) 1px,
@@ -333,15 +337,17 @@ const splashAutoCloseMs = splashConfig?.autoCloseMs ?? 1800;
 						transparent 1px
 					);
 				background-size:
+					100% 100%,
 					var(--grid-size) var(--grid-size),
 					var(--grid-size) var(--grid-size);
-				background-repeat: repeat, repeat;
+				background-repeat: repeat, repeat, repeat;
 				background-position: center;
 				transition: background-color 0.4s ease;
 			}
 
 			:root.dark .splash-screen.splash-after {
 				background-image:
+					linear-gradient(var(--splash-tint), var(--splash-tint)),
 					linear-gradient(
 						90deg,
 						rgba(255, 255, 255, 0.35) 1px,
@@ -355,82 +361,13 @@ const splashAutoCloseMs = splashConfig?.autoCloseMs ?? 1800;
 
 			.splash-screen.splash-exit {
 				opacity: 0;
-				transition: opacity 0.55s ease;
-			}
-
-			.splash-tint {
-				position: absolute;
-				inset: 0;
-				background: var(--splash-tint);
-				pointer-events: none;
 				transition: opacity 0.4s ease;
-				z-index: 0;
-			}
-
-			.splash-exit-lines {
-				position: absolute;
-				inset: 0;
-				display: flex;
-				flex-direction: column;
-				align-items: center;
-				justify-content: center;
-				gap: 2.2rem;
-				pointer-events: none;
-				opacity: 0;
-				z-index: 3;
-				transition: opacity 0.2s ease;
-			}
-
-			.splash-exit-line {
-				height: 1px;
-				width: 0;
-				background: rgba(255, 255, 255, 0.95);
-				box-shadow: 0 0 12px rgba(255, 255, 255, 0.25);
-				opacity: 0;
-			}
-
-			:root.dark .splash-exit-line {
-				background: rgba(255, 255, 255, 0.9);
-				box-shadow: 0 0 14px rgba(255, 255, 255, 0.35);
-			}
-
-			.splash-screen.splash-exit-step1 .splash-exit-lines {
-				opacity: 1;
-			}
-
-			.splash-screen.splash-exit-step1 .splash-exit-line {
-				animation: splash-exit-line-in 0.55s ease forwards;
-			}
-
-			.splash-screen.splash-exit-step1 .splash-stack {
-				opacity: 0.35;
-				transform: translateY(-14px);
-			}
-
-			.splash-screen.splash-exit-step1 .splash-tint {
-				opacity: 0;
-			}
-
-			.splash-screen.splash-exit-step2 {
-				opacity: 0;
-				transform: scale(0.985);
-				transition: opacity 0.55s ease, transform 0.55s ease;
-			}
-
-			.splash-screen.splash-exit-step2 .splash-exit-line-left {
-				animation: splash-exit-line-left 0.35s ease forwards;
-			}
-
-			.splash-screen.splash-exit-step2 .splash-exit-line-right {
-				animation: splash-exit-line-right 0.35s ease forwards;
 			}
 
 			.splash-stack {
 				display: flex;
 				flex-direction: column;
 				align-items: center;
-				position: relative;
-				z-index: 2;
 				gap: 0.5rem;
 				transition: transform 0.4s ease, gap 0.4s ease;
 			}
@@ -589,29 +526,6 @@ const splashAutoCloseMs = splashConfig?.autoCloseMs ?? 1800;
 				}
 			}
 
-			@keyframes splash-exit-line-in {
-				to {
-					opacity: 1;
-					width: min(32rem, 88vw);
-				}
-			}
-
-			@keyframes splash-exit-line-left {
-				to {
-					opacity: 0;
-					width: min(16rem, 44vw);
-					transform: translateX(-18vw);
-				}
-			}
-
-			@keyframes splash-exit-line-right {
-				to {
-					opacity: 0;
-					width: min(16rem, 44vw);
-					transform: translateX(18vw);
-				}
-			}
-
 			@keyframes splash-profile-in {
 				to {
 					opacity: 1;
@@ -668,7 +582,6 @@ const splashAutoCloseMs = splashConfig?.autoCloseMs ?? 1800;
 		<div id="bg-box"></div>
 		{ splashEnabled && (
 			<div id="splash-screen" class="splash-screen">
-				<div class="splash-tint" aria-hidden="true"></div>
 				<div class="splash-stack">
 					<div class="splash-spinner" aria-hidden="true"></div>
 					<div class="splash-profile">
@@ -682,10 +595,6 @@ const splashAutoCloseMs = splashConfig?.autoCloseMs ?? 1800;
 						<div class="splash-site-subtitle">回忆是一条没有归途的路！</div>
 						<div class="splash-line" aria-hidden="true"></div>
 					</div>
-				</div>
-				<div class="splash-exit-lines" aria-hidden="true">
-					<div class="splash-exit-line splash-exit-line-left"></div>
-					<div class="splash-exit-line splash-exit-line-right"></div>
 				</div>
 			</div>
 		)}
@@ -708,17 +617,12 @@ const splashAutoCloseMs = splashConfig?.autoCloseMs ?? 1800;
 				function closeSplash() {
 					if (closed) return;
 					closed = true;
-					if (overlay) {
-						overlay.classList.add("splash-exit-step1");
-						setTimeout(function () {
-							if (overlay) overlay.classList.add("splash-exit-step2");
-						}, 560);
-					}
+					if (overlay) overlay.classList.add("splash-exit");
 					document.body.classList.remove("splash-active");
 					document.body.classList.add("splash-done");
 					setTimeout(function () {
 						if (overlay) overlay.remove();
-					}, 980);
+					}, 450);
 				}
 
 				overlay.addEventListener("click", closeSplash);
