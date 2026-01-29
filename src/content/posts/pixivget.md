@@ -14,6 +14,14 @@ lang: ""
 
 > 说明：本文仅供个人学习 + 进行本地备份记录，还请遵守 Pixiv 的相关使用条款，不要二次分发。
 
+> **Github项目地址:**
+<details>
+<summary>点击展开</summary>
+
+`https://github.com/TyrEamon/Pixiv-mylove`
+
+</details>
+
 # 至于这个该工具能做什么？
 
 这是一个 **Pixiv 个人收藏本地下载器（用的Python语言，单线程就不上go了）**，我拿来做本地备份。功能单一，但也挺实用：

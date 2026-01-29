@@ -77,7 +77,7 @@ export default defineConfig({
 		},
 		"/egp": {
 			status: 302,
-			destination: "https://console.cloud.tencent.com/edgeone/pages/project/pages-rfdsnwug6zrt/deployments",
+			destination: "https://console.cloud.tencent.com/",
 		},
 		"/donate": {
 			status: 302,
