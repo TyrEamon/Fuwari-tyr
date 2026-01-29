@@ -75,9 +75,9 @@ export default defineConfig({
 			status: 302,
 			destination: "https://i.2x.nz/posts/94",
 		},
-		"/ok": {
+		"/egp": {
 			status: 302,
-			destination: "https://ok",
+			destination: "https://console.cloud.tencent.com/edgeone/pages/project/pages-rfdsnwug6zrt/deployments",
 		},
 		"/donate": {
 			status: 302,
