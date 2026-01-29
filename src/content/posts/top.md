@@ -20,6 +20,16 @@ description: 致谢板及简介
 
 <div class="thanks-wall">
   <div class="thanks-card">
+    <img class="thanks-avatar" src="https://github.com/saicaca.png" />
+    <div>
+      <b>Fuwari</b><br/>
+      作者：saicaca<br/>
+      <a href="https://github.com/saicaca/fuwari">GitHub</a><br/>
+      <span class="thanks-tag">主题框架</span>
+    </div>
+  </div>
+
+  <div class="thanks-card">
     <img class="thanks-avatar" src="https://github.com/afoim.png" />
     <div>
       <b>Fuwari</b><br/>

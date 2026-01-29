@@ -28,6 +28,10 @@ yarn.lock
 
 .vscode
 
+# Obsidian workspace (local layout only)
+src/content/.obsidian/workspace.json
+src/content/.obsidian/workspace-mobile.json
+
 # 忽略上游仓库
 ori
 
