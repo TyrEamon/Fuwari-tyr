@@ -99,6 +99,13 @@
 </content:encoded></item><item><title>Pixiv 收藏本地下载器（Python）随手记</title><link>https://i.kyr.us.ci/posts/pixivget/</link><guid isPermaLink="true">https://i.kyr.us.ci/posts/pixivget/</guid><description>记录我用 Python 把 Pixiv 收藏下载到本地的过程，附上配置说明和一些个人踩坑感受。</description><pubDate>Tue, 27 Jan 2026 21:10:00 GMT</pubDate><content:encoded>&lt;blockquote&gt;
 &lt;p&gt;说明：本文仅供个人学习 + 进行本地备份记录，还请遵守 Pixiv 的相关使用条款，不要二次分发。&lt;/p&gt;
 &lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;Github项目地址:&lt;/strong&gt;
+&amp;lt;details&amp;gt;
+&amp;lt;summary&amp;gt;点击展开&amp;lt;/summary&amp;gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;code&gt;https://github.com/TyrEamon/Pixiv-mylove&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;&amp;lt;/details&amp;gt;&lt;/p&gt;
 &lt;h1&gt;至于这个该工具能做什么？&lt;/h1&gt;
 &lt;p&gt;这是一个 &lt;strong&gt;Pixiv 个人收藏本地下载器（用的Python语言，单线程就不上go了）&lt;/strong&gt;，我拿来做本地备份。功能单一，但也挺实用：&lt;/p&gt;
 &lt;ul&gt;
