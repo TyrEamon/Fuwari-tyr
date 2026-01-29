@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>RuneByte Blog</title><description>tyreamon的个人博客</description><link>https://blog.acofork.com/</link><language>zh_CN</language><item><title>欢迎来到我的博客！</title><link>https://blog.acofork.com/posts/top/</link><guid isPermaLink="true">https://blog.acofork.com/posts/top/</guid><description>致谢板及简介</description><pubDate>Sat, 24 Jan 2026 00:00:00 GMT</pubDate><content:encoded>&lt;blockquote&gt;
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>RuneByte Blog</title><description>tyreamon的个人博客</description><link>https://i.kyr.us.ci/</link><language>zh_CN</language><item><title>欢迎来到我的博客！</title><link>https://i.kyr.us.ci/posts/top/</link><guid isPermaLink="true">https://i.kyr.us.ci/posts/top/</guid><description>致谢板及简介</description><pubDate>Sat, 24 Jan 2026 00:00:00 GMT</pubDate><content:encoded>&lt;blockquote&gt;
 &lt;p&gt;&lt;em&gt;---你好陌生人，这里是Tyreamon的博客---&lt;/em&gt;&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;h2&gt;&lt;a href=&quot;#mycontact&quot;&gt;如何联系？ &lt;/a&gt;&lt;/h2&gt;
@@ -82,7 +82,7 @@
 &amp;lt;details&amp;gt;
 &amp;lt;summary&amp;gt;点击查看&amp;lt;/summary&amp;gt;&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;&lt;img src=&quot;https://blog.acofork.com/_astro/1769622880981.DcWRA1Ni.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://i.kyr.us.ci/_astro/1769622880981.DcWRA1Ni.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
 &lt;p&gt;&amp;lt;/details&amp;gt;&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;点击链接加入群聊【暂无打算】： &lt;a&gt;QQ群&lt;/a&gt;&lt;/strong&gt;&lt;/p&gt;
 &lt;ul&gt;
@@ -96,7 +96,7 @@
 &lt;ul&gt;
 &lt;li&gt;同样的，欢迎你加入 &lt;em&gt;(&lt;code&gt;目前没啥人就是了&lt;/code&gt;)&lt;/em&gt;&lt;/li&gt;
 &lt;/ul&gt;
-</content:encoded></item><item><title>Pixiv 收藏本地下载器（Python）随手记</title><link>https://blog.acofork.com/posts/pixivget/</link><guid isPermaLink="true">https://blog.acofork.com/posts/pixivget/</guid><description>记录我用 Python 把 Pixiv 收藏下载到本地的过程，附上配置说明和一些个人踩坑感受。</description><pubDate>Tue, 27 Jan 2026 21:10:00 GMT</pubDate><content:encoded>&lt;blockquote&gt;
+</content:encoded></item><item><title>Pixiv 收藏本地下载器（Python）随手记</title><link>https://i.kyr.us.ci/posts/pixivget/</link><guid isPermaLink="true">https://i.kyr.us.ci/posts/pixivget/</guid><description>记录我用 Python 把 Pixiv 收藏下载到本地的过程，附上配置说明和一些个人踩坑感受。</description><pubDate>Tue, 27 Jan 2026 21:10:00 GMT</pubDate><content:encoded>&lt;blockquote&gt;
 &lt;p&gt;说明：本文仅供个人学习 + 进行本地备份记录，还请遵守 Pixiv 的相关使用条款，不要二次分发。&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;h1&gt;至于这个该工具能做什么？&lt;/h1&gt;
@@ -129,9 +129,9 @@
 &lt;ul&gt;
 &lt;li&gt;获取你自己的&lt;code&gt;Pixiv Cookie/PHPSESSID&lt;/code&gt;、个人&lt;code&gt;uid&lt;/code&gt;&lt;/li&gt;
 &lt;li&gt;登录你的Pixiv账号，&lt;code&gt;F12&lt;/code&gt; 开发者面板
-&lt;img src=&quot;https://blog.acofork.com/_astro/1769671892275.BMfcDC0y.png&quot; alt=&quot;&quot; /&gt;&lt;/li&gt;
+&lt;img src=&quot;https://i.kyr.us.ci/_astro/1769671892275.BMfcDC0y.png&quot; alt=&quot;&quot; /&gt;&lt;/li&gt;
 &lt;li&gt;找到PHPSESSID，里面的值就是我们要的Cookie了
-&lt;img src=&quot;https://blog.acofork.com/_astro/1769671929543.DKJ9gRWl.png&quot; alt=&quot;&quot; /&gt;&lt;/li&gt;
+&lt;img src=&quot;https://i.kyr.us.ci/_astro/1769671929543.DKJ9gRWl.png&quot; alt=&quot;&quot; /&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;blockquote&gt;
 &lt;p&gt;接下来进入实操&lt;/p&gt;
@@ -155,7 +155,7 @@
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;或者直接双击 &lt;code&gt;run.bat&lt;/code&gt;。&lt;/p&gt;
 &lt;h3&gt;-正常运行-&lt;/h3&gt;
-&lt;p&gt;&lt;img src=&quot;https://blog.acofork.com/_astro/1769672990592.idxx9ZsR.png&quot; alt=&quot;运行状态&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://i.kyr.us.ci/_astro/1769672990592.idxx9ZsR.png&quot; alt=&quot;运行状态&quot; /&gt;&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;拿到图片文件，你可以存在本地或上传到图床。&lt;/p&gt;
 &lt;blockquote&gt;
@@ -184,7 +184,7 @@
 &lt;p&gt;如果你也只是想把收藏图放到本地，
 这套目前已经够用了。&lt;/p&gt;
 &lt;h1&gt;—— 记录完毕 ——&lt;/h1&gt;
-</content:encoded></item><item><title>踩着前人的脚印，RuneByte Blog 终于建站成功了</title><link>https://blog.acofork.com/posts/blog/</link><guid isPermaLink="true">https://blog.acofork.com/posts/blog/</guid><description>记录我从 fork 到上线的个人博客搭建过程，展示成果、简单部署流程和致谢清单。</description><pubDate>Tue, 27 Jan 2026 20:30:00 GMT</pubDate><content:encoded>&lt;blockquote&gt;
+</content:encoded></item><item><title>踩着前人的脚印，RuneByte Blog 终于建站成功了</title><link>https://i.kyr.us.ci/posts/blog/</link><guid isPermaLink="true">https://i.kyr.us.ci/posts/blog/</guid><description>记录我从 fork 到上线的个人博客搭建过程，展示成果、简单部署流程和致谢清单。</description><pubDate>Tue, 27 Jan 2026 20:30:00 GMT</pubDate><content:encoded>&lt;blockquote&gt;
 &lt;p&gt;说明：本博客基于开源项目进行二次改造与使用，感谢原作者和相关项目的贡献。本文是我的建站记录与成果分享。&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;h2&gt;1) 终于有自己的博客了&lt;/h2&gt;
@@ -222,7 +222,7 @@ pnpm dev
 &lt;blockquote&gt;
 &lt;blockquote&gt;
 &lt;p&gt;EdgeOne的线路说是国内挺快的(但是要得是备案域名，可惜我的域名还没备案)，看看后面吧！要不要给它整一个备案。目前就这样吧，先建着站玩玩先。
-&lt;img src=&quot;https://blog.acofork.com/_astro/1769621915743.J3EPJRNS.png&quot; alt=&quot;itdog 结果&quot; /&gt;&lt;/p&gt;
+&lt;img src=&quot;https://i.kyr.us.ci/_astro/1769621915743.J3EPJRNS.png&quot; alt=&quot;itdog 结果&quot; /&gt;&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;/blockquote&gt;
 &lt;ul&gt;
@@ -230,7 +230,7 @@ pnpm dev
 &lt;/ul&gt;
 &lt;hr /&gt;
 &lt;h1&gt;—— 这是我的第一篇，继续更新中 ——&lt;/h1&gt;
-</content:encoded></item><item><title>Static.Random.PicAPI的随机图 Gallery的样式性能优化</title><link>https://blog.acofork.com/posts/sapi/</link><guid isPermaLink="true">https://blog.acofork.com/posts/sapi/</guid><description>Fork 随机图库项目后，仓库项目似乎还没更新。于是照葫芦画瓢搓了 gallery的（sticky 顶栏、日夜模式、占位防跳动、触底分批加载逻辑），并把部署步骤交给到给你。</description><pubDate>Tue, 27 Jan 2026 14:43:00 GMT</pubDate><content:encoded>&lt;blockquote&gt;
+</content:encoded></item><item><title>Static.Random.PicAPI的随机图 Gallery的样式性能优化</title><link>https://i.kyr.us.ci/posts/sapi/</link><guid isPermaLink="true">https://i.kyr.us.ci/posts/sapi/</guid><description>Fork 随机图库项目后，仓库项目似乎还没更新。于是照葫芦画瓢搓了 gallery的（sticky 顶栏、日夜模式、占位防跳动、触底分批加载逻辑），并把部署步骤交给到给你。</description><pubDate>Tue, 27 Jan 2026 14:43:00 GMT</pubDate><content:encoded>&lt;blockquote&gt;
 &lt;p&gt;说明：本文基于原作者项目进行二次优化与记录，感谢原作者的思路与代码。本文仅用于学习与个人使用，转载请注明来源。&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;blockquote&gt;
@@ -282,7 +282,7 @@ pnpm dev
 &lt;/ul&gt;
 &lt;hr /&gt;
 &lt;h2&gt;操作过程&lt;/h2&gt;
-&lt;p&gt;&lt;img src=&quot;https://blog.acofork.com/_astro/file1.D138oEQn.png&quot; alt=&quot;一坨初始文件&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://i.kyr.us.ci/_astro/file1.D138oEQn.png&quot; alt=&quot;一坨初始文件&quot; /&gt;&lt;/p&gt;
 &lt;h3&gt;1.好了也是问ai将项目搓好了，虽然没做什么但是辛苦我了...玩个梗哈哈。弄好之后我们，得到了这一坨文件。&lt;/h3&gt;
 &lt;p&gt;拿到文件，我们先把config.json里的域名，给他改改。改成你R2的存储公共开放域名。
 图1&lt;/p&gt;
@@ -298,7 +298,7 @@ pnpm dev
 &lt;p&gt;&lt;code&gt;注意啊，如果你按教程来，那么那个图库基本上是fork仓库原作者的图（应该有4000多张），我自己是在本地新建的ri文件存的是自己的图。是否要换用自己的图库，看你·_·自己。&lt;/code&gt;&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;我自己就差不多700来张图，自己存的和一些从pixiv上爬我自己的个人收藏图。你问，这个脚本有吗？&lt;strong&gt;&lt;code&gt;有的！兄弟有的 &lt;/code&gt;&lt;/strong&gt;。你可以自己github搜索、搓一个或者我在用的这个&lt;a href=&quot;https://github.com/TyrEamon/Pixiv-mylove&quot;&gt;Pixiv-Tool&lt;/a&gt;
-&lt;img src=&quot;https://blog.acofork.com/_astro/mmmmm1.CU43b_ha.webp&quot; alt=&quot;&quot; /&gt;&lt;/li&gt;
+&lt;img src=&quot;https://i.kyr.us.ci/_astro/mmmmm1.CU43b_ha.webp&quot; alt=&quot;&quot; /&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;&lt;em&gt;填完，接下来我们就能本地 build 构建 dist 瞧瞧。&lt;/em&gt;&lt;/p&gt;
 &lt;h3&gt;直接命令行 &lt;code&gt;node build.js&lt;/code&gt; 得到构建产物/dist。（如果你没有装过依赖，你要执行一次 &lt;code&gt;npm install&lt;/code&gt;）&lt;/h3&gt;
@@ -306,19 +306,19 @@ pnpm dev
 node build.js
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;耐心等待
-&lt;img src=&quot;https://blog.acofork.com/_astro/bulid1.DbguTGbe.png&quot; alt=&quot;&quot; /&gt;
+&lt;img src=&quot;https://i.kyr.us.ci/_astro/bulid1.DbguTGbe.png&quot; alt=&quot;&quot; /&gt;
 如图，拿到产物。我们lib就是gallery页面相关逻辑js了，图片就存在ri里。
 &lt;strong&gt;给他本地预览一下&lt;/strong&gt;继续命令行&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;npx serve dist
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;你会在终端得到 http://localhost:3000 本地预览地址,进行网页访问。得到如下
-&lt;img src=&quot;https://blog.acofork.com/_astro/1769493099959.B0NGK9xB.webp&quot; alt=&quot;&quot; /&gt;
+&lt;img src=&quot;https://i.kyr.us.ci/_astro/1769493099959.B0NGK9xB.webp&quot; alt=&quot;&quot; /&gt;
 接下来，就是把它丢到R2上去部署。&lt;/p&gt;
 &lt;h3&gt;上传部署（以 Cloudflare R2 为例）&lt;/h3&gt;
 &lt;p&gt;&lt;code&gt;个人用的是rclone，不过推荐用Cyberduck，有GUI界面更直观友好。&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;首先登录cloudflare获取你的：
-&lt;img src=&quot;https://blog.acofork.com/_astro/r2.BIMSVTaQ.png&quot; alt=&quot;在R2页里，创建用户Token&quot; /&gt;
-&lt;img src=&quot;https://blog.acofork.com/_astro/s3s3.4s0mLvKJ.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;img src=&quot;https://i.kyr.us.ci/_astro/r2.BIMSVTaQ.png&quot; alt=&quot;在R2页里，创建用户Token&quot; /&gt;
+&lt;img src=&quot;https://i.kyr.us.ci/_astro/s3s3.4s0mLvKJ.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;
 &lt;p&gt;&lt;em&gt;R2 的 Access Key ID&lt;/em&gt;&lt;/p&gt;
@@ -344,7 +344,7 @@ node build.js
 &lt;li&gt;Port：443&lt;/li&gt;
 &lt;li&gt;Access Key ID：填你的 R2 Access Key ID&lt;/li&gt;
 &lt;li&gt;Secret Access Key：填你的 R2 Secret Access Key
-&lt;img src=&quot;https://blog.acofork.com/_astro/bupl.JRSgxLbc.png&quot; alt=&quot;&quot; /&gt;&lt;/li&gt;
+&lt;img src=&quot;https://i.kyr.us.ci/_astro/bupl.JRSgxLbc.png&quot; alt=&quot;&quot; /&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
@@ -353,7 +353,7 @@ node build.js
 &amp;lt;details&amp;gt;
 &amp;lt;summary&amp;gt;点击展开&amp;lt;/summary&amp;gt;&lt;/p&gt;
 &lt;p&gt;这里默认你部署前绑好了。
-&lt;img src=&quot;https://blog.acofork.com/_astro/1769493099959.B0NGK9xB.webp&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;img src=&quot;https://i.kyr.us.ci/_astro/1769493099959.B0NGK9xB.webp&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
 &lt;p&gt;&amp;lt;/details&amp;gt;&lt;/p&gt;
 &lt;h2&gt;&lt;strong&gt;OK啊，到这里算部署出成功了，接下来就是愉快的玩耍了&lt;/strong&gt;&lt;/h2&gt;
 &lt;h2&gt;最后的最后：尊重原创&lt;/h2&gt;
