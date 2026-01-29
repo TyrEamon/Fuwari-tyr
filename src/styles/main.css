@@ -16,6 +16,11 @@
         animation-duration: var(--rainbow-duration, 5s);
     }
 
+    html.is-rainbow-mode .card-base.no-hue-rotate {
+        animation: none !important;
+        filter: none !important;
+    }
+
     /* Reverse filter for images to keep original colors */
     html.is-rainbow-mode .card-base img,
     html.is-rainbow-mode .card-base video,

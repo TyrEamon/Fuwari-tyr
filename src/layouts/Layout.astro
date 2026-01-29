@@ -275,29 +275,283 @@ const splashAutoCloseMs = splashConfig?.autoCloseMs ?? 1800;
 
 		<style>
 			.splash-screen {
+				--grid-size: 38px;
+				--splash-tint: rgba(0, 0, 0, 0.18);
 				position: fixed;
 				inset: 0;
 				z-index: 9999;
 				display: flex;
 				align-items: center;
 				justify-content: center;
-				background: var(--page-bg);
+				background-color: var(--page-bg);
+				background-image:
+					linear-gradient(
+						90deg,
+						rgba(0, 0, 0, 0.3) 1px,
+						transparent 1px
+					),
+					linear-gradient(
+						rgba(0, 0, 0, 0.3) 1px,
+						transparent 1px
+					),
+					radial-gradient(circle at top, rgba(0, 0, 0, 0.06), transparent 55%);
+				background-repeat: repeat, repeat, no-repeat;
+				background-size:
+					var(--grid-size) var(--grid-size),
+					var(--grid-size) var(--grid-size),
+					100% 100%;
+				background-position: center;
 				opacity: 0;
 				animation: splash-fade-in 0.25s ease forwards;
 			}
 
+			:root.dark .splash-screen {
+				--splash-tint: rgba(0, 0, 0, 0.45);
+				background-image:
+					linear-gradient(
+						90deg,
+						rgba(255, 255, 255, 0.35) 1px,
+						transparent 1px
+					),
+					linear-gradient(
+						rgba(255, 255, 255, 0.35) 1px,
+						transparent 1px
+					),
+					radial-gradient(circle at top, rgba(255, 255, 255, 0.06), transparent 55%);
+			}
+
+			.splash-screen.splash-after {
+				background-color: transparent;
+				background-image:
+					linear-gradient(
+						90deg,
+						rgba(0, 0, 0, 0.3) 1px,
+						transparent 1px
+					),
+					linear-gradient(
+						rgba(0, 0, 0, 0.3) 1px,
+						transparent 1px
+					);
+				background-size:
+					var(--grid-size) var(--grid-size),
+					var(--grid-size) var(--grid-size);
+				background-repeat: repeat, repeat;
+				background-position: center;
+				transition: background-color 0.4s ease;
+			}
+
+			:root.dark .splash-screen.splash-after {
+				background-image:
+					linear-gradient(
+						90deg,
+						rgba(255, 255, 255, 0.35) 1px,
+						transparent 1px
+					),
+					linear-gradient(
+						rgba(255, 255, 255, 0.35) 1px,
+						transparent 1px
+					);
+			}
+
 			.splash-screen.splash-exit {
 				opacity: 0;
+				transition: opacity 0.55s ease;
+			}
+
+			.splash-tint {
+				position: absolute;
+				inset: 0;
+				background: var(--splash-tint);
+				pointer-events: none;
 				transition: opacity 0.4s ease;
+				z-index: 0;
+			}
+
+			.splash-exit-lines {
+				position: absolute;
+				inset: 0;
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				justify-content: center;
+				gap: 2.2rem;
+				pointer-events: none;
+				opacity: 0;
+				z-index: 3;
+				transition: opacity 0.2s ease;
+			}
+
+			.splash-exit-line {
+				height: 1px;
+				width: 0;
+				background: rgba(255, 255, 255, 0.95);
+				box-shadow: 0 0 12px rgba(255, 255, 255, 0.25);
+				opacity: 0;
+			}
+
+			:root.dark .splash-exit-line {
+				background: rgba(255, 255, 255, 0.9);
+				box-shadow: 0 0 14px rgba(255, 255, 255, 0.35);
+			}
+
+			.splash-screen.splash-exit-step1 .splash-exit-lines {
+				opacity: 1;
+			}
+
+			.splash-screen.splash-exit-step1 .splash-exit-line {
+				animation: splash-exit-line-in 0.55s ease forwards;
+			}
+
+			.splash-screen.splash-exit-step1 .splash-stack {
+				opacity: 0.35;
+				transform: translateY(-14px);
+			}
+
+			.splash-screen.splash-exit-step1 .splash-tint {
+				opacity: 0;
+			}
+
+			.splash-screen.splash-exit-step2 {
+				opacity: 0;
+				transform: scale(0.985);
+				transition: opacity 0.55s ease, transform 0.55s ease;
+			}
+
+			.splash-screen.splash-exit-step2 .splash-exit-line-left {
+				animation: splash-exit-line-left 0.35s ease forwards;
+			}
+
+			.splash-screen.splash-exit-step2 .splash-exit-line-right {
+				animation: splash-exit-line-right 0.35s ease forwards;
+			}
+
+			.splash-stack {
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				position: relative;
+				z-index: 2;
+				gap: 0.5rem;
+				transition: transform 0.4s ease, gap 0.4s ease;
+			}
+
+			.splash-screen.splash-after .splash-stack {
+				gap: 0.35rem;
+				transform: translateY(-8px);
 			}
 
 			.splash-spinner {
-				width: 68px;
-				height: 68px;
-				border: 2px solid var(--primary);
-				animation: splash-rotate 1.6s ease-in-out infinite;
+				width: 78px;
+				height: 78px;
+				border: 3px solid var(--primary);
+				animation: splash-rotate 1.2s ease-in-out forwards, splash-spinner-out 0.3s ease forwards 1.2s;
 				transform-style: preserve-3d;
 				will-change: transform;
+			}
+
+			.splash-screen.splash-after .splash-spinner {
+				pointer-events: none;
+			}
+
+			.splash-profile {
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				width: min(32rem, 90vw);
+				gap: 0.6rem;
+				opacity: 0;
+				transform: translateY(10px);
+				animation: splash-profile-in 0.6s ease forwards;
+				animation-delay: 1.05s;
+			}
+
+			.splash-screen.splash-after .splash-profile {
+				transform: translateY(-6px);
+			}
+
+			.splash-screen.splash-after .splash-spinner {
+				display: none;
+			}
+
+			.splash-line {
+				height: 1px;
+				width: 0;
+				background: #fff;
+				opacity: 0;
+				margin: 0.35rem auto;
+				animation: splash-line-in 0.9s cubic-bezier(0.18, 0.66, 0.05, 0.96) forwards;
+				animation-delay: 1.2s;
+			}
+
+			.splash-line:last-child {
+				animation-delay: 1.3s;
+			}
+
+			.splash-avatar-wrap {
+				position: relative;
+				width: 84px;
+				height: 84px;
+				margin-bottom: 0.35rem;
+			}
+
+			.splash-avatar-glow {
+				position: absolute;
+				inset: -10px;
+				border-radius: 999px;
+				background: radial-gradient(circle, rgba(255, 255, 255, 0.7), transparent 70%);
+				filter: blur(14px);
+				opacity: 0.35;
+			}
+
+			:root.dark .splash-avatar-glow {
+				background: radial-gradient(circle, rgba(255, 255, 255, 0.35), transparent 70%);
+			}
+
+			.splash-avatar {
+				position: relative;
+				width: 100%;
+				height: 100%;
+				border-radius: 999px;
+				border: 2px solid rgba(255, 255, 255, 0.8);
+				background: var(--card-bg);
+				box-shadow: 0 12px 25px rgba(0, 0, 0, 0.2);
+				object-fit: cover;
+			}
+
+			:root.dark .splash-avatar {
+				border-color: rgba(255, 255, 255, 0.9);
+				box-shadow: none;
+			}
+
+			.splash-author-name {
+				font-size: 1.05rem;
+				font-weight: 700;
+				letter-spacing: 0.08em;
+				color: rgba(255, 255, 255, 0.9);
+				text-align: center;
+			}
+
+			.splash-site-title {
+				font-size: clamp(1.05rem, 1.6vw + 0.4rem, 1.45rem);
+				letter-spacing: 0.14em;
+				color: #fff;
+				font-weight: 700;
+				text-align: center;
+			}
+
+			.splash-site-subtitle {
+				font-size: 0.95rem;
+				letter-spacing: 0.08em;
+				color: rgba(255, 255, 255, 0.7);
+				text-align: center;
+			}
+
+			.splash-site-description {
+				max-width: min(28rem, 82vw);
+				font-size: 0.85rem;
+				letter-spacing: 0.04em;
+				color: rgba(255, 255, 255, 0.65);
+				text-align: center;
 			}
 
 			@keyframes splash-rotate {
@@ -315,9 +569,53 @@ const splashAutoCloseMs = splashConfig?.autoCloseMs ?? 1800;
 				}
 			}
 
+			@keyframes splash-spinner-out {
+				to {
+					opacity: 0;
+					transform: scale(0.92);
+				}
+			}
+
 			@keyframes splash-fade-in {
 				to {
 					opacity: 1;
+				}
+			}
+
+			@keyframes splash-line-in {
+				to {
+					opacity: 1;
+					width: min(30rem, 90vw);
+				}
+			}
+
+			@keyframes splash-exit-line-in {
+				to {
+					opacity: 1;
+					width: min(32rem, 88vw);
+				}
+			}
+
+			@keyframes splash-exit-line-left {
+				to {
+					opacity: 0;
+					width: min(16rem, 44vw);
+					transform: translateX(-18vw);
+				}
+			}
+
+			@keyframes splash-exit-line-right {
+				to {
+					opacity: 0;
+					width: min(16rem, 44vw);
+					transform: translateX(18vw);
+				}
+			}
+
+			@keyframes splash-profile-in {
+				to {
+					opacity: 1;
+					transform: translateY(0);
 				}
 			}
 
@@ -343,6 +641,12 @@ const splashAutoCloseMs = splashConfig?.autoCloseMs ?? 1800;
 				.splash-spinner {
 					animation: none;
 				}
+				.splash-profile,
+				.splash-line {
+					opacity: 1;
+					transform: none;
+					animation: none;
+				}
 			}
 		</style>
 
@@ -364,7 +668,25 @@ const splashAutoCloseMs = splashConfig?.autoCloseMs ?? 1800;
 		<div id="bg-box"></div>
 		{ splashEnabled && (
 			<div id="splash-screen" class="splash-screen">
-				<div class="splash-spinner" aria-hidden="true"></div>
+				<div class="splash-tint" aria-hidden="true"></div>
+				<div class="splash-stack">
+					<div class="splash-spinner" aria-hidden="true"></div>
+					<div class="splash-profile">
+						<div class="splash-avatar-wrap">
+							<div class="splash-avatar-glow" aria-hidden="true"></div>
+							<img class="splash-avatar" src={profileConfig.avatar} alt="avatar" loading="lazy" />
+						</div>
+						<div class="splash-author-name">Tyr</div>
+						<div class="splash-line" aria-hidden="true"></div>
+						<div class="splash-site-title">RuneByte Blog | TyrEamon</div>
+						<div class="splash-site-subtitle">回忆是一条没有归途的路！</div>
+						<div class="splash-line" aria-hidden="true"></div>
+					</div>
+				</div>
+				<div class="splash-exit-lines" aria-hidden="true">
+					<div class="splash-exit-line splash-exit-line-left"></div>
+					<div class="splash-exit-line splash-exit-line-right"></div>
+				</div>
 			</div>
 		)}
 		<div id="page-root">
@@ -381,19 +703,30 @@ const splashAutoCloseMs = splashConfig?.autoCloseMs ?? 1800;
 				var overlay = document.getElementById("splash-screen");
 				if (!overlay) return;
 				var closed = false;
+				var animMs = 1200;
 
 				function closeSplash() {
 					if (closed) return;
 					closed = true;
-					if (overlay) overlay.classList.add("splash-exit");
+					if (overlay) {
+						overlay.classList.add("splash-exit-step1");
+						setTimeout(function () {
+							if (overlay) overlay.classList.add("splash-exit-step2");
+						}, 560);
+					}
 					document.body.classList.remove("splash-active");
 					document.body.classList.add("splash-done");
 					setTimeout(function () {
 						if (overlay) overlay.remove();
-					}, 450);
+					}, 980);
 				}
 
 				overlay.addEventListener("click", closeSplash);
+				window.addEventListener("wheel", closeSplash, { passive: true });
+				window.addEventListener("touchstart", closeSplash, { passive: true });
+				setTimeout(function () {
+					if (overlay) overlay.classList.add("splash-after");
+				}, animMs);
 				if (splashAutoCloseMs && splashAutoCloseMs > 0) {
 					setTimeout(closeSplash, splashAutoCloseMs);
 				}

@@ -48,7 +48,7 @@ export const siteConfig: SiteConfig = {
 		title: "欢迎来到 RuneByte Blog",
 		subtitle: "TyrEamon 的小站，记录折腾与日常",
 		buttonText: "进入",
-		autoCloseMs: 3200,
+		autoCloseMs: 5500,
 	},
 	toc: {
 		enable: true, // Display the table of contents on the right side of the post

@@ -17,7 +17,19 @@ const { page } = Astro.props;
 const len = page.data.length;
 ---
 
-<MainGridLayout title={page.currentPage === 1 ? undefined : `第 ${page.currentPage} 页`}>
-    <PostPage page={page}></PostPage>
-    <Pagination class="mx-auto onload-animation" page={page} style=`animation-delay: calc(var(--content-delay) + ${(len)*50}ms)`></Pagination>
+<MainGridLayout title={page.currentPage === 1 ? undefined : `第${page.currentPage}页`}>
+	{page.currentPage === 1 && (
+		<section
+			class="card-base no-hue-rotate onload-animation mb-4 px-6 py-3 text-center"
+			style="animation-delay: calc(var(--content-delay) + 80ms); border: 3px solid var(--primary);"
+		>
+			<div class="text-xs tracking-[0.2em] text-black/50 dark:text-white/50">
+			</div>
+			<div class="mt-1 text-lg font-semibold text-[var(--primary)]">
+				黑夜再长也挡不住点亮的那一刻“执念”
+			</div>
+		</section>
+	)}
+	<PostPage page={page}></PostPage>
+	<Pagination class="mx-auto onload-animation" page={page} style={`animation-delay: calc(var(--content-delay) + ${len * 50}ms)`}></Pagination>
 </MainGridLayout>
