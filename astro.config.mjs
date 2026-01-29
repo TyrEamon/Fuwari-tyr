@@ -34,28 +34,28 @@ export default defineConfig({
 	image: {
 		service: passthroughImageService(),
 	},
-	site: "https://blog.acofork.com",
+	site: "https://i.kyr.us.ci",
 	base: "/",
 	trailingSlash: "always",
 	output: "static",
 	redirects: {
-		"/long": {
+		"/nav": {
 			status: 302,
-			destination: "https://iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii.iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii.in/",
+			destination: "https://www.6858686.xyz",
 		},
-		"/tit": {
+		"/top": {
 			status: 302,
-			destination: "/posts/pin/",
+			destination: "/posts/top",
 		},
 		"/ak": {
 			status: 302,
 			destination: "https://akile.io/register?aff_code=503fe5ea-e7c5-4d68-ae05-6de99513680e",
 		},
-		"/yyb": {
+		"/acg": {
 			status: 302,
-			destination: "https://www.rainyun.com/acofork_?s=bilibili",
+			destination: "https://b.0106010.xyz/",
 		},
-		"/wly": {
+		"/opl": {
 			status: 302,
 			destination: "https://wl.awcmam.com/#/register?code=FNQwOQBM",
 		},
@@ -77,7 +77,7 @@ export default defineConfig({
 		},
 		"/ok": {
 			status: 302,
-			destination: "https://acofork-uptime.zeabur.app/status/acofork",
+			destination: "",
 		},
 		"/donate": {
 			status: 302,
@@ -85,7 +85,7 @@ export default defineConfig({
 		},
 		"/tg": {
 			status: 302,
-			destination: "https://t.me/+_07DERp7k1ljYTc1",
+			destination: "https://t.me/+EZ-bVy07k2xjMzY1",
 		},
 		"/esa": {
 			status: 302,
