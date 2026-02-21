@@ -33,9 +33,7 @@ lang: ""
 
 **关键设计**：前台只吃预览图，原图走 B 频道，前端更稳，带宽压力也更小。
 
-> [图位 1：系统架构图（待补）]  
-> 建议文件：`../assets/blogimg/xin-01-arch.png`  
-> 内容建议：Pixiv/TG -> Go 后端 -> A/B 频道 + D1 + WebDAV
+> 系统架构一览：Pixiv/TG -> Go 后端 -> A/B 频道 + D1 + WebDAV
 
 ---
 
