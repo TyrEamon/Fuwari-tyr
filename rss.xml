@@ -125,9 +125,7 @@
 &lt;/ul&gt;
 &lt;p&gt;&lt;strong&gt;关键设计&lt;/strong&gt;：前台只吃预览图，原图走 B 频道，前端更稳，带宽压力也更小。&lt;/p&gt;
 &lt;blockquote&gt;
-&lt;p&gt;[图位 1：系统架构图（待补）]&lt;br /&gt;
-建议文件：&lt;code&gt;../assets/blogimg/xin-01-arch.png&lt;/code&gt;&lt;br /&gt;
-内容建议：Pixiv/TG -&amp;gt; Go 后端 -&amp;gt; A/B 频道 + D1 + WebDAV&lt;/p&gt;
+&lt;p&gt;系统架构一览：Pixiv/TG -&amp;gt; Go 后端 -&amp;gt; A/B 频道 + D1 + WebDAV&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;hr /&gt;
 &lt;h2&gt;1. 前置条件（不满足就别往下）&lt;/h2&gt;
