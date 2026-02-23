@@ -24,11 +24,14 @@ const len = page.data.length;
 			class="card-base no-hue-rotate onload-animation mb-4 px-6 py-3 text-center"
 			style="animation-delay: calc(var(--content-delay) + 80ms); border: 3px solid var(--primary);"
 		>
-			<div data-hitokoto-meta class="text-xs tracking-[0.2em] text-black/50 dark:text-white/50">
-				一言
-			</div>
-			<div data-hitokoto-text class="mt-1 text-lg font-semibold text-[var(--primary)]">
-				黑夜再长也挡不住点亮的那一刻“执念”
+			<div class="mt-1 text-lg font-semibold text-[var(--primary)] leading-relaxed">
+				<span data-hitokoto-text>
+					黑夜再长也挡不住点亮的那一刻“执念”
+				</span>
+				<span
+					data-hitokoto-meta
+					class="ml-1 text-sm font-normal tracking-normal text-black/55 dark:text-white/55"
+				></span>
 			</div>
 		</section>
 	)}
@@ -65,9 +68,9 @@ const len = page.data.length;
 						const fromParts = [data?.from_who, data?.from].filter(
 							(v) => typeof v === "string" && v.trim(),
 						);
-						metaEl.textContent = fromParts.length > 0 ? `一言 · ${fromParts.join(" · ")}` : "一言";
+						metaEl.textContent = fromParts.length > 0 ? `—— ${fromParts.join(" · ")}` : "";
 					} catch (_err) {
-						metaEl.textContent = "一言";
+						metaEl.textContent = "";
 					} finally {
 						card.dataset.loading = "0";
 					}
@@ -82,6 +85,12 @@ const len = page.data.length;
 					if (typeof value !== "string") return "";
 					const match = value.match(/url\((['"]?)(.*?)\1\)/);
 					return match?.[2] || "";
+				}
+
+				function isResolvedWallpaperUrl(value) {
+					if (typeof value !== "string" || !value) return false;
+					if (value.startsWith("data:image/gif")) return false;
+					return !/\/random\/[hv](?:$|\?)/.test(value);
 				}
 
 				function getBannerWallpaperUrl() {
@@ -117,19 +126,19 @@ const len = page.data.length;
 					if (!(coverImg instanceof HTMLImageElement)) return;
 
 					const nextUrl = getCurrentWallpaperUrl();
-					if (!nextUrl) return;
+					if (!isResolvedWallpaperUrl(nextUrl)) return;
 					const currentUrl = coverImg.currentSrc || coverImg.src || "";
 					if (currentUrl === nextUrl) return;
 
 					coverImg.src = nextUrl;
-					coverImg.alt = "wallpaper-sync";
 					if (coverImg.srcset) coverImg.srcset = "";
 				}
 
 				function scheduleTopCoverSync() {
-					syncTopCoverToWallpaper();
-					window.setTimeout(syncTopCoverToWallpaper, 120);
-					window.setTimeout(syncTopCoverToWallpaper, 600);
+					const delays = [0, 120, 600, 1500, 3000];
+					for (const delay of delays) {
+						window.setTimeout(syncTopCoverToWallpaper, delay);
+					}
 				}
 
 				runOnHomeCard();

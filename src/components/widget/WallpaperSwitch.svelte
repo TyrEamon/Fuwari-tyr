@@ -134,7 +134,7 @@ onMount(() => {
 </script>
 
 {#if wallpaperCapabilities.enabled}
-	<div class="relative z-50 hidden md:block" role="menu" tabindex="-1" on:mouseleave={closePanel}>
+	<div class="relative z-50 block" role="menu" tabindex="-1" on:mouseleave={closePanel}>
 		<button
 			aria-label="Wallpaper Mode"
 			role="menuitem"
