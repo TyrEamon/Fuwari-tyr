@@ -3,11 +3,16 @@ import { Icon } from "astro-icon/components";
 import { navBarConfig, siteConfig } from "../config";
 import { LinkPresets } from "../constants/link-presets";
 import { LinkPreset, type NavBarLink } from "../types/config";
+import {
+	getNavbarScrollThresholdForWallpaperMode,
+	getNavbarTransparentModeForWallpaperMode,
+} from "../utils/wallpaper-utils";
 import { url } from "../utils/url-utils";
 
 import Search from "./Search.svelte";
 import DisplaySettings from "./widget/DisplaySettings.svelte";
 import NavMenuPanel from "./widget/NavMenuPanel.astro";
+import WallpaperSwitch from "./widget/WallpaperSwitch.svelte";
 const className = Astro.props.class;
 
 const resolveLink = (item: NavBarLink | LinkPreset): NavBarLink => {
@@ -19,12 +24,36 @@ const resolveLink = (item: NavBarLink | LinkPreset): NavBarLink => {
 };
 
 let links: NavBarLink[] = navBarConfig.links.map(resolveLink);
+const navbarTransparentModeBanner = getNavbarTransparentModeForWallpaperMode(
+	siteConfig,
+	"banner",
+);
+const navbarTransparentModeFullscreen = getNavbarTransparentModeForWallpaperMode(
+	siteConfig,
+	"fullscreen",
+);
+const navbarScrollThresholdBanner = getNavbarScrollThresholdForWallpaperMode(
+	siteConfig,
+	"banner",
+);
+const navbarScrollThresholdFullscreen = getNavbarScrollThresholdForWallpaperMode(
+	siteConfig,
+	"fullscreen",
+);
 ---
-<div id="navbar" class="z-50 onload-animation">
-	<div class="absolute h-8 left-0 right-0 -top-8 bg-[var(--card-bg)] transition"></div> <!-- used for onload animation -->
+<div
+	id="navbar"
+	class="z-50 onload-animation"
+	data-navbar-visual="semi"
+	data-navbar-mode-banner={navbarTransparentModeBanner}
+	data-navbar-mode-fullscreen={navbarTransparentModeFullscreen}
+	data-navbar-scroll-threshold-banner={String(navbarScrollThresholdBanner)}
+	data-navbar-scroll-threshold-fullscreen={String(navbarScrollThresholdFullscreen)}
+>
+	<div class="navbar-top-mask absolute h-8 left-0 right-0 -top-8 bg-[var(--card-bg)] transition"></div> <!-- used for onload animation -->
 	<div class:list={[
 		className,
-		"card-base border border-black/10 dark:border-white/10 !overflow-visible max-w-[var(--page-width)] h-[4.5rem] !rounded-t-none mx-auto flex items-center justify-between px-4"]}>
+		"navbar-shell card-base border border-black/10 dark:border-white/10 !overflow-visible max-w-[var(--page-width)] h-[4.5rem] !rounded-t-none mx-auto flex items-center justify-between px-4"]}>
 		<a href={url('/')} class="btn-plain scale-animation rounded-lg h-[3.25rem] px-5 font-bold active:scale-95">
 			<div class="flex flex-row text-[var(--primary)] items-center text-md">
 				<Icon name="material-symbols:home-outline-rounded" class="text-[1.75rem] mb-1 mr-2" />
@@ -101,6 +130,7 @@ let links: NavBarLink[] = navBarConfig.links.map(resolveLink);
 							<Icon name="material-symbols:palette-outline" class="text-[1.25rem]"></Icon>
 						</button>
 			)}
+			<WallpaperSwitch client:only="svelte"></WallpaperSwitch>
 
 			<button aria-label="Menu" name="Nav Menu" class="btn-plain scale-animation rounded-lg w-11 h-11 active:scale-90 md:!hidden" id="nav-menu-switch">
 				<Icon name="material-symbols:menu-rounded" class="text-[1.25rem]"></Icon>
@@ -135,10 +165,234 @@ function loadButtonScript() {
 	}
 }
 
+function getNavbarBaseVisualMode() {
+	const navbar = document.getElementById("navbar");
+	const root = document.documentElement;
+	const wallpaperMode = root.getAttribute("data-wallpaper-mode") || "none";
+	const isHome = document.body?.classList.contains("lg:is-home");
+	const isDesktop = window.innerWidth >= 1024;
+	const bannerMode =
+		navbar?.getAttribute("data-navbar-mode-banner") || "semifull";
+	const fullscreenMode =
+		navbar?.getAttribute("data-navbar-mode-fullscreen") || "full";
+
+	if (wallpaperMode === "banner") {
+		if (!isHome || !isDesktop) return "semi";
+		if (
+			bannerMode === "semi" ||
+			bannerMode === "full" ||
+			bannerMode === "semifull"
+		) {
+			return bannerMode;
+		}
+		return "semifull";
+	}
+	if (wallpaperMode === "fullscreen") {
+		if (!isHome) return "semi";
+		if (
+			fullscreenMode === "semi" ||
+			fullscreenMode === "full" ||
+			fullscreenMode === "semifull"
+		) {
+			return fullscreenMode;
+		}
+		return "full";
+	}
+	return "semi";
+}
+
+function updateNavbarVisualState() {
+	const navbar = document.getElementById("navbar");
+	if (!navbar) return;
+
+	const baseMode = getNavbarBaseVisualMode();
+	const wallpaperMode =
+		document.documentElement.getAttribute("data-wallpaper-mode") || "none";
+	const isHome = document.body?.classList.contains("lg:is-home");
+	const scrollTop = window.scrollY || document.documentElement.scrollTop || document.body.scrollTop || 0;
+	const shouldAutoSwitch =
+		isHome && (baseMode === "full" || baseMode === "semifull");
+	const rawThreshold =
+		wallpaperMode === "banner"
+			? navbar.getAttribute("data-navbar-scroll-threshold-banner")
+			: wallpaperMode === "fullscreen"
+				? navbar.getAttribute("data-navbar-scroll-threshold-fullscreen")
+				: null;
+	const scrollThreshold = rawThreshold ? Number(rawThreshold) : 20;
+	const safeScrollThreshold =
+		Number.isFinite(scrollThreshold) && scrollThreshold >= 0
+			? scrollThreshold
+			: 20;
+	const scrolled = shouldAutoSwitch && scrollTop > safeScrollThreshold;
+
+	navbar.dataset.navbarVisual = baseMode;
+	navbar.classList.toggle("navbar-visual-semi", baseMode === "semi");
+	navbar.classList.toggle("navbar-visual-full", baseMode === "full");
+	navbar.classList.toggle("navbar-visual-semifull", baseMode === "semifull");
+	navbar.classList.toggle("navbar-scrolled", scrolled);
+	navbar.classList.toggle("navbar-transparent", (baseMode === "full" || baseMode === "semifull") && !scrolled);
+}
+
+function setupNavbarVisualMode() {
+	if (window.__navbarVisualSetupDone) {
+		updateNavbarVisualState();
+		return;
+	}
+	window.__navbarVisualSetupDone = true;
+
+	let ticking = false;
+	const onScroll = () => {
+		if (ticking) return;
+		ticking = true;
+		requestAnimationFrame(() => {
+			updateNavbarVisualState();
+			ticking = false;
+		});
+	};
+
+	window.addEventListener("scroll", onScroll, { passive: true });
+	window.addEventListener("resize", updateNavbarVisualState);
+	window.addEventListener("wallpaper:mode-change", () => {
+		requestAnimationFrame(updateNavbarVisualState);
+	});
+
+	const bindSwupHooks = () => {
+		if (!window?.swup?.hooks || window.__navbarVisualSwupBound) return;
+		window.__navbarVisualSwupBound = true;
+		window.swup.hooks.on("visit:start", () => {
+			requestAnimationFrame(updateNavbarVisualState);
+		});
+		window.swup.hooks.on("content:replace", () => {
+			requestAnimationFrame(updateNavbarVisualState);
+		});
+		window.swup.hooks.on("page:view", () => {
+			requestAnimationFrame(updateNavbarVisualState);
+		});
+	};
+
+	bindSwupHooks();
+	document.addEventListener("swup:enable", bindSwupHooks);
+
+	// React to wallpaper mode changes before reload (settings panel applies class immediately).
+	window.addEventListener("storage", (event) => {
+		if (event.key === "wallpaper-mode") {
+			updateNavbarVisualState();
+		}
+	});
+
+	updateNavbarVisualState();
+}
+
 loadButtonScript();
+setupNavbarVisualMode();
 </script>
 
 <style>
+	#navbar .navbar-shell,
+	#navbar .navbar-top-mask {
+		transition:
+			background-color 0.2s ease,
+			border-color 0.2s ease,
+			backdrop-filter 0.2s ease,
+			box-shadow 0.2s ease,
+			opacity 0.2s ease;
+	}
+
+	#navbar.navbar-visual-semi .navbar-shell,
+	#navbar.navbar-scrolled .navbar-shell {
+		background: rgba(255, 255, 255, 0.72);
+		border-color: rgba(0, 0, 0, 0.08);
+		backdrop-filter: blur(14px);
+		box-shadow: 0 6px 24px rgba(0, 0, 0, 0.06);
+	}
+
+	#navbar.navbar-visual-semi .navbar-top-mask,
+	#navbar.navbar-scrolled .navbar-top-mask {
+		background: rgba(255, 255, 255, 0.72);
+		backdrop-filter: blur(14px);
+	}
+
+	:root.dark #navbar.navbar-visual-semi .navbar-shell,
+	:root.dark #navbar.navbar-scrolled .navbar-shell {
+		background: rgba(17, 17, 20, 0.5);
+		border-color: rgba(255, 255, 255, 0.12);
+		box-shadow: none;
+	}
+
+	:root.dark #navbar.navbar-visual-semi .navbar-top-mask,
+	:root.dark #navbar.navbar-scrolled .navbar-top-mask {
+		background: rgba(17, 17, 20, 0.5);
+	}
+
+	#navbar.navbar-visual-semifull:not(.navbar-scrolled) .navbar-shell {
+		background: rgba(255, 255, 255, 0.16);
+		border-color: rgba(255, 255, 255, 0.2);
+		backdrop-filter: blur(10px);
+		box-shadow: none;
+	}
+
+	#navbar.navbar-visual-semifull:not(.navbar-scrolled) .navbar-top-mask {
+		background: rgba(255, 255, 255, 0.12);
+		backdrop-filter: blur(8px);
+	}
+
+	:root.dark #navbar.navbar-visual-semifull:not(.navbar-scrolled) .navbar-shell {
+		background: rgba(16, 16, 20, 0.22);
+		border-color: rgba(255, 255, 255, 0.16);
+	}
+
+	:root.dark #navbar.navbar-visual-semifull:not(.navbar-scrolled) .navbar-top-mask {
+		background: rgba(16, 16, 20, 0.16);
+	}
+
+	#navbar.navbar-visual-full:not(.navbar-scrolled) .navbar-shell {
+		background: transparent;
+		border-color: transparent;
+		backdrop-filter: none;
+		box-shadow: none;
+	}
+
+	#navbar.navbar-visual-full:not(.navbar-scrolled) .navbar-top-mask {
+		background: transparent;
+		backdrop-filter: none;
+	}
+
+	/* Keep high-contrast overrides only for true full-transparent mode. */
+	#navbar.navbar-visual-full.navbar-transparent:not(.navbar-scrolled) .btn-plain {
+		color: rgba(255, 255, 255, 0.88) !important;
+	}
+
+	#navbar.navbar-visual-full.navbar-transparent:not(.navbar-scrolled) .btn-plain:hover,
+	#navbar.navbar-visual-full.navbar-transparent:not(.navbar-scrolled) .btn-plain:focus-visible {
+		color: #fff !important;
+	}
+
+	#navbar.navbar-visual-full.navbar-transparent:not(.navbar-scrolled) .btn-plain.scale-animation::before {
+		background: rgba(255, 255, 255, 0.1) !important;
+	}
+
+	#navbar.navbar-visual-full.navbar-transparent:not(.navbar-scrolled) .btn-plain.scale-animation.current-theme-btn::before {
+		background: rgba(255, 255, 255, 0.14) !important;
+	}
+
+	#navbar.navbar-visual-full.navbar-transparent:not(.navbar-scrolled) .nav-dropdown-panel {
+		background: rgba(20, 20, 24, 0.72);
+		border-color: rgba(255, 255, 255, 0.12);
+		backdrop-filter: blur(14px);
+		box-shadow: none;
+	}
+
+	#navbar.navbar-visual-full.navbar-transparent:not(.navbar-scrolled) .nav-dropdown-item {
+		color: rgba(255, 255, 255, 0.82);
+	}
+
+	#navbar.navbar-visual-full.navbar-transparent:not(.navbar-scrolled) .nav-dropdown-item:hover {
+		background: rgba(255, 255, 255, 0.08);
+	}
+
+	/* In banner semifull mode, keep default button/dropdown interactions.
+	   Only the navbar shell itself stays more transparent. */
+
 	.nav-dropdown {
 		position: relative;
 	}

@@ -20,15 +20,134 @@ const len = page.data.length;
 <MainGridLayout title={page.currentPage === 1 ? undefined : `第${page.currentPage}页`}>
 	{page.currentPage === 1 && (
 		<section
+			data-hitokoto-card
 			class="card-base no-hue-rotate onload-animation mb-4 px-6 py-3 text-center"
 			style="animation-delay: calc(var(--content-delay) + 80ms); border: 3px solid var(--primary);"
 		>
-			<div class="text-xs tracking-[0.2em] text-black/50 dark:text-white/50">
+			<div data-hitokoto-meta class="text-xs tracking-[0.2em] text-black/50 dark:text-white/50">
+				一言
 			</div>
-			<div class="mt-1 text-lg font-semibold text-[var(--primary)]">
+			<div data-hitokoto-text class="mt-1 text-lg font-semibold text-[var(--primary)]">
 				黑夜再长也挡不住点亮的那一刻“执念”
 			</div>
 		</section>
+	)}
+	{page.currentPage === 1 && (
+		<script is:inline>
+			(() => {
+				const API = "https://v1.hitokoto.cn/?encode=json";
+
+				function getCard() {
+					return document.querySelector("[data-hitokoto-card]");
+				}
+
+				async function loadHitokoto() {
+					const card = getCard();
+					if (!(card instanceof HTMLElement)) return;
+					if (card.dataset.loading === "1") return;
+
+					const textEl = card.querySelector("[data-hitokoto-text]");
+					const metaEl = card.querySelector("[data-hitokoto-meta]");
+					if (!(textEl instanceof HTMLElement) || !(metaEl instanceof HTMLElement)) return;
+
+					card.dataset.loading = "1";
+					try {
+						const res = await fetch(API, {
+							headers: { Accept: "application/json" },
+						});
+						if (!res.ok) throw new Error(`HTTP ${res.status}`);
+						const data = await res.json();
+
+						if (typeof data?.hitokoto === "string" && data.hitokoto.trim()) {
+							textEl.textContent = data.hitokoto.trim();
+						}
+
+						const fromParts = [data?.from_who, data?.from].filter(
+							(v) => typeof v === "string" && v.trim(),
+						);
+						metaEl.textContent = fromParts.length > 0 ? `一言 · ${fromParts.join(" · ")}` : "一言";
+					} catch (_err) {
+						metaEl.textContent = "一言";
+					} finally {
+						card.dataset.loading = "0";
+					}
+				}
+
+				function runOnHomeCard() {
+					if (!getCard()) return;
+					void loadHitokoto();
+				}
+
+				function parseCssUrl(value) {
+					if (typeof value !== "string") return "";
+					const match = value.match(/url\((['"]?)(.*?)\1\)/);
+					return match?.[2] || "";
+				}
+
+				function getBannerWallpaperUrl() {
+					const isMobile = window.matchMedia("(max-width: 767px)").matches;
+					const bannerImage = document.querySelector(
+						isMobile ? "#banner-mobile img" : "#banner img",
+					);
+					if (!(bannerImage instanceof HTMLImageElement)) return "";
+					const candidate = bannerImage.currentSrc || bannerImage.src || "";
+					return candidate.startsWith("data:image/gif") ? "" : candidate;
+				}
+
+				function getFullscreenWallpaperUrl() {
+					const bg = document.getElementById("bg-box");
+					if (!(bg instanceof HTMLElement)) return "";
+					const inlineUrl = parseCssUrl(bg.style.backgroundImage);
+					if (inlineUrl) return inlineUrl;
+					return parseCssUrl(getComputedStyle(bg).backgroundImage);
+				}
+
+				function getCurrentWallpaperUrl() {
+					const mode = document.documentElement.dataset.wallpaperMode;
+					if (mode === "banner") {
+						return getBannerWallpaperUrl() || getFullscreenWallpaperUrl();
+					}
+					return getFullscreenWallpaperUrl() || getBannerWallpaperUrl();
+				}
+
+				function syncTopCoverToWallpaper() {
+					const coverAnchor = document.querySelector('[data-sync-wallpaper-cover="top"]');
+					if (!(coverAnchor instanceof HTMLElement)) return;
+					const coverImg = coverAnchor.querySelector(".image-wrapper img");
+					if (!(coverImg instanceof HTMLImageElement)) return;
+
+					const nextUrl = getCurrentWallpaperUrl();
+					if (!nextUrl) return;
+					const currentUrl = coverImg.currentSrc || coverImg.src || "";
+					if (currentUrl === nextUrl) return;
+
+					coverImg.src = nextUrl;
+					coverImg.alt = "wallpaper-sync";
+					if (coverImg.srcset) coverImg.srcset = "";
+				}
+
+				function scheduleTopCoverSync() {
+					syncTopCoverToWallpaper();
+					window.setTimeout(syncTopCoverToWallpaper, 120);
+					window.setTimeout(syncTopCoverToWallpaper, 600);
+				}
+
+				runOnHomeCard();
+				scheduleTopCoverSync();
+
+				if (window.__hitokotoHomeCardBound) return;
+				window.__hitokotoHomeCardBound = true;
+				document.addEventListener("swup:contentReplaced", runOnHomeCard);
+				document.addEventListener("astro:page-load", runOnHomeCard);
+
+				if (window.__topCoverWallpaperSyncBound) return;
+				window.__topCoverWallpaperSyncBound = true;
+				document.addEventListener("swup:contentReplaced", scheduleTopCoverSync);
+				document.addEventListener("astro:page-load", scheduleTopCoverSync);
+				window.addEventListener("wallpaper:mode-change", scheduleTopCoverSync);
+				window.addEventListener("resize", scheduleTopCoverSync);
+			})();
+		</script>
 	)}
 	<PostPage page={page}></PostPage>
 	<Pagination class="mx-auto onload-animation" page={page} style={`animation-delay: calc(var(--content-delay) + ${len * 50}ms)`}></Pagination>

@@ -1,0 +1,136 @@
+---
+import ImageWrapper from "../misc/ImageWrapper.astro";
+
+interface Props {
+	desktopSrc: string;
+	mobileSrc: string;
+	position?: "top" | "center" | "bottom";
+	topOffsetVh: number;
+}
+
+const { desktopSrc, mobileSrc, position, topOffsetVh } = Astro.props;
+---
+
+<div
+	id="banner-wrapper"
+	class="absolute z-10 w-full transition duration-700 overflow-hidden"
+	style={`top: -${topOffsetVh}vh`}
+	data-banner-src-desktop={desktopSrc}
+	data-banner-src-mobile={mobileSrc}
+>
+	<ImageWrapper
+		id="banner"
+		alt="Banner image of the blog"
+		class:list={["hidden md:block object-cover h-full transition duration-700 opacity-0 scale-105"]}
+		src={desktopSrc}
+		position={position}
+	/>
+	<ImageWrapper
+		id="banner-mobile"
+		alt="Banner image of the blog (mobile)"
+		class:list={["block md:hidden object-cover h-full transition duration-700"]}
+		src={mobileSrc}
+		position={position}
+	/>
+
+	<div class="banner-waves" aria-hidden="true">
+		<svg
+			class="banner-waves-svg"
+			xmlns="http://www.w3.org/2000/svg"
+			xmlns:xlink="http://www.w3.org/1999/xlink"
+			viewBox="0 21 150 30"
+			preserveAspectRatio="none"
+			shape-rendering="geometricPrecision"
+		>
+			<defs>
+				<path
+					id="banner-wave-shape"
+					d="M-160 44c30 0 58-18 88-18s58 18 88 18 58-18 88-18 58 18 88 18v48h-352z"
+				></path>
+			</defs>
+			<g class="banner-waves-parallax">
+				<use xlink:href="#banner-wave-shape" x="48" y="0" class="banner-wave-layer layer-1"></use>
+				<use xlink:href="#banner-wave-shape" x="48" y="3" class="banner-wave-layer layer-2"></use>
+				<use xlink:href="#banner-wave-shape" x="48" y="5" class="banner-wave-layer layer-3"></use>
+				<use xlink:href="#banner-wave-shape" x="48" y="7" class="banner-wave-layer layer-4"></use>
+			</g>
+		</svg>
+	</div>
+</div>
+
+<style>
+	@keyframes banner-wave-drift {
+		0% {
+			transform: translate3d(-90px, 0, 0);
+		}
+		100% {
+			transform: translate3d(85px, 0, 0);
+		}
+	}
+
+	.banner-waves {
+		position: absolute;
+		left: 0;
+		right: 0;
+		bottom: -1px;
+		height: 10vh;
+		max-height: 9.375rem;
+		min-height: 3.125rem;
+		pointer-events: none;
+		z-index: 5;
+		isolation: isolate;
+	}
+
+	.banner-waves-svg {
+		display: block;
+		width: 100%;
+		height: 100%;
+		overflow: visible;
+		transform: translateZ(0);
+	}
+
+	.banner-wave-layer {
+		fill: var(--page-bg);
+		will-change: transform, fill;
+		backface-visibility: hidden;
+		animation-name: banner-wave-drift;
+		animation-timing-function: cubic-bezier(0.5, 0.5, 0.45, 0.5);
+		animation-iteration-count: infinite;
+	}
+
+	.banner-wave-layer.layer-1 {
+		opacity: 0.25;
+		animation-duration: 7s;
+		animation-delay: -2s;
+	}
+
+	.banner-wave-layer.layer-2 {
+		opacity: 0.5;
+		animation-duration: 10s;
+		animation-delay: -3s;
+	}
+
+	.banner-wave-layer.layer-3 {
+		opacity: 0.75;
+		animation-duration: 13s;
+		animation-delay: -4s;
+	}
+
+	.banner-wave-layer.layer-4 {
+		opacity: 1;
+		animation-duration: 20s;
+		animation-delay: -5s;
+	}
+
+	@media (min-width: 768px) {
+		.banner-waves {
+			height: 15vh;
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.banner-wave-layer {
+			animation: none !important;
+		}
+	}
+</style>

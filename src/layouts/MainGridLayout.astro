@@ -3,9 +3,9 @@ import Footer from "@components/Footer.astro";
 import Navbar from "@components/Navbar.astro";
 import BackToTop from "@components/control/BackToTop.astro";
 import SideBar from "@components/widget/SideBar.astro";
+import BannerWallpaper from "@components/wallpaper/BannerWallpaper.astro";
 import type { MarkdownHeading } from "astro";
 import { Icon } from "astro-icon/components";
-import ImageWrapper from "../components/misc/ImageWrapper.astro";
 import TOC from "../components/widget/TOC.astro";
 import { siteConfig } from "../config";
 import {
@@ -13,6 +13,10 @@ import {
 	BANNER_HEIGHT_EXTEND,
 	MAIN_PANEL_OVERLAPS_BANNER_HEIGHT,
 } from "../constants/constants";
+import {
+	getWallpaperModeDefault,
+	resolveResponsiveImageSource,
+} from "../utils/wallpaper-utils";
 import Layout from "./Layout.astro";
 
 interface Props {
@@ -32,13 +36,23 @@ const {
 	setOGTypeArticle,
 	headings = [],
 } = Astro.props;
+const wallpaperModeDefault = getWallpaperModeDefault(siteConfig);
+const bannerFeatureEnabled = siteConfig.banner.enable;
+const bannerModeEnabledDefault =
+	bannerFeatureEnabled && wallpaperModeDefault === "banner";
+const bannerDesktopSrc =
+	resolveResponsiveImageSource(siteConfig.banner.src, "desktop") || "";
+const bannerMobileSrc =
+	resolveResponsiveImageSource(siteConfig.banner.src, "mobile") ||
+	bannerDesktopSrc;
 const hasBannerCredit =
-	siteConfig.banner.enable && siteConfig.banner.credit.enable;
+	bannerFeatureEnabled && siteConfig.banner.credit.enable;
 const hasBannerLink = !!siteConfig.banner.credit.url;
 
-const mainPanelTop = siteConfig.banner.enable
+const mainPanelTopDefault = bannerModeEnabledDefault
 	? `calc(${BANNER_HEIGHT}vh - ${MAIN_PANEL_OVERLAPS_BANNER_HEIGHT}rem)`
 	: "7rem";
+const mainPanelTopBanner = `calc(${BANNER_HEIGHT}vh - ${MAIN_PANEL_OVERLAPS_BANNER_HEIGHT}rem)`;
 ---
 
 <Layout title={title} banner={banner} description={description} lang={lang} setOGTypeArticle={setOGTypeArticle}>
@@ -52,15 +66,21 @@ const mainPanelTop = siteConfig.banner.enable
 </div>
 
 <!-- Banner -->
-{siteConfig.banner.enable && <div id="banner-wrapper" class=`absolute z-10 w-full transition duration-700 overflow-hidden` style=`top: -${BANNER_HEIGHT_EXTEND}vh`>
-    <ImageWrapper id="banner" alt="Banner image of the blog" class:list={["object-cover h-full transition duration-700 opacity-0 scale-105"]}
-                  src={siteConfig.banner.src} position={siteConfig.banner.position}
-    >
-    </ImageWrapper>
-</div>}
+{bannerFeatureEnabled && (
+    <BannerWallpaper
+        desktopSrc={bannerDesktopSrc}
+        mobileSrc={bannerMobileSrc}
+        position={siteConfig.banner.position}
+        topOffsetVh={BANNER_HEIGHT_EXTEND}
+    />
+)}
 
 <!-- Main content -->
-<div class="absolute w-full z-30 pointer-events-none" style=`top: ${mainPanelTop}`>
+<div
+    id="main-content-layer"
+    class="absolute w-full z-30 pointer-events-none"
+    style={`top: ${mainPanelTopDefault}; --main-panel-top-banner: ${mainPanelTopBanner};`}
+>
     <!-- The pointer-events-none here prevent blocking the click event of the TOC -->
     <div class="relative max-w-[var(--page-width)] mx-auto pointer-events-auto">
         <div id="main-grid" class="transition duration-700 w-full left-0 right-0 grid grid-cols-[17.5rem_auto] grid-rows-[auto_auto_auto] lg:grid-rows-[auto_1fr]
@@ -104,7 +124,7 @@ const mainPanelTop = siteConfig.banner.enable
     <div class="relative max-w-[var(--page-width)] mx-auto">
         <!-- TOC component -->
         {siteConfig.toc.enable && <div id="toc-wrapper" class:list={["hidden lg:block transition absolute top-0 -right-[var(--toc-width)] w-[var(--toc-width)] flex items-center",
-            {"toc-hide": siteConfig.banner.enable}]}
+            {"toc-hide": bannerModeEnabledDefault}]}
         >
             <div id="toc-inner-wrapper" class="fixed top-14 w-[var(--toc-width)] h-[calc(100vh_-_20rem)] overflow-y-scroll overflow-x-hidden hide-scrollbar">
                 <div id="toc" class="w-full h-full transition-swup-fade ">
@@ -121,7 +141,15 @@ const mainPanelTop = siteConfig.banner.enable
 </div>
 </Layout>
 
+<style is:global>
+	:root.enable-banner #main-content-layer {
+		top: var(--main-panel-top-banner) !important;
+	}
 
+	:root:not(.enable-banner) #main-content-layer {
+		top: 7rem !important;
+	}
+</style>
 
 
 

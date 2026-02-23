@@ -1,7 +1,22 @@
 ---
-
+import { getWallpaperModeDefault } from "@/utils/wallpaper-utils";
 import { siteConfig } from "../config";
+
+const wallpaperModeDefault = getWallpaperModeDefault(siteConfig);
+const wallpaperEnabled = siteConfig.wallpaper?.enable !== false;
+const wallpaperBannerEnabled = siteConfig.banner.enable;
+const wallpaperFullscreenEnabled = siteConfig.background.enable;
+const wallpaperFullscreenBlurDefault =
+	siteConfig.wallpaper?.fullscreen?.blur ?? 4;
 ---
 
-<div id="config-carrier" data-hue={siteConfig.themeColor.hue}>
+<div
+	id="config-carrier"
+	data-hue={siteConfig.themeColor.hue}
+	data-wallpaper-enabled={wallpaperEnabled ? "1" : "0"}
+	data-wallpaper-mode-default={wallpaperModeDefault}
+	data-wallpaper-banner-enabled={wallpaperBannerEnabled ? "1" : "0"}
+	data-wallpaper-fullscreen-enabled={wallpaperFullscreenEnabled ? "1" : "0"}
+	data-bg-blur-default={String(wallpaperFullscreenBlurDefault)}
+>
 </div>

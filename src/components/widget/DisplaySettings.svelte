@@ -92,6 +92,9 @@ let isDevMode = getDevMode();
             document.documentElement.classList.add("is-rainbow-mode");
             document.documentElement.style.setProperty("--rainbow-duration", `${120 / rainbowSpeed}s`);
 		}
+
+		return () => {
+		};
 	});
 </script>
 
@@ -161,7 +164,6 @@ let isDevMode = getDevMode();
         </div>
         <input type="checkbox" class="toggle-switch" checked={hideBg} on:change={toggleHideBg} />
     </div>
-
     <div class="flex flex-row gap-2 mb-3 items-center justify-between">
         <div class="flex gap-2 font-bold text-lg text-neutral-900 dark:text-neutral-100 transition relative ml-3
             before:w-1 before:h-4 before:rounded-md before:bg-[var(--primary)]

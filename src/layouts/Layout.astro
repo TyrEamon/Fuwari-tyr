@@ -5,6 +5,7 @@ import "@fontsource/roboto/700.css";
 
 import { profileConfig, siteConfig } from "@/config";
 import ConfigCarrier from "@components/ConfigCarrier.astro";
+import FullscreenWallpaper from "@components/wallpaper/FullscreenWallpaper.astro";
 import {
 	AUTO_MODE,
 	BANNER_HEIGHT,
@@ -18,6 +19,10 @@ import {
 import { defaultFavicons } from "../constants/icon";
 import type { Favicon } from "../types/config";
 import { url, pathsEqual } from "../utils/url-utils";
+import {
+	getWallpaperModeDefault,
+	resolveResponsiveImageSource,
+} from "../utils/wallpaper-utils";
 import "katex/dist/katex.css";
 
 interface Props {
@@ -38,14 +43,30 @@ const isHomePage = pathsEqual(Astro.url.pathname, url("/"));
 // defines global css variables
 // why doing this in Layout instead of GlobalStyles: https://github.com/withastro/astro/issues/6728#issuecomment-1502203757
 const configHue = siteConfig.themeColor.hue;
+const wallpaperModeDefault = getWallpaperModeDefault(siteConfig);
+const wallpaperFeatureEnabled = siteConfig.wallpaper?.enable !== false;
+const bannerFeatureEnabled = siteConfig.banner.enable;
+const enableFullscreenWallpaper =
+	siteConfig.background.enable;
+const fullscreenWallpaperFeatureEnabled = siteConfig.background.enable;
+const backgroundDesktopSrc =
+	resolveResponsiveImageSource(siteConfig.background.src, "desktop") || "";
+const backgroundMobileSrc =
+	resolveResponsiveImageSource(siteConfig.background.src, "mobile") ||
+	backgroundDesktopSrc;
+const backgroundBaseSrc = backgroundDesktopSrc || backgroundMobileSrc;
+const fullscreenWallpaperOpacity =
+	siteConfig.wallpaper?.fullscreen?.opacity ??
+	siteConfig.background.opacity ??
+	0.3;
+const bannerDesktopSrc =
+	resolveResponsiveImageSource(siteConfig.banner.src, "desktop") || "";
 if (!banner || typeof banner !== "string" || banner.trim() === "") {
-	banner = siteConfig.banner.src;
+	banner = bannerDesktopSrc;
 }
 
 // TODO don't use post cover as banner for now
-banner = siteConfig.banner.src;
-
-const enableBanner = siteConfig.banner.enable;
+banner = bannerDesktopSrc;
 
 let pageTitle: string;
 if (title) {
@@ -129,25 +150,225 @@ const splashAutoCloseMs = splashConfig?.autoCloseMs ?? 1800;
 		></script>
 
 		<script data-swup-ignore-script src="https://rapi.0w0.us.ci/random.js" defer></script>     {/*不用r2的随机图api就注释掉*/}
-		<script is:inline>
+		<script is:inline define:vars={{ backgroundDesktopSrc, backgroundMobileSrc, enableFullscreenWallpaper }}>
 			(function () {
-				function getBgUrl() {
-					if (window.getRandomPicH) return window.getRandomPicH();
-					return "/random/h";
-				}                                                    {/*不用r2的随机图api就注释掉*/}
+				var manifestCache = null;
+				var manifestPromise = null;
+				var wallpaperRefreshReloadTriggered = false;
+				var modeSwitchRandomCarry = (function () {
+					try {
+						var raw = sessionStorage.getItem("__wallpaper_random_carry_once__");
+						if (!raw) return null;
+						sessionStorage.removeItem("__wallpaper_random_carry_once__");
+						var parsed = JSON.parse(raw);
+						return parsed && typeof parsed === "object" ? parsed : null;
+					} catch (_e) {
+						return null;
+					}
+				})();
 
-				function applyResponsiveBg() {
+				function resolveConfiguredBg(url) {
+					if (!url) return "";
+					if (url === "/random/v") {
+						if (modeSwitchRandomCarry && modeSwitchRandomCarry.v) return modeSwitchRandomCarry.v;
+						if (window.getRandomPicV) return window.getRandomPicV();
+					}
+					if (url === "/random/h") {
+						if (modeSwitchRandomCarry && modeSwitchRandomCarry.h) return modeSwitchRandomCarry.h;
+						if (window.getRandomPicH) return window.getRandomPicH();
+					}
+					return url;
+				}
+
+				function getRandomTypeFromConfiguredUrl(url) {
+					if (!url) return "";
+					try {
+						var parsed = new URL(url, window.location.href);
+						if (parsed.pathname === "/random/h") return "h";
+						if (parsed.pathname === "/random/v") return "v";
+					} catch (_e) {}
+					return "";
+				}
+
+				function getRandomApiBaseFromGlobal(type) {
+					try {
+						var fn = type === "v" ? window.getRandomPicV : window.getRandomPicH;
+						if (typeof fn !== "function") return "";
+						var sample = fn();
+						if (!sample) return "";
+						return new URL(sample, window.location.href).origin;
+					} catch (_e) {
+						return "";
+					}
+				}
+
+				function getManifestUrlForType(type) {
+					var base = getRandomApiBaseFromGlobal(type);
+					if (base) return base + "/manifest.json";
+					return "/manifest.json";
+				}
+
+				function loadRandomManifest(type) {
+					if (manifestCache) return Promise.resolve(manifestCache);
+					if (manifestPromise) return manifestPromise;
+					var manifestUrl = getManifestUrlForType(type || "h");
+					manifestPromise = fetch(manifestUrl, { cache: "no-store" })
+						.then(function (res) {
+							if (!res.ok) throw new Error("manifest fetch failed");
+							return res.json();
+						})
+						.then(function (json) {
+							manifestCache = json;
+							return json;
+						})
+						.catch(function (_err) {
+							manifestPromise = null;
+							return null;
+						});
+					return manifestPromise;
+				}
+
+				function triggerWallpaperRefreshReloadFallback() {
+					if (wallpaperRefreshReloadTriggered) return;
+					wallpaperRefreshReloadTriggered = true;
+					window.location.reload();
+				}
+
+				function normalizeUrlForCompare(url) {
+					if (!url) return "";
+					try {
+						var u = new URL(url, window.location.href);
+						u.search = "";
+						u.hash = "";
+						return u.toString();
+					} catch (_e) {
+						return url;
+					}
+				}
+
+				function chooseDifferentRandomFromList(list, avoidUrl) {
+					if (!Array.isArray(list) || list.length === 0) return "";
+					if (list.length === 1) return list[0] && list[0].url ? list[0].url : "";
+					var avoid = normalizeUrlForCompare(avoidUrl);
+					var candidates = list;
+					if (avoid) {
+						candidates = list.filter(function (item) {
+							return item && item.url && normalizeUrlForCompare(item.url) !== avoid;
+						});
+						if (!candidates.length) candidates = list;
+					}
+					var picked = candidates[Math.floor(Math.random() * candidates.length)];
+					return picked && picked.url ? picked.url : "";
+				}
+
+				function resolveConfiguredBgForRefresh(url, currentUrl) {
+					var randomType = getRandomTypeFromConfiguredUrl(url);
+					if (!randomType) {
+						return Promise.resolve(resolveConfiguredBg(url));
+					}
+					return loadRandomManifest(randomType).then(function (manifest) {
+						if (!manifest) {
+							// Fallback for random APIs without CORS on manifest.json:
+							// preserve "换图按钮" by reloading the page to get a new session random image.
+							triggerWallpaperRefreshReloadFallback();
+							return "";
+						}
+						var list = manifest && manifest[randomType];
+						var picked = chooseDifferentRandomFromList(list, currentUrl);
+						if (picked) return picked;
+						return resolveConfiguredBg(url);
+					});
+				}
+
+				function getBgUrl(isMobile) {
+					var configured = isMobile
+						? (backgroundMobileSrc || backgroundDesktopSrc)
+						: (backgroundDesktopSrc || backgroundMobileSrc);
+					return resolveConfiguredBg(configured);
+				}
+
+				function getCurrentBgBoxUrl(bgBox) {
+					if (!bgBox) return "";
+					var inlineBg = bgBox.style.backgroundImage || "";
+					var matched = inlineBg.match(/url\((['"]?)(.*?)\1\)/i);
+					if (matched && matched[2]) return matched[2];
+					var computedBg = window.getComputedStyle(bgBox).backgroundImage || "";
+					matched = computedBg.match(/url\((['"]?)(.*?)\1\)/i);
+					return matched && matched[2] ? matched[2] : "";
+				}
+
+				function applyResponsiveBg(forceNewRandom) {
+					if (!enableFullscreenWallpaper) return;
 					var bgBox = document.getElementById("bg-box");
-					var isMobile = window.matchMedia && window.matchMedia("(max-width: 768px)").matches;
-					var url = getBgUrl(isMobile);
-					var url = getBgUrl();
-					if (!url) return;
-					var img = new Image();
-					img.onload = function () {
-						bgBox.style.backgroundImage = "url('" + url + "')";
-						bgBox.classList.add("loaded");
+					if (!bgBox) return;
+					var isMobile =
+						window.matchMedia && window.matchMedia("(max-width: 768px)").matches;
+					var configured = isMobile
+						? (backgroundMobileSrc || backgroundDesktopSrc)
+						: (backgroundDesktopSrc || backgroundMobileSrc);
+					var applyWithUrl = function (nextUrl) {
+						if (!nextUrl) return;
+						var img = new Image();
+						img.onload = function () {
+							bgBox.style.backgroundImage = "url('" + nextUrl + "')";
+							bgBox.classList.add("loaded");
+						};
+						img.src = nextUrl;
 					};
-					img.src = url;
+					if (forceNewRandom === true) {
+						resolveConfiguredBgForRefresh(configured, getCurrentBgBoxUrl(bgBox)).then(applyWithUrl);
+						return;
+					}
+					applyWithUrl(getBgUrl(!!isMobile));
+				}
+
+				function preloadAndSwapImageEl(imgEl, nextUrl) {
+					if (!imgEl || !nextUrl) return;
+					var preload = new Image();
+					preload.onload = function () {
+						imgEl.src = nextUrl;
+					};
+					preload.src = nextUrl;
+				}
+
+				function refreshBannerImages() {
+					var wrapper = document.getElementById("banner-wrapper");
+					if (!wrapper) return;
+					var desktopConfigured = wrapper.getAttribute("data-banner-src-desktop") || "";
+					var mobileConfigured = wrapper.getAttribute("data-banner-src-mobile") || desktopConfigured;
+
+					var desktopImg = document.querySelector("#banner img");
+					var mobileImg = document.querySelector("#banner-mobile img");
+					var desktopCurrent = desktopImg && desktopImg.getAttribute("src");
+					var mobileCurrent = mobileImg && mobileImg.getAttribute("src");
+
+					if (desktopImg) {
+						resolveConfiguredBgForRefresh(desktopConfigured, desktopCurrent).then(function (desktopNext) {
+							if (desktopNext) preloadAndSwapImageEl(desktopImg, desktopNext);
+						});
+					}
+					if (mobileImg) {
+						resolveConfiguredBgForRefresh(mobileConfigured || desktopConfigured, mobileCurrent).then(function (mobileNext) {
+							if (mobileNext) preloadAndSwapImageEl(mobileImg, mobileNext);
+						});
+					}
+				}
+
+				function refreshWallpaperNow(mode) {
+					var targetMode = mode;
+					if (!targetMode || targetMode === "current") {
+						targetMode = document.documentElement.getAttribute("data-wallpaper-mode") || "fullscreen";
+					}
+
+					if (targetMode === "fullscreen") {
+						applyResponsiveBg(true);
+						return true;
+					}
+					if (targetMode === "banner") {
+						refreshBannerImages();
+						return true;
+					}
+					return false;
 				}
 
 				function debounce(fn, delay) {
@@ -158,12 +379,41 @@ const splashAutoCloseMs = splashConfig?.autoCloseMs ?? 1800;
 					};
 				}
 
+				var onResize = debounce(applyResponsiveBg, 160);
 				window.addEventListener("load", applyResponsiveBg);
-				// no mobile/desktop switch anymore
+				window.addEventListener("resize", onResize);
 				document.addEventListener("swup:contentReplaced", applyResponsiveBg);
 				if (window.swup && window.swup.hooks) {
 					window.swup.hooks.on("content:replace", applyResponsiveBg);
 				}
+
+				window.refreshWallpaperNow = refreshWallpaperNow;
+				window.prepareWallpaperModeSwitchRandomCarry = function () {
+					try {
+						var carry = {};
+						if (typeof window.getRandomPicH === "function") {
+							var h = window.getRandomPicH();
+							if (h) carry.h = h;
+						}
+						if (typeof window.getRandomPicV === "function") {
+							var v = window.getRandomPicV();
+							if (v) carry.v = v;
+						}
+						if (carry.h || carry.v) {
+							sessionStorage.setItem(
+								"__wallpaper_random_carry_once__",
+								JSON.stringify(carry),
+							);
+						}
+					} catch (_e) {}
+				};
+				window.addEventListener("wallpaper:refresh-request", function (event) {
+					var mode =
+						event && event.detail && typeof event.detail.mode === "string"
+							? event.detail.mode
+							: "current";
+					refreshWallpaperNow(mode);
+				});
 			})();
 		</script>
 		
@@ -177,6 +427,64 @@ const splashAutoCloseMs = splashConfig?.autoCloseMs ?? 1800;
 				  media={favicon.theme && `(prefers-color-scheme: ${favicon.theme})`}
 			/>
 		))}
+
+		<script
+			is:inline
+			define:vars={{
+				wallpaperModeDefault,
+				wallpaperFeatureEnabled,
+				bannerFeatureEnabled,
+				fullscreenWallpaperFeatureEnabled,
+			}}
+		>
+			(function () {
+				function normalizeWallpaperMode(mode, fallback) {
+					if (
+						mode === "banner" ||
+						mode === "fullscreen" ||
+						mode === "none"
+					) {
+						return mode;
+					}
+					return fallback;
+				}
+
+				function clampWallpaperMode(mode, fallback) {
+					if (!wallpaperFeatureEnabled) return "none";
+					if (mode === "banner" && !bannerFeatureEnabled) {
+						return fullscreenWallpaperFeatureEnabled ? "fullscreen" : "none";
+					}
+					if (mode === "fullscreen" && !fullscreenWallpaperFeatureEnabled) {
+						return bannerFeatureEnabled ? "banner" : "none";
+					}
+					return normalizeWallpaperMode(mode, fallback);
+				}
+
+				var fallbackMode = clampWallpaperMode(
+					normalizeWallpaperMode(wallpaperModeDefault, "fullscreen"),
+					"fullscreen",
+				);
+				var storedMode = null;
+				try {
+					storedMode = localStorage.getItem("wallpaper-mode");
+				} catch (_e) {}
+				var mode = clampWallpaperMode(storedMode, fallbackMode);
+
+				var root = document.documentElement;
+				root.classList.remove(
+					"wallpaper-mode-banner",
+					"wallpaper-mode-fullscreen",
+					"wallpaper-mode-none",
+				);
+				root.classList.add("wallpaper-mode-" + mode);
+				if (mode === "banner") {
+					root.classList.add("enable-banner");
+				} else {
+					root.classList.remove("enable-banner");
+				}
+				root.setAttribute("data-wallpaper-mode", mode);
+			})();
+		</script>
 
 		<!-- Set the theme before the page is rendered to avoid a flash -->
 		<script is:inline define:vars={{DEFAULT_THEME, LIGHT_MODE, DARK_MODE, AUTO_MODE, BANNER_HEIGHT_EXTEND, PAGE_WIDTH, configHue, forceDarkMode: siteConfig.themeColor.forceDarkMode}}>
@@ -219,16 +527,16 @@ const splashAutoCloseMs = splashConfig?.autoCloseMs ?? 1800;
                 --hue: var(--configHue);
             }
         </style>
-		<style define:vars={{
+		<style is:global define:vars={{
 			configHue,
 			'page-width': `${PAGE_WIDTH}rem`,
-			'bg-url': siteConfig.background.src ? `url(${siteConfig.background.src})` : 'none',
-			'bg-enable': siteConfig.background.enable ? '1' : '0',
+			'bg-url': backgroundBaseSrc ? `url(${backgroundBaseSrc})` : 'none',
+			'bg-enable': enableFullscreenWallpaper ? '1' : '0',
 			'bg-position': siteConfig.background.position || 'center',
 			'bg-size': siteConfig.background.size || 'cover',
 			'bg-repeat': siteConfig.background.repeat || 'no-repeat',
 			'bg-attachment': siteConfig.background.attachment || 'fixed',
-			'bg-opacity': (siteConfig.background.opacity || 0.3).toString()
+			'bg-opacity': fullscreenWallpaperOpacity.toString()
 		}}>
 			:root {
 				--bg-url: var(--bg-url);
@@ -270,6 +578,29 @@ const splashAutoCloseMs = splashConfig?.autoCloseMs ?? 1800;
 			
 			#bg-box.loaded {
 				opacity: calc(var(--bg-opacity) * var(--bg-enable));
+			}
+
+			:root.wallpaper-mode-banner #bg-box,
+			:root.wallpaper-mode-none #bg-box {
+				opacity: 0 !important;
+			}
+
+			:root.wallpaper-mode-fullscreen #banner-wrapper,
+			:root.wallpaper-mode-none #banner-wrapper {
+				display: none !important;
+			}
+
+			:root.wallpaper-mode-banner #banner-credit,
+			:root.wallpaper-mode-fullscreen #banner-credit,
+			:root.wallpaper-mode-none #banner-credit {
+				transition: opacity 0.2s ease;
+			}
+
+			:root.wallpaper-mode-fullscreen #banner-credit,
+			:root.wallpaper-mode-none #banner-credit {
+				opacity: 0;
+				pointer-events: none;
+				visibility: hidden;
 			}
 		</style>
 
@@ -573,7 +904,7 @@ const splashAutoCloseMs = splashConfig?.autoCloseMs ?? 1800;
 
 		<link rel="alternate" type="application/rss+xml" title={profileConfig.name} href={`${Astro.site}rss.xml`}/>
 		</head>
-	<body class=" min-h-screen transition " class:list={[{"lg:is-home": isHomePage, "enable-banner": enableBanner, "splash-active": splashEnabled}]}
+	<body class="min-h-screen transition" class:list={[{"lg:is-home": isHomePage, "splash-active": splashEnabled}]}
 		  data-overlayscrollbars-initialize
 	>
 		<noscript>
@@ -583,7 +914,7 @@ const splashAutoCloseMs = splashConfig?.autoCloseMs ?? 1800;
 				}
 			</style>
 		</noscript>
-		<div id="bg-box"></div>
+		<FullscreenWallpaper />
 		{ splashEnabled && (
 			<div id="splash-screen" class="splash-screen">
 				<div class="splash-stack">
@@ -679,26 +1010,26 @@ const splashAutoCloseMs = splashConfig?.autoCloseMs ?? 1800;
 }}>
 @tailwind components;
 @layer components {
-	.enable-banner.is-home #banner-wrapper {
+	:root.enable-banner body.lg\:is-home #banner-wrapper {
 		@apply h-[var(--banner-height-home)] translate-y-[var(--banner-height-extend)]
 	}
 	.enable-banner #banner-wrapper {
 		@apply h-[var(--banner-height-home)]
 	}
 
-	.enable-banner.is-home #banner {
+	:root.enable-banner body.lg\:is-home #banner {
 		@apply h-[var(--banner-height-home)] translate-y-0
 	}
 	.enable-banner #banner {
 		@apply h-[var(--banner-height-home)] translate-y-[var(--bannerOffset)]
 	}
-	.enable-banner.is-home #main-grid {
+	:root.enable-banner body.lg\:is-home #main-grid {
 		@apply translate-y-[var(--banner-height-extend)];
 	}
 	.enable-banner #top-row {
 		@apply h-[calc(var(--banner-height-home)_-_4.5rem)] transition-all duration-300
 	}
-	.enable-banner.is-home #sidebar-sticky {
+	:root.enable-banner body.lg\:is-home #sidebar-sticky {
 		@apply top-[calc(1rem_-_var(--banner-height-extend))]
 	}
 	.navbar-hidden {
@@ -770,6 +1101,12 @@ function disableAnimation() {
 */
 
 const bannerEnabled = !!document.getElementById('banner-wrapper')
+function isBannerModeActive() {
+	return (
+		bannerEnabled &&
+		document.documentElement.classList.contains('wallpaper-mode-banner')
+	);
+}
 
 function setClickOutsideToClose(panel: string, ignores: string[]) {
 	document.addEventListener("click", event => {
@@ -836,14 +1173,17 @@ function initCustomScrollbar() {
 
 function showBanner() {
 	if (!siteConfig.banner.enable) return;
+	if (!isBannerModeActive()) return;
 	
 	const banner = document.getElementById('banner');
-	if (!banner) {
+	const mobileBanner = document.getElementById('banner-mobile');
+	if (!banner && !mobileBanner) {
 		console.error('Banner element not found');
 		return;
 	}
 	
-	banner.classList.remove('opacity-0', 'scale-105');
+	banner?.classList.remove('opacity-0', 'scale-105');
+	mobileBanner?.classList.remove('opacity-0', 'scale-105');
 }
 
 function init() {
@@ -876,7 +1216,7 @@ const setup = () => {
 		document.documentElement.style.setProperty('--content-delay', '0ms')
 
 		// prevent elements from overlapping the navbar
-		if (!bannerEnabled) {
+		if (!isBannerModeActive()) {
 			return
 		}
 		let threshold = window.innerHeight * (BANNER_HEIGHT / 100) - 72 - 16
@@ -963,15 +1303,17 @@ function scrollFunction() {
         }
     }
 
-	if (bannerEnabled && toc) {
+	if (isBannerModeActive() && toc) {
 		if (document.body.scrollTop > bannerHeight || document.documentElement.scrollTop > bannerHeight) {
 			toc.classList.remove('toc-hide')
 		} else {
 			toc.classList.add('toc-hide')
 		}
+	} else if (toc) {
+		toc.classList.remove('toc-hide')
 	}
 
-	if (!bannerEnabled) return
+	if (!isBannerModeActive()) return
 	if (navbar) {
 		const NAVBAR_HEIGHT = 72
 		const MAIN_PANEL_EXCESS_HEIGHT = MAIN_PANEL_OVERLAPS_BANNER_HEIGHT * 16			// The height the main panel overlaps the banner
@@ -989,6 +1331,12 @@ function scrollFunction() {
 	}
 }
 window.onscroll = scrollFunction
+scrollFunction()
+
+window.addEventListener('wallpaper:mode-change', () => {
+	showBanner()
+	scrollFunction()
+})
 
 window.onresize = () => {
 	// calculate the --banner-height-extend, which needs to be a multiple of 4 to avoid blurry text

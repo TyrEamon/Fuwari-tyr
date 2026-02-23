@@ -1,5 +1,17 @@
 ﻿import type { AUTO_MODE, DARK_MODE, LIGHT_MODE } from "@constants/constants";
 
+export type WallpaperMode = "banner" | "fullscreen" | "none";
+export type NavbarTransparentMode = "semi" | "full" | "semifull";
+
+export type DeviceImageSource = string | string[];
+
+export type ResponsiveImageSource =
+	| DeviceImageSource
+	| {
+			desktop?: DeviceImageSource;
+			mobile?: DeviceImageSource;
+	  };
+
 export type SiteConfig = {
 	title: string;
 	subtitle: string;
@@ -13,9 +25,33 @@ export type SiteConfig = {
 		fixed: boolean;
 		forceDarkMode?: boolean;
 	};
+	wallpaper?: {
+		enable?: boolean;
+		modeDefault?: WallpaperMode;
+		// Twilight-style structure (compatibility layer for staged migration).
+		banner?: {
+			navbar?: {
+				transparentMode?: NavbarTransparentMode;
+				scrollThreshold?: number;
+			};
+		};
+		fullscreen?: {
+			navbar?: {
+				transparentMode?: NavbarTransparentMode;
+				scrollThreshold?: number;
+			};
+			opacity?: number;
+			blur?: number;
+		};
+		carousel?: {
+			enable?: boolean;
+			interval?: number;
+			kenBurns?: boolean;
+		};
+	};
 	banner: {
 		enable: boolean;
-		src: string;
+		src: ResponsiveImageSource;
 		position?: "top" | "center" | "bottom";
 		credit: {
 			enable: boolean;
@@ -25,7 +61,7 @@ export type SiteConfig = {
 	};
 	background: {
 		enable: boolean;
-		src: string;
+		src: ResponsiveImageSource;
 		position?: "top" | "center" | "bottom";
 		size?: "cover" | "contain" | "auto";
 		repeat?: "no-repeat" | "repeat" | "repeat-x" | "repeat-y";

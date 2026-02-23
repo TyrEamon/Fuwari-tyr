@@ -22,21 +22,46 @@ export const siteConfig: SiteConfig = {
 		fixed:false, // Hide the theme color picker for visitors
 		forceDarkMode:false, // Force dark mode and hide theme switcher
 	},
+	wallpaper: {
+		enable: true,
+		modeDefault: "fullscreen", // "banner" | "fullscreen" | "none"
+		// P1-a: Twilight-style compatibility config (sources still use top-level banner/background for now)
+		banner: {
+			navbar: {
+				transparentMode: "semifull", // "semi" | "full" | "semifull"
+				scrollThreshold: 56, // px, only used when transparent mode is "full" or "semifull"
+			},
+		},
+		fullscreen: {
+			opacity: 1, // optional override for background.opacity (0-1)
+			blur: 4, // optional default blur for fullscreen wallpaper (can still be overridden by local settings)
+			navbar: {
+				transparentMode: "semi", // "semi" | "full" | "semifull"
+				scrollThreshold: 20, // px, only used when transparent mode is "full" or "semifull"
+			},
+		},
+	},
 	banner: {
-		enable:false,
-		src: "https://pan.0106010.xyz/file/MyFlie/NFSW/sex/1769178860081_BQACAgUAAyEGAATPToMLAAEBUUZpc3WAY0iS4mQWcnufg3C51f_BPAACTBsAAiICoFes82qJmjzLgDgE.jpg", // Relative to the /src directory. Relative to the /public directory if it starts with '/'
+		enable:true,
+		src: {
+			desktop: "/random/h",
+			mobile: "/random/v",
+		}, // Relative to the /src directory. Relative to the /public directory if it starts with '/'
 
 		position: "center", // Equivalent to object-position, only supports 'top', 'center', 'bottom'. 'center' by default
 		credit: {
-			enable:true, // Display the credit text of the banner image
-			text: "banner来源", // Credit text to be displayed
+			enable:false, // Random banner has no stable per-image credit; disable default credit display
+			text: "随机图 API", // Credit text to be displayed
 
-			url: "https://pan.0106010.xyz/file/MyFlie/NFSW/sex/1769178860081_BQACAgUAAyEGAATPToMLAAEBUUZpc3WAY0iS4mQWcnufg3C51f_BPAACTBsAAiICoFes82qJmjzLgDgE.jpg", // (Optional) URL link to the original artwork or artist's page
+			url: "https://rapi.0w0.us.ci", // (Optional) URL link to the original artwork or artist's page
 		},
 	},
 	background: {
 		enable:true, // Enable background image
-		src: "/random/h",   //备用随机图：https://t.alcy.cc/ycy  Background image URL (supports HTTPS)
+		src: {
+			desktop: "/random/h",      //备用随机图：https://t.alcy.cc/ycy  Background image URL (supports HTTPS)
+			mobile: "/random/v",
+		},   //备用随机图：https://t.alcy.cc/ycy  Background image URL (supports HTTPS)
 		position: "center", // Background position: 'top', 'center', 'bottom'
 		size: "cover", // Background size: 'cover', 'contain', 'auto'
 		repeat: "no-repeat", // Background repeat: 'no-repeat', 'repeat', 'repeat-x', 'repeat-y'
