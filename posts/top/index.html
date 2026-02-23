@@ -610,7 +610,7 @@ const umamiConfig = {"enable":true,"baseUrl":"https://umamii.zeabur.app","shareI
     } else {
         fetchPageViews();
     }
-})();</script>  </div> <!-- always show cover as long as it has one --> <div id="post-cover" class="mb-8 rounded-xl banner-container onload-animation overflow-hidden relative image-wrapper" style="--theme-hue: 361" data-astro-cid-i2xmscho>  <img src="data:image/gif;base64,R0lGODlhAQABAAAAACwAAAAAAQABAAA=" alt="random:h" class="w-full h-full object-cover image-content" style="object-position: center" data-astro-cid-i2xmscho> </div>  <div data-pagefind-body class="prose dark:prose-invert prose-base !max-w-none custom-md mb-6 markdown-content onload-animation"> <!--<div class="prose dark:prose-invert max-w-none custom-md">--> <!--<div class="max-w-none custom-md">-->  <blockquote>
+})();</script>  </div> <!-- always show cover as long as it has one --> <div id="post-cover" class="mb-8 rounded-xl banner-container onload-animation overflow-hidden relative image-wrapper" style="--theme-hue: 361" data-astro-cid-i2xmscho>  <img src="/wallpaper-sync-placeholder.svg" alt class="w-full h-full object-cover image-content" style="object-position: center" data-astro-cid-i2xmscho> </div>  <div data-pagefind-body class="prose dark:prose-invert prose-base !max-w-none custom-md mb-6 markdown-content onload-animation"> <!--<div class="prose dark:prose-invert max-w-none custom-md">--> <!--<div class="max-w-none custom-md">-->  <blockquote>
 <p><em>---你好陌生人，这里是Tyreamon的博客---</em></p>
 </blockquote>
 <section><h2 id="如何联系-"><a href="#mycontact">如何联系？ </a><a class="anchor" href="#如何联系-"><span class="anchor-icon" data-pagefind-ignore="">#</span></a></h2><hr></section>
@@ -813,6 +813,9 @@ const umamiConfig = {"enable":true,"baseUrl":"https://umamii.zeabur.app","shareI
 				const currentUrl = coverImg.currentSrc || coverImg.src || "";
 				if (currentUrl === nextUrl) return;
 				coverImg.src = nextUrl;
+				if (coverImg.alt === "random:h" || coverImg.alt === "random:v") {
+					coverImg.alt = "";
+				}
 				if (coverImg.srcset) coverImg.srcset = "";
 			}
 
