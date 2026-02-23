@@ -9,26 +9,38 @@ interface Props {
 
 const links = Astro.props.links;
 ---
-<div id="nav-menu-panel" class:list={["float-panel float-panel-closed absolute transition-all fixed right-4 px-2 py-2"]}>
+<div id="nav-menu-panel" class:list={["float-panel float-panel-closed absolute fixed right-4 px-2 py-2 w-40 max-w-[calc(100vw-2rem)] transition-[opacity,transform]"]}>
     {links.map((link) => {
         const children = link.children ?? [];
         if (children.length > 0) {
             return (
-                <div class="px-3 py-2">
-                    <div class="text-black/60 dark:text-white/60 text-xs font-bold tracking-wide mb-1">
-                        {link.name}
-                    </div>
-                    <div class="flex flex-col gap-1">
+                <div class="px-1 py-1 mobile-nav-group" data-mobile-nav-group>
+                    <button
+                        type="button"
+                        class="mobile-nav-group-toggle group w-full min-w-0 flex justify-between items-center py-2 pl-2 pr-2 rounded-lg gap-3
+                            hover:bg-[var(--btn-plain-bg-hover)] active:bg-[var(--btn-plain-bg-active)] transition"
+                        data-mobile-nav-toggle
+                        aria-expanded="false"
+                    >
+                        <div class="min-w-0 truncate text-left text-black/75 dark:text-white/75 font-bold group-hover:text-[var(--primary)] group-active:text-[var(--primary)]">
+                            {link.name}
+                        </div>
+                        <Icon
+                            name="material-symbols:keyboard-arrow-down-rounded"
+                            class="mobile-nav-group-arrow transition-transform duration-200 text-[1.25rem] text-black/45 dark:text-white/45"
+                        />
+                    </button>
+                    <div class="hidden flex-col gap-1 pt-1 px-2" data-mobile-nav-panel>
                         {children.map((child) => (
                             <a
                                 href={child.external ? child.url : url(child.url)}
-                                class="group flex justify-between items-center py-2 pl-3 pr-1 rounded-lg gap-8
+                                class="group w-full min-w-0 flex justify-between items-center py-2 pl-3 pr-1 rounded-lg gap-3
                                     hover:bg-[var(--btn-plain-bg-hover)] active:bg-[var(--btn-plain-bg-active)] transition
                                 "
                                 target={child.external ? "_blank" : null}
                                 rel={child.external ? "noopener noreferrer" : null}
                             >
-                                <div class="transition text-black/75 dark:text-white/75 font-bold group-hover:text-[var(--primary)] group-active:text-[var(--primary)]">
+                                <div class="min-w-0 truncate transition text-black/75 dark:text-white/75 font-bold group-hover:text-[var(--primary)] group-active:text-[var(--primary)]">
                                     {child.name}
                                 </div>
                                 {!child.external && (
@@ -52,13 +64,13 @@ const links = Astro.props.links;
         return (
             <a
                 href={link.external ? link.url : url(link.url)}
-                class="group flex justify-between items-center py-2 pl-3 pr-1 rounded-lg gap-8
+                class="group w-full min-w-0 flex justify-between items-center py-2 pl-3 pr-1 rounded-lg gap-3
                     hover:bg-[var(--btn-plain-bg-hover)] active:bg-[var(--btn-plain-bg-active)] transition
                 "
                 target={link.external ? "_blank" : null}
                 rel={link.external ? "noopener noreferrer" : null}
             >
-                <div class="transition text-black/75 dark:text-white/75 font-bold group-hover:text-[var(--primary)] group-active:text-[var(--primary)]">
+                <div class="min-w-0 truncate transition text-black/75 dark:text-white/75 font-bold group-hover:text-[var(--primary)] group-active:text-[var(--primary)]">
                     {link.name}
                 </div>
                 {!link.external && (
@@ -77,3 +89,56 @@ const links = Astro.props.links;
         );
     })}
 </div>
+
+<script is:inline>
+	function initMobileNavAccordion() {
+		var menuPanel = document.getElementById("nav-menu-panel");
+		if (!menuPanel || menuPanel.dataset.mobileAccordionBound === "1") return;
+		menuPanel.dataset.mobileAccordionBound = "1";
+
+		menuPanel.addEventListener("click", function (event) {
+			var target = event.target;
+			if (!(target instanceof Element)) return;
+
+			var toggle = target.closest("[data-mobile-nav-toggle]");
+			if (!toggle || !menuPanel.contains(toggle)) return;
+
+			var group = toggle.closest("[data-mobile-nav-group]");
+			if (!(group instanceof HTMLElement)) return;
+
+			var panel = group.querySelector("[data-mobile-nav-panel]");
+			if (!(panel instanceof HTMLElement)) return;
+
+			var isOpen = !panel.classList.contains("hidden");
+
+			for (var el of menuPanel.querySelectorAll("[data-mobile-nav-group]")) {
+				if (!(el instanceof HTMLElement)) continue;
+				var elPanel = el.querySelector("[data-mobile-nav-panel]");
+				var elToggle = el.querySelector("[data-mobile-nav-toggle]");
+				if (elPanel instanceof HTMLElement) {
+					elPanel.classList.add("hidden");
+					elPanel.classList.remove("flex");
+				}
+				if (elToggle instanceof HTMLElement) elToggle.setAttribute("aria-expanded", "false");
+				el.dataset.open = "false";
+			}
+
+			if (!isOpen) {
+				panel.classList.remove("hidden");
+				panel.classList.add("flex");
+				toggle.setAttribute("aria-expanded", "true");
+				group.dataset.open = "true";
+			}
+		});
+	}
+
+	initMobileNavAccordion();
+	document.addEventListener("astro:after-swap", initMobileNavAccordion);
+</script>
+
+<style>
+	.mobile-nav-group[data-open="true"] .mobile-nav-group-arrow {
+		transform: rotate(180deg);
+		color: var(--primary);
+	}
+</style>
