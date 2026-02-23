@@ -311,6 +311,232 @@ curl.exe -sS -u $auth &quot;$base/admin/api/backup/health?probe=1&quot;
 &lt;li&gt;你当前访问链路（前端域名、后端域名、有没有 Worker/CDN）&lt;/li&gt;
 &lt;/ol&gt;
 &lt;p&gt;这样定位会很快，不用盲猜。&lt;/p&gt;
+&lt;hr /&gt;
+&lt;p&gt;title: xin 项目从 0 到可用：Pixiv + Telegram + D1 图站实战（含排坑）
+published: 2026-02-21T23:30:00
+description: 按可复制步骤把 xin 跑起来：后端 Zeabur、前端 Pages/Edge、D1、TG 双频道、备份与常见报错定位。
+image: &quot;../assets/blogimg/前台页.png&quot;
+tags:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;xin&lt;/li&gt;
+&lt;li&gt;图站&lt;/li&gt;
+&lt;li&gt;Pixiv&lt;/li&gt;
+&lt;li&gt;Telegram&lt;/li&gt;
+&lt;li&gt;D1&lt;/li&gt;
+&lt;li&gt;Zeabur&lt;/li&gt;
+&lt;li&gt;排坑
+draft: false
+lang: &quot;&quot;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr /&gt;
+&lt;blockquote&gt;
+&lt;p&gt;这篇是给“能跑起来最重要”的同学写的。&lt;br /&gt;
+目标就三个：&lt;strong&gt;照着做能成功&lt;/strong&gt;、&lt;strong&gt;报错知道去哪看&lt;/strong&gt;、&lt;strong&gt;看完能讲清楚为什么这么做&lt;/strong&gt;。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;hr /&gt;
+&lt;h2&gt;0. 先说结论：xin 到底在干嘛&lt;/h2&gt;
+&lt;p&gt;&lt;code&gt;xin&lt;/code&gt; 本质是一个 &lt;strong&gt;Go 后端 + 静态前端&lt;/strong&gt; 的图站方案：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;图来源：Pixiv 收藏爬取、TG 发图、TG 发链接（Pixiv / Yande / X / FANBOX）&lt;/li&gt;
+&lt;li&gt;图存储：
+&lt;ul&gt;
+&lt;li&gt;发布频道 A：放预览图（给前台看）&lt;/li&gt;
+&lt;li&gt;存储频道 B：放原图（留档 + 按钮获取）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;元数据：Cloudflare D1&lt;/li&gt;
+&lt;li&gt;可选备份：WebDAV / OpenList&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;关键设计&lt;/strong&gt;：前台只吃预览图，原图走 B 频道，前端更稳，带宽压力也更小。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;[图位 1：系统架构图（待补）]&lt;br /&gt;
+建议文件：&lt;code&gt;../assets/blogimg/xin-01-arch.png&lt;/code&gt;&lt;br /&gt;
+内容建议：Pixiv/TG -&amp;gt; Go 后端 -&amp;gt; A/B 频道 + D1 + WebDAV&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;hr /&gt;
+&lt;h2&gt;1. 前置条件（不满足就别往下）&lt;/h2&gt;
+&lt;p&gt;先确认你有这些东西：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;一个 Telegram Bot（拿到 &lt;code&gt;BOT_TOKEN&lt;/code&gt;）&lt;/li&gt;
+&lt;li&gt;两个 Telegram 频道：A（发布）+ B（存储）&lt;/li&gt;
+&lt;li&gt;（可选）A 绑定的讨论组（用于评论区挂原图/详情按钮）&lt;/li&gt;
+&lt;li&gt;Cloudflare D1（已有数据库 ID）&lt;/li&gt;
+&lt;li&gt;Zeabur（部署后端容器）&lt;/li&gt;
+&lt;li&gt;Cloudflare Pages / EdgeOne（部署静态前端）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;1.1 TG 权限&lt;/h3&gt;
+&lt;p&gt;机器人必须是 A、B 两个频道管理员；要用讨论区就让机器人在讨论组也能发消息。&lt;/p&gt;
+&lt;hr /&gt;
+&lt;h2&gt;2. D1：先把库准备好&lt;/h2&gt;
+&lt;p&gt;你有两种方式：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;直接跑项目里的 &lt;code&gt;schema.sql&lt;/code&gt;（推荐）&lt;/li&gt;
+&lt;li&gt;让后端首次启动自动补齐（更省事，但建议后面手动核对）&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;如果你是旧库升级，至少确认这些表存在：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;images&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;favorites&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;ingest_blocklist&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;crawler_state&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;（开备份）&lt;code&gt;image_backups&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;快速检查表：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;SELECT name FROM sqlite_master WHERE type=&apos;table&apos; ORDER BY name;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;img src=&quot;../assets/blogimg/D1%20%E8%A1%A8%E6%B8%85%E5%8D%95%E6%88%AA%E5%9B%BE.png&quot; alt=&quot;D1 表清单截图&quot; /&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;hr /&gt;
+&lt;h2&gt;3. Zeabur 部署后端（最小可用）&lt;/h2&gt;
+&lt;h3&gt;3.1 必填环境变量&lt;/h3&gt;
+&lt;p&gt;最小集合（先跑起来）：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;BOT_TOKEN=
+PUBLISH_CHANNEL_ID=
+STORAGE_CHANNEL_ID=
+# 可选：DISCUSSION_GROUP_ID=
+
+CLOUDFLARE_ACCOUNT_ID=
+CLOUDFLARE_API_TOKEN=
+D1_DATABASE_ID=
+
+ADMIN_PASSWORD=
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;3.2 Pixiv 相关（要自动爬就配）&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;PIXIV_PHPSESSID=
+PIXIV_USER_ID=
+PIXIV_TAG=
+PIXIV_REST=show
+PIXIV_CRAWL_ORDER=desc
+PIXIV_LIMIT=40
+PIXIV_MAX_PAGES=0
+PIXIV_BOOTSTRAP_MAX_PAGES=-1
+PIXIV_INCREMENTAL_MAX_PAGES=2
+PIXIV_INTERVAL_MINUTES=120
+&lt;/code&gt;&lt;/pre&gt;
+&lt;blockquote&gt;
+&lt;p&gt;经验值：全量完成后，把状态切到增量，不然每轮从头扫会很慢。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3&gt;3.3 一眼看启动是否正常&lt;/h3&gt;
+&lt;p&gt;看日志是否有：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;HTTP server listening on :8080&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Pixiv crawl started ...&lt;/code&gt;（你配了 Pixiv 时）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;img src=&quot;https://i.kyr.us.ci/_astro/8080.BS-N0rsG.png&quot; alt=&quot;前台页&quot; /&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;hr /&gt;
+&lt;h2&gt;4. 前端部署（Pages/EdgeOne）&lt;/h2&gt;
+&lt;p&gt;前端是静态页，和后端分开部署。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;后端域名示例：&lt;code&gt;https://pic.example.com&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;前端域名示例：&lt;code&gt;https://tyr.example.com/gallery.html&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;前端请求后端 API，只要 API 域名填对即可。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;img src=&quot;../assets/blogimg/%E5%89%8D%E5%8F%B0%E9%A1%B5.png&quot; alt=&quot;前台页&quot; /&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;img src=&quot;../assets/blogimg/%E5%90%8E%E5%8F%B0%E9%A1%B51.png&quot; alt=&quot;后台上传页截图1&quot; /&gt;
+&lt;img src=&quot;https://i.kyr.us.ci/_astro/hputai2.BrmQ0f8Q.png&quot; alt=&quot;后台上传页截图2&quot; /&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;hr /&gt;
+&lt;h2&gt;5. 先做 5 分钟验收（别一上来就全链路压测）&lt;/h2&gt;
+&lt;p&gt;按顺序测：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;给 Bot 发一张图
+&lt;ul&gt;
+&lt;li&gt;A 有预览&lt;/li&gt;
+&lt;li&gt;B 有原图&lt;/li&gt;
+&lt;li&gt;D1 有新记录&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;给 Bot 发一条 Pixiv 链接
+&lt;ul&gt;
+&lt;li&gt;正常入库 + 前台可见&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;打开后台上传页上传一张图
+&lt;ul&gt;
+&lt;li&gt;成功后前台能看到&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;（开了备份）看备份健康状态&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;备份检查：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$base = &quot;https://你的后端域名&quot;
+$auth = &quot;x:你的ADMIN_PASSWORD&quot;
+curl.exe -sS -u $auth &quot;$base/admin/api/backup/health?probe=1&quot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;hr /&gt;
+&lt;h2&gt;6. 为什么最近要改成 &lt;code&gt;file_id&lt;/code&gt; 直发&lt;/h2&gt;
+&lt;p&gt;你之前遇到的典型问题是：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;sendDocument ... context deadline exceeded&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;getUpdates ... context deadline exceeded&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;旧逻辑是：&lt;strong&gt;下载 TG 文件到容器 -&amp;gt; 再上传回 TG&lt;/strong&gt;。&lt;br /&gt;
+这一步非常吃出口网络，容器网络一抖就超时。&lt;/p&gt;
+&lt;p&gt;现在优化后的思路：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;TG 直传场景优先走 &lt;code&gt;file_id&lt;/code&gt; 直发（预览和原图都尽量不落地）&lt;/li&gt;
+&lt;li&gt;爬虫场景（Pixiv/Twitter/Yande/FANBOX）逻辑不动&lt;/li&gt;
+&lt;li&gt;备份逻辑不动（依然按 &lt;code&gt;origin_id/preview_id&lt;/code&gt; 拉）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;结论：&lt;strong&gt;最容易超时的一段被剪掉了&lt;/strong&gt;。&lt;/p&gt;
+&lt;hr /&gt;
+&lt;h2&gt;7. 常见坑（按报错关键字定位）&lt;/h2&gt;
+&lt;h3&gt;7.1 &lt;code&gt;getUpdates ... 409 Conflict&lt;/code&gt;&lt;/h3&gt;
+&lt;p&gt;&lt;strong&gt;含义&lt;/strong&gt;：同一个 Bot 有多个实例在轮询。&lt;br /&gt;
+&lt;strong&gt;处理&lt;/strong&gt;：保证只有一个服务在跑（关掉旧实例、重复服务）。&lt;/p&gt;
+&lt;h3&gt;7.2 &lt;code&gt;ghcr.io ... 401 Unauthorized&lt;/code&gt;&lt;/h3&gt;
+&lt;p&gt;&lt;strong&gt;含义&lt;/strong&gt;：拉镜像没权限。&lt;br /&gt;
+&lt;strong&gt;处理&lt;/strong&gt;：检查包是否 public，或给 Zeabur 配 GHCR 拉取凭证。&lt;/p&gt;
+&lt;h3&gt;7.3 &lt;code&gt;chat not found&lt;/code&gt;&lt;/h3&gt;
+&lt;p&gt;&lt;strong&gt;含义&lt;/strong&gt;：机器人不在目标频道，或频道 ID 配错。&lt;br /&gt;
+&lt;strong&gt;处理&lt;/strong&gt;：确认 Bot 在 A/B 频道里、ID 前缀 &lt;code&gt;-100&lt;/code&gt; 没写错。&lt;/p&gt;
+&lt;h3&gt;7.4 &lt;code&gt;context deadline exceeded&lt;/code&gt;&lt;/h3&gt;
+&lt;p&gt;&lt;strong&gt;含义&lt;/strong&gt;：网络链路超时（TG / 目标站 / 容器出口波动）。&lt;br /&gt;
+&lt;strong&gt;处理顺序&lt;/strong&gt;：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;容器里 &lt;code&gt;wget&lt;/code&gt; 测目标 URL 连通性&lt;/li&gt;
+&lt;li&gt;降低并发/缩小单次抓取量&lt;/li&gt;
+&lt;li&gt;把 TG 直传改成 &lt;code&gt;file_id&lt;/code&gt; 直发&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3&gt;7.5 &lt;code&gt;pixiv bookmarks error: cannot unmarshal ... id&lt;/code&gt;&lt;/h3&gt;
+&lt;p&gt;&lt;strong&gt;含义&lt;/strong&gt;：上游返回结构变了。&lt;br /&gt;
+&lt;strong&gt;处理&lt;/strong&gt;：更新解析逻辑，别硬写死字段类型。&lt;/p&gt;
+&lt;hr /&gt;
+&lt;h2&gt;8. 我建议的“稳定参数”起步值&lt;/h2&gt;
+&lt;p&gt;用的是go语言轻量、高并发，对配置要求不高。反倒看重&lt;code&gt;线路的质量&lt;/code&gt;。：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Pixiv：&lt;code&gt;PIXIV_INTERVAL_MINUTES=120&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Pixiv 增量：&lt;code&gt;PIXIV_INCREMENTAL_MAX_PAGES=2&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Twitter 作者轮询：&lt;code&gt;TWITTER_AUTHOR_INTERVAL_MINUTES=120&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;作者抓取数：&lt;code&gt;TWITTER_AUTHOR_FETCH_LIMIT=3~5&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;备份：&lt;code&gt;BACKUP_WORKERS=1&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;先稳住，再提速。&lt;/p&gt;
+&lt;hr /&gt;
+&lt;h2&gt;9. 你要能复述的原理（核心三句话）&lt;/h2&gt;
+&lt;ol&gt;
+&lt;li&gt;前台看的是预览图，不是原图，原图放 B 频道。&lt;/li&gt;
+&lt;li&gt;D1 只管索引和状态，图文件本体不进 D1。&lt;/li&gt;
+&lt;li&gt;超时大头通常在“下载再上传”，&lt;code&gt;file_id&lt;/code&gt; 直发能明显减压。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;hr /&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;a href=&quot;../assets/blogimg/zeaburrz.png&quot;&gt;日志对照图&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;hr /&gt;
+&lt;p&gt;如果你照着做卡住了，优先把这 3 个信息贴出来再排：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;报错原文（完整一段）&lt;/li&gt;
+&lt;li&gt;相关环境变量名（值可打码）&lt;/li&gt;
+&lt;li&gt;你当前访问链路（前端域名、后端域名、有没有 Worker/CDN）&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;这样定位会很快，不用盲猜。&lt;/p&gt;
 </content:encoded></item><item><title>Pixiv 收藏本地下载器（Python）随手记</title><link>https://i.kyr.us.ci/posts/pixivget/</link><guid isPermaLink="true">https://i.kyr.us.ci/posts/pixivget/</guid><description>记录我用 Python 把 Pixiv 收藏下载到本地的过程，附上配置说明和一些个人踩坑感受。</description><pubDate>Tue, 27 Jan 2026 21:10:00 GMT</pubDate><content:encoded>&lt;blockquote&gt;
 &lt;p&gt;说明：本文仅供个人学习 + 进行本地备份记录，还请遵守 Pixiv 的相关使用条款，不要二次分发。&lt;/p&gt;
 &lt;/blockquote&gt;
