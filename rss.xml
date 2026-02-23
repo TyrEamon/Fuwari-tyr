@@ -105,21 +105,364 @@
 &lt;ul&gt;
 &lt;li&gt;同样的，欢迎你加入 &lt;em&gt;(&lt;code&gt;目前没啥人就是了&lt;/code&gt;)&lt;/em&gt;&lt;/li&gt;
 &lt;/ul&gt;
-</content:encoded></item><item><title>xin 项目从 0 到可用：Pixiv + Telegram + D1 图站实战（含排坑）</title><link>https://i.kyr.us.ci/posts/xin/</link><guid isPermaLink="true">https://i.kyr.us.ci/posts/xin/</guid><description>按可复制步骤把 xin 跑起来：后端 Zeabur、前端 Pages/Edge、D1、TG 双频道、备份与常见报错定位。</description><pubDate>Sat, 21 Feb 2026 23:30:00 GMT</pubDate><content:encoded>&lt;blockquote&gt;
-&lt;p&gt;这篇是给“能跑起来最重要”的同学写的。&lt;br /&gt;
-目标就三个：&lt;strong&gt;照着做能成功&lt;/strong&gt;、&lt;strong&gt;报错知道去哪看&lt;/strong&gt;、&lt;strong&gt;看完能讲清楚为什么这么做&lt;/strong&gt;。&lt;/p&gt;
+</content:encoded></item><item><title>Alist/OpenList 美化教程：自定义头部快速上手（背景/毛玻璃/切换按钮）</title><link>https://i.kyr.us.ci/posts/openlist-theme/</link><guid isPermaLink="true">https://i.kyr.us.ci/posts/openlist-theme/</guid><description>一篇实用向 OpenList 美化教程：通过自定义头部注入 CSS/JS，实现背景图、毛玻璃面板和日夜切换按钮，重点讲怎么用。</description><pubDate>Mon, 23 Feb 2026 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;Alist/OpenList 美化教程：自定义头部快速上手（背景/毛玻璃/切换按钮）&lt;/h1&gt;
+&lt;p&gt;这篇就写一个简单实用版：用 Alist/OpenList 后台的 &lt;strong&gt;“自定义头部（Customize head）”&lt;/strong&gt;，做背景图、毛玻璃和切换按钮。&lt;/p&gt;
+&lt;p&gt;重点放在怎么使用，优化过程只简单带过。&lt;/p&gt;
+&lt;h2&gt;最终效果（这篇能做什么）&lt;/h2&gt;
+&lt;ol&gt;
+&lt;li&gt;白天/夜间模式不同背景图&lt;/li&gt;
+&lt;li&gt;列表/卡片毛玻璃效果&lt;/li&gt;
+&lt;li&gt;左下角手动切换按钮&lt;/li&gt;
+&lt;li&gt;一些细节样式（导航、代码块、底部渐变）&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;img src=&quot;https://i.kyr.us.ci/_astro/openlist-theme-1.Rw2D7mhb.png&quot; alt=&quot;效果图占位-白天模式&quot; /&gt;
+&lt;img src=&quot;https://i.kyr.us.ci/_astro/openlist-theme-2.BZLfFOlg.png&quot; alt=&quot;效果图占位-夜间模式&quot; /&gt;&lt;/p&gt;
+&lt;h2&gt;使用前准备&lt;/h2&gt;
+&lt;p&gt;你需要准备：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;一份主题片段文件（&lt;code&gt;openlist-Theme.html&lt;/code&gt;）&lt;/li&gt;
+&lt;li&gt;背景图链接（推荐 4 张）&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;推荐准备 4 张图，分别对应：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;白天横屏&lt;/li&gt;
+&lt;li&gt;白天竖屏&lt;/li&gt;
+&lt;li&gt;夜间横屏&lt;/li&gt;
+&lt;li&gt;夜间竖屏&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;没有 4 张也没关系，先用 2 张（白天/夜间各一张）也能用。&lt;/p&gt;
+&lt;h2&gt;使用方法（重点）&lt;/h2&gt;
+&lt;ol&gt;
+&lt;li&gt;打开 OpenList 后台&lt;/li&gt;
+&lt;li&gt;进入 &lt;code&gt;设置 -&amp;gt; 全局 -&amp;gt; 自定义头部（Customize head）&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;打开 &lt;code&gt;openlist-Theme.html&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;把里面的背景图 &lt;code&gt;url(&quot;...&quot;)&lt;/code&gt; 换成你自己的图片直链&lt;/li&gt;
+&lt;li&gt;将整份内容复制到 &lt;code&gt;自定义头部&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;保存并刷新页面&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2&gt;需要替换的地方（背景图）&lt;/h2&gt;
+&lt;p&gt;在 &lt;code&gt;&amp;lt;style&amp;gt;&lt;/code&gt; 里主要改这 4 处：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;code&gt;.hope-ui-light&lt;/code&gt; 的横屏背景&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;.hope-ui-light&lt;/code&gt; 里的竖屏背景（&lt;code&gt;@media (max-aspect-ratio:1)&lt;/code&gt;）&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;.hope-ui-dark&lt;/code&gt; 的横屏背景&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;.hope-ui-dark&lt;/code&gt; 里的竖屏背景（&lt;code&gt;@media (max-aspect-ratio:1)&lt;/code&gt;）&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;简单说就是把原来的：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;background-image: url(&quot;你的图片链接&quot;);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;替换成自己的图床/网盘直链。&lt;/p&gt;
+&lt;h2&gt;只想换背景，不想要按钮？&lt;/h2&gt;
+&lt;p&gt;可以。&lt;/p&gt;
+&lt;p&gt;你只保留 &lt;code&gt;&amp;lt;style&amp;gt;...&amp;lt;/style&amp;gt;&lt;/code&gt; 部分，把按钮相关的 &lt;code&gt;&amp;lt;script&amp;gt;...&amp;lt;/script&amp;gt;&lt;/code&gt; 去掉就行。这样更稳，也更适合只做静态美化。&lt;/p&gt;
+&lt;h2&gt;完整代码（可直接复制）&lt;/h2&gt;
+&lt;p&gt;下面这份就是可以直接粘贴到 自定义头部 的版本（记得先把 4 个背景图链接替换成你自己的）。&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;GitHub 仓库&lt;/code&gt;（可直接取最新版本）：&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;https://github.com/TyrEamon/openlist-Theme&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;背景url修改示例（确认格式没问题）：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;script src=&quot;https://polyfill.alicdn.com/v3/polyfill.min.js?features=String.prototype.replaceAll&quot;&amp;gt;&amp;lt;/script&amp;gt;
+&amp;lt;style&amp;gt;
+.hope-ui-light { /* 白天背景(电脑端&amp;amp;手机端) */ }     /* 日：url.1=横屏 url.2=竖屏 */
+.hope-ui-dark  { /* 夜间背景(电脑端&amp;amp;手机端) */ }     /* 夜：url.1=横屏 url.2=竖屏 */
+&amp;lt;/style&amp;gt;
+&amp;lt;script&amp;gt;
+// 日夜切换按钮逻辑（已做移动端误触修复）
+&amp;lt;/script&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&amp;lt;details&amp;gt;
+&amp;lt;summary&amp;gt;点击展开完整代码（可直接复制）&amp;lt;/summary&amp;gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;script src=&quot;https://polyfill.alicdn.com/v3/polyfill.min.js?features=String.prototype.replaceAll&quot;&amp;gt;&amp;lt;/script&amp;gt;
+&amp;lt;style&amp;gt; .notify-render .hope-close-button {
+    display:none
+}
+.hope-ui-light {
+    background-image:url(&quot;https://pan.0106010.xyz/file/openlist-Theme/1771838991109_130584045_p0.webp&quot;) !important;
+    @media (max-aspect-ratio:1) {
+        background-image:url(&quot;https://pan.0106010.xyz/file/openlist-Theme/1771838999793_file_6179.webp&quot;) !important;
+    }
+    background-repeat:no-repeat;
+    background-size:cover;
+    background-attachment:fixed;
+    background-position-x:center
+}
+.hope-ui-dark {
+     background-image:url(&quot;https://pan.0106010.xyz/file/openlist-Theme/1771839006594_openlist1.webp&quot;) !important;
+    @media (max-aspect-ratio:1) {
+        background-image:url(&quot;https://pan.0106010.xyz/file/openlist-Theme/1771838992434_1673371139204.webp&quot;) !important;
+    }
+    background-repeat:no-repeat;
+    background-size:cover;
+    background-attachment:fixed;
+    background-position-x:center
+}
+.hope-ui-light .obj-box.hope-stack.hope-c-dhzjXW.hope-c-PJLV.hope-c-PJLV-igScBhH-css {
+    backdrop-filter: blur(1px);
+    background-color:rgba(255,255,255,0.7) !important
+}
+.hope-ui-dark .obj-box.hope-stack.hope-c-dhzjXW.hope-c-PJLV.hope-c-PJLV-iigjoxS-css {
+    backdrop-filter: blur(1px);
+    background-color:rgb(0 0 0 / 50%) !important
+}
+.hope-ui-light .hope-c-PJLV.hope-c-PJLV-ikSuVsl-css {
+    backdrop-filter: blur(1px);
+    background-color:rgba(255,255,255,0.5) !important
+}
+.hope-ui-dark .hope-c-PJLV.hope-c-PJLV-iiuDLME-css {
+    backdrop-filter: blur(1px);
+    background-color:rgb(0 0 0 / 50%) !important
+}
+.hope-ui-light .hope-c-ivMHWx-hZistB-cv.hope-icon-button {
+    backdrop-filter: blur(1px);
+    background-color:rgba(255,255,255,0.5) !important
+}
+.hope-ui-dark .hope-c-ivMHWx-hZistB-cv.hope-icon-button {
+    backdrop-filter: blur(1px);
+    background-color:rgb(0 0 0 / 50%) !important
+}
+.hope-ui-light .hope-c-PJLV-ijgzmFG-css {
+    backdrop-filter: blur(1px);
+    background-color:rgba(255,255,255,0.5) !important
+}
+.hope-ui-dark .hope-c-PJLV-ijgzmFG-css {
+    backdrop-filter: blur(1px);
+    background-color:rgb(0 0 0 / 50%) !important
+}
+.hope-ui-light pre {
+    background-color:rgba(255,255,255,0.1) !important
+}
+.hope-ui-dark pre {
+    background-color:rgba(255,255,255,0) !important
+}
+.hope-ui-light .hope-c-PJLV-ieGWMbI-css {
+    backdrop-filter: blur(1px);
+    background:rgba(255,255,255,0.5) !important
+}
+.hope-ui-dark .hope-c-PJLV-ieGWMbI-css {
+    backdrop-filter: blur(1px);
+    background-color:rgb(0 0 0 / 50%) !important
+}
+.hope-ui-light .hope-c-PJLV-ihVEsOa-css {
+    backdrop-filter: blur(1px);
+    background:rgba(255,255,255,0.5) !important
+}
+.hope-ui-dark .hope-c-PJLV-ihVEsOa-css {
+    backdrop-filter: blur(1px);
+    background-color:rgb(0 0 0 / 50%) !important
+}
+#root &amp;gt; .header {
+    background:linear-gradient(180deg,rgba(255,255,255,0.3),rgba(255,255,255,0))
+}
+.footerd {
+    width: 100vw;
+    height: 5vh;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    background:linear-gradient(0deg,rgba(255,255,255,0.3),rgba(255,255,255,0))
+}
+.hope-ui-light .body &amp;gt; .nav {
+    background-color:rgba(255,255,255,0.7);
+    border-radius:var(--hope-radii-xl)
+}
+.hope-ui-dark .body &amp;gt; .nav {
+    background-color:rgb(0 0 0 / 50%);
+    border-radius:var(--hope-radii-xl)
+}
+.body &amp;gt; .nav::after {
+    display:none
+}
+dibu {
+    border-top:0px;
+    position:absolute;
+    bottom:0;
+    width:100%;
+    margin:0px;
+    padding:0px
+}
+.App {
+    min-height:85vh
+}
+.table {
+    margin:auto
+}
+#canvas-basic {
+    position:fixed;
+    display:block;
+    width:100%;
+    height:100%;
+    top:0;
+    right:0;
+    bottom:0;
+    left:0;
+    z-index:-999
+}
+.hope-image {
+    filter:drop-shadow(2px 4px 8px rgb(255,255,255))
+}
+button#hope-menu-daynight-switch-trigger {
+    position: fixed;
+    bottom: 7.5vh;
+    left: 2.5vw;
+    z-index: 114;
+    size: var(--hope-sizes-8);
+}
+
+/* fallback panel colors when OpenList hash classes change */
+.hope-ui-light .obj-box {
+    background-color: rgba(255,255,255,0.65) !important;
+}
+.hope-ui-dark .obj-box {
+    background-color: rgb(0 0 0 / 50%) !important;
+}
+&amp;lt;/style&amp;gt;
+&amp;lt;script&amp;gt;
+    document.write(`&amp;lt;div class=&quot;footerd&quot;&amp;gt;&amp;lt;/div&amp;gt;`);
+&amp;lt;/script&amp;gt;
+&amp;lt;!-- 日夜主题切换按钮 | Day/Night Switch Button --&amp;gt;
+&amp;lt;script&amp;gt;
+    function unlockScroll() {
+        var docEl = document.documentElement;
+        var body = document.body;
+        if (docEl) {
+            docEl.style.overflow = &quot;&quot;;
+            docEl.style.overflowY = &quot;&quot;;
+            docEl.style.position = &quot;&quot;;
+            docEl.style.width = &quot;&quot;;
+        }
+        if (body) {
+            body.style.overflow = &quot;&quot;;
+            body.style.overflowY = &quot;&quot;;
+            body.style.position = &quot;&quot;;
+            body.style.width = &quot;&quot;;
+            body.style.paddingRight = &quot;&quot;;
+            body.style.touchAction = &quot;&quot;;
+        }
+    }
+
+    function cleanupThemeSwitchUi() {
+        if (document.querySelectorAll) {
+            var leftovers = document.querySelectorAll(&quot;.hope-drawer__overlay, .hope-drawer__content-container, .hope-modal__overlay&quot;);
+            for (var i = 0; i &amp;lt; leftovers.length; i++) {
+                leftovers[i].style.display = &quot;none&quot;;
+                leftovers[i].style.pointerEvents = &quot;none&quot;;
+            }
+        }
+
+        unlockScroll();
+        setTimeout(unlockScroll, 120);
+        setTimeout(unlockScroll, 320);
+    }
+
+    function getThemeTargets() {
+        if (!document.querySelectorAll) return [];
+        return document.querySelectorAll(&quot;.hope-ui-light, .hope-ui-dark&quot;);
+    }
+
+    function daynightswitch(e) {
+        if (e) {
+            if (e.preventDefault) e.preventDefault();
+            if (e.stopPropagation) e.stopPropagation();
+            if (e.stopImmediatePropagation) e.stopImmediatePropagation();
+        }
+
+        var targets = getThemeTargets();
+        if (!targets.length) return;
+
+        var toDark = false;
+        for (var i = 0; i &amp;lt; targets.length; i++) {
+            if (targets[i].classList.contains(&quot;hope-ui-light&quot;)) {
+                toDark = true;
+                break;
+            }
+        }
+
+        for (var j = 0; j &amp;lt; targets.length; j++) {
+            targets[j].classList.remove(&quot;hope-ui-light&quot;, &quot;hope-ui-dark&quot;);
+            targets[j].classList.add(toDark ? &quot;hope-ui-dark&quot; : &quot;hope-ui-light&quot;);
+        }
+
+        cleanupThemeSwitchUi();
+    }
+
+    if (!document.getElementById(&quot;hope-menu-daynight-switch-trigger&quot;)) {
+        document.write(`&amp;lt;button
+    class=&quot;hope-c-bvjbhC hope-c-PJLV hope-c-PJLV-ieTGfmR-css hope-icon-button hope-button hope-c-ivMHWx hope-c-ivMHWx-kcPQpq-variant-subtle hope-c-ivMHWx-cEknLI-size-lg hope-c-ivMHWx-dvmlqS-cv hope-c-ivMHWx-hZistB-cv hope-c-PJLV hope-c-PJLV-iikaotv-css&quot;
+    type=&quot;button&quot; role=&quot;button&quot; id=&quot;hope-menu-daynight-switch-trigger&quot; aria-label=&quot;switch layout&quot;&amp;gt;&amp;lt;svg t=&quot;1733225100292&quot;
+        class=&quot;icon&quot; viewBox=&quot;0 0 1024 1024&quot; version=&quot;1.1&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot; p-id=&quot;4397&quot;
+        xmlns:xlink=&quot;http://www.w3.org/1999/xlink&quot; width=&quot;1em&quot; height=&quot;1em&quot;&amp;gt;
+        &amp;lt;path
+            d=&quot;M512 0c282.7776 0 512 229.2224 512 512s-229.2224 512-512 512S0 794.7776 0 512 229.2224 0 512 0z m0 51.2a460.8 460.8 0 0 0-13.568 921.3952L512 972.8v-256a204.8 204.8 0 1 0 0-409.6V51.2z m0 256v409.6a204.8 204.8 0 1 1 0-409.6z&quot;
+            fill=&quot;currentColor&quot; p-id=&quot;4398&quot;&amp;gt;&amp;lt;/path&amp;gt;
+    &amp;lt;/svg&amp;gt;&amp;lt;/button&amp;gt;`);
+    }
+
+    var dayNightBtn = document.getElementById(&quot;hope-menu-daynight-switch-trigger&quot;);
+    if (dayNightBtn &amp;amp;&amp;amp; !dayNightBtn.dataset.bound) {
+        dayNightBtn.dataset.bound = &quot;1&quot;;
+        dayNightBtn.addEventListener(&quot;click&quot;, daynightswitch, true);
+    }
+
+&amp;lt;/script&amp;gt;
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&amp;lt;/details&amp;gt;&lt;/p&gt;
+&lt;h2&gt;我这次做的优化（简单带过）&lt;/h2&gt;
+&lt;p&gt;我这边在原主题基础上做了几个小优化，主要是为了更好用：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;修复切换过程中会给页面加滚动锁导致“不刷新切换后页面不能滚动”&lt;/li&gt;
+&lt;li&gt;修复daynightswitch() 在手机端会按索引错误触发“新建文件夹/上传” 按钮&lt;/li&gt;
+&lt;li&gt;修复白天模式下面板发黑（补 &lt;code&gt;light/dark&lt;/code&gt; 前缀和兜底样式）&lt;/li&gt;
+&lt;/ol&gt;
+&lt;ul&gt;
+&lt;li&gt;问题示意图&lt;/li&gt;
+&lt;/ul&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;img src=&quot;https://i.kyr.us.ci/_astro/openlist-theme-3.CWrGbbnH.png&quot; alt=&quot;问题示意占位图（白天黑面板）&quot; /&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;修复后示意图&lt;/li&gt;
+&lt;/ul&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;img src=&quot;https://i.kyr.us.ci/_astro/openlist-theme-4.Vf6-i6FB.png&quot; alt=&quot;修复后占位图&quot; /&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;如果你只是拿来用，不需要关心太多实现细节，直接用调好的版本即可。&lt;/p&gt;
+&lt;h2&gt;使用建议（推荐）&lt;/h2&gt;
+&lt;ol&gt;
+&lt;li&gt;背景图尽量用 &lt;code&gt;webp&lt;/code&gt;，加载更快&lt;/li&gt;
+&lt;li&gt;图片链接尽量走 CDN/图床，避免加载慢&lt;/li&gt;
+&lt;li&gt;先能用，再慢慢调透明度和模糊值&lt;/li&gt;
+&lt;li&gt;手机端一定要测按钮点击和滚动&lt;/li&gt;
+&lt;li&gt;OpenList 更新后若样式异常，优先检查 &lt;code&gt;hope-xxx&lt;/code&gt; 类名是否变化&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2&gt;总结&lt;/h2&gt;
+&lt;p&gt;这套 OpenList 美化的使用流程其实很简单：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;准备主题片段&lt;/li&gt;
+&lt;li&gt;替换背景图链接&lt;/li&gt;
+&lt;li&gt;粘贴到 &lt;code&gt;自定义头部&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;保存刷新&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;先用起来，再慢慢优化细节就行。&lt;/p&gt;
+</content:encoded></item><item><title>xin 项目一个“自用”的图片采集/发布/展示系统，从 0 到部署</title><link>https://i.kyr.us.ci/posts/xin/</link><guid isPermaLink="true">https://i.kyr.us.ci/posts/xin/</guid><description>个人插画收藏的全链路系统：后端使用Go，自动同步，图&amp;链监听，元数据写入 Cloudflare D1，支持 OpenList(WebDAV/OneDrive) 异步备份。前端提供图库展示、随机图 API、收藏与筛选，后台支持上传、隐藏黑名单、喜欢列表和运行状态查看。</description><pubDate>Sat, 21 Feb 2026 23:30:00 GMT</pubDate><content:encoded>&lt;blockquote&gt;
+&lt;p&gt;该项目是为了更好的收集和展示个人收藏的图片而设计的，自用。
+本项目可以部署在本地或云端，推荐在云端部署。&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;hr /&gt;
 &lt;h2&gt;0. 先说结论：xin 到底在干嘛&lt;/h2&gt;
 &lt;p&gt;&lt;code&gt;xin&lt;/code&gt; 本质是一个 &lt;strong&gt;Go 后端 + 静态前端&lt;/strong&gt; 的图站方案：&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;图来源：Pixiv 收藏爬取、TG 发图、TG 发链接（Pixiv / Yande / X / FANBOX）&lt;/li&gt;
+&lt;li&gt;图来源：轮询爬取pixiv及twitter的收藏、TG 上传、TG 链接监听（Pixiv / Yande / FANBOX / Twitter / 或其他图站[得自己加逻辑]）&lt;/li&gt;
 &lt;li&gt;图存储：
 &lt;ul&gt;
 &lt;li&gt;发布频道 A：放预览图（给前台看）&lt;/li&gt;
 &lt;li&gt;存储频道 B：放原图（留档 + 按钮获取）&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/li&gt;
+&lt;li&gt;建议给 A 频道绑定讨论组，用于评论区挂原图/详情按钮&lt;/li&gt;
 &lt;li&gt;元数据：Cloudflare D1&lt;/li&gt;
 &lt;li&gt;可选备份：WebDAV / OpenList&lt;/li&gt;
 &lt;/ul&gt;
@@ -135,16 +478,16 @@
 &lt;li&gt;两个 Telegram 频道：A（发布）+ B（存储）&lt;/li&gt;
 &lt;li&gt;（可选）A 绑定的讨论组（用于评论区挂原图/详情按钮）&lt;/li&gt;
 &lt;li&gt;Cloudflare D1（已有数据库 ID）&lt;/li&gt;
-&lt;li&gt;Zeabur（部署后端容器）&lt;/li&gt;
+&lt;li&gt;我这里使用的是Zeabur（部署后端容器），建议使用线路好的个人主机或者容器&lt;/li&gt;
 &lt;li&gt;Cloudflare Pages / EdgeOne（部署静态前端）&lt;/li&gt;
 &lt;/ul&gt;
 &lt;h3&gt;1.1 TG 权限&lt;/h3&gt;
 &lt;p&gt;机器人必须是 A、B 两个频道管理员；要用讨论区就让机器人在讨论组也能发消息。&lt;/p&gt;
 &lt;hr /&gt;
-&lt;h2&gt;2. D1：先把库准备好&lt;/h2&gt;
+&lt;h2&gt;2. 建立D1数据库表&lt;/h2&gt;
 &lt;p&gt;你有两种方式：&lt;/p&gt;
 &lt;ol&gt;
-&lt;li&gt;直接跑项目里的 &lt;code&gt;schema.sql&lt;/code&gt;（推荐）&lt;/li&gt;
+&lt;li&gt;你可以直接跑项目里的 &lt;code&gt;schema.sql&lt;/code&gt;（推荐）&lt;/li&gt;
 &lt;li&gt;让后端首次启动自动补齐（更省事，但建议后面手动核对）&lt;/li&gt;
 &lt;/ol&gt;
 &lt;p&gt;如果你是旧库升级，至少确认这些表存在：&lt;/p&gt;
@@ -176,7 +519,7 @@ D1_DATABASE_ID=
 
 ADMIN_PASSWORD=
 &lt;/code&gt;&lt;/pre&gt;
-&lt;h3&gt;3.2 Pixiv 相关（要自动爬就配）&lt;/h3&gt;
+&lt;h3&gt;3.2 Pixiv 相关配置（看个人需求，要自动爬就配）&lt;/h3&gt;
 &lt;pre&gt;&lt;code&gt;PIXIV_PHPSESSID=
 PIXIV_USER_ID=
 PIXIV_TAG=
@@ -202,10 +545,10 @@ PIXIV_INTERVAL_MINUTES=120
 &lt;/blockquote&gt;
 &lt;hr /&gt;
 &lt;h2&gt;4. 前端部署（Pages/EdgeOne）&lt;/h2&gt;
-&lt;p&gt;前端是静态页，和后端分开部署。&lt;/p&gt;
+&lt;p&gt;前端是静态页，和后端分开部署。也可以不去部署web，因为后端部署上去就包括前端。访问后端域名，通常都能重定向到/gallery.html。&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;后端域名示例：&lt;code&gt;https://pic.example.com&lt;/code&gt;&lt;/li&gt;
-&lt;li&gt;前端域名示例：&lt;code&gt;https://tyr.example.com/gallery.html&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;后端域名示例：&lt;code&gt;https://a.example.com&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;前端域名示例：&lt;code&gt;https://b.example.com/gallery.html&lt;/code&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;前端请求后端 API，只要 API 域名填对即可。&lt;/p&gt;
 &lt;blockquote&gt;
@@ -238,39 +581,23 @@ PIXIV_INTERVAL_MINUTES=120
 &lt;/li&gt;
 &lt;li&gt;（开了备份）看备份健康状态&lt;/li&gt;
 &lt;/ol&gt;
-&lt;p&gt;备份检查：&lt;/p&gt;
+&lt;p&gt;备份检查（可选，你可以在管理面板查看备份情况）：&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;$base = &quot;https://你的后端域名&quot;
 $auth = &quot;x:你的ADMIN_PASSWORD&quot;
 curl.exe -sS -u $auth &quot;$base/admin/api/backup/health?probe=1&quot;
 &lt;/code&gt;&lt;/pre&gt;
 &lt;hr /&gt;
-&lt;h2&gt;6. 为什么最近要改成 &lt;code&gt;file_id&lt;/code&gt; 直发&lt;/h2&gt;
-&lt;p&gt;你之前遇到的典型问题是：&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;code&gt;sendDocument ... context deadline exceeded&lt;/code&gt;&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;getUpdates ... context deadline exceeded&lt;/code&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;旧逻辑是：&lt;strong&gt;下载 TG 文件到容器 -&amp;gt; 再上传回 TG&lt;/strong&gt;。&lt;br /&gt;
-这一步非常吃出口网络，容器网络一抖就超时。&lt;/p&gt;
-&lt;p&gt;现在优化后的思路：&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;TG 直传场景优先走 &lt;code&gt;file_id&lt;/code&gt; 直发（预览和原图都尽量不落地）&lt;/li&gt;
-&lt;li&gt;爬虫场景（Pixiv/Twitter/Yande/FANBOX）逻辑不动&lt;/li&gt;
-&lt;li&gt;备份逻辑不动（依然按 &lt;code&gt;origin_id/preview_id&lt;/code&gt; 拉）&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;结论：&lt;strong&gt;最容易超时的一段被剪掉了&lt;/strong&gt;。&lt;/p&gt;
-&lt;hr /&gt;
-&lt;h2&gt;7. 常见坑（按报错关键字定位）&lt;/h2&gt;
-&lt;h3&gt;7.1 &lt;code&gt;getUpdates ... 409 Conflict&lt;/code&gt;&lt;/h3&gt;
+&lt;h2&gt;6. 常见坑（按报错关键字定位）&lt;/h2&gt;
+&lt;h3&gt;6.1 &lt;code&gt;getUpdates ... 409 Conflict&lt;/code&gt;&lt;/h3&gt;
 &lt;p&gt;&lt;strong&gt;含义&lt;/strong&gt;：同一个 Bot 有多个实例在轮询。&lt;br /&gt;
 &lt;strong&gt;处理&lt;/strong&gt;：保证只有一个服务在跑（关掉旧实例、重复服务）。&lt;/p&gt;
-&lt;h3&gt;7.2 &lt;code&gt;ghcr.io ... 401 Unauthorized&lt;/code&gt;&lt;/h3&gt;
+&lt;h3&gt;6.2 &lt;code&gt;ghcr.io ... 401 Unauthorized&lt;/code&gt;&lt;/h3&gt;
 &lt;p&gt;&lt;strong&gt;含义&lt;/strong&gt;：拉镜像没权限。&lt;br /&gt;
 &lt;strong&gt;处理&lt;/strong&gt;：检查包是否 public，或给 Zeabur 配 GHCR 拉取凭证。&lt;/p&gt;
-&lt;h3&gt;7.3 &lt;code&gt;chat not found&lt;/code&gt;&lt;/h3&gt;
+&lt;h3&gt;6.3 &lt;code&gt;chat not found&lt;/code&gt;&lt;/h3&gt;
 &lt;p&gt;&lt;strong&gt;含义&lt;/strong&gt;：机器人不在目标频道，或频道 ID 配错。&lt;br /&gt;
 &lt;strong&gt;处理&lt;/strong&gt;：确认 Bot 在 A/B 频道里、ID 前缀 &lt;code&gt;-100&lt;/code&gt; 没写错。&lt;/p&gt;
-&lt;h3&gt;7.4 &lt;code&gt;context deadline exceeded&lt;/code&gt;&lt;/h3&gt;
+&lt;h3&gt;6.4 &lt;code&gt;context deadline exceeded&lt;/code&gt;&lt;/h3&gt;
 &lt;p&gt;&lt;strong&gt;含义&lt;/strong&gt;：网络链路超时（TG / 目标站 / 容器出口波动）。&lt;br /&gt;
 &lt;strong&gt;处理顺序&lt;/strong&gt;：&lt;/p&gt;
 &lt;ol&gt;
@@ -278,11 +605,11 @@ curl.exe -sS -u $auth &quot;$base/admin/api/backup/health?probe=1&quot;
 &lt;li&gt;降低并发/缩小单次抓取量&lt;/li&gt;
 &lt;li&gt;把 TG 直传改成 &lt;code&gt;file_id&lt;/code&gt; 直发&lt;/li&gt;
 &lt;/ol&gt;
-&lt;h3&gt;7.5 &lt;code&gt;pixiv bookmarks error: cannot unmarshal ... id&lt;/code&gt;&lt;/h3&gt;
+&lt;h3&gt;6.5 &lt;code&gt;pixiv bookmarks error: cannot unmarshal ... id&lt;/code&gt;&lt;/h3&gt;
 &lt;p&gt;&lt;strong&gt;含义&lt;/strong&gt;：上游返回结构变了。&lt;br /&gt;
 &lt;strong&gt;处理&lt;/strong&gt;：更新解析逻辑，别硬写死字段类型。&lt;/p&gt;
 &lt;hr /&gt;
-&lt;h2&gt;8. 我建议的“稳定参数”起步值&lt;/h2&gt;
+&lt;h2&gt;7. 我建议的“稳定参数”起步值&lt;/h2&gt;
 &lt;p&gt;用的是go语言轻量、高并发，对配置要求不高。反倒看重&lt;code&gt;线路的质量&lt;/code&gt;。：&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;Pixiv：&lt;code&gt;PIXIV_INTERVAL_MINUTES=120&lt;/code&gt;&lt;/li&gt;
@@ -293,7 +620,7 @@ curl.exe -sS -u $auth &quot;$base/admin/api/backup/health?probe=1&quot;
 &lt;/ul&gt;
 &lt;p&gt;先稳住，再提速。&lt;/p&gt;
 &lt;hr /&gt;
-&lt;h2&gt;9. 你要能复述的原理（核心三句话）&lt;/h2&gt;
+&lt;h2&gt;8. 你要能复述的原理（核心三句话）&lt;/h2&gt;
 &lt;ol&gt;
 &lt;li&gt;前台看的是预览图，不是原图，原图放 B 频道。&lt;/li&gt;
 &lt;li&gt;D1 只管索引和状态，图文件本体不进 D1。&lt;/li&gt;
@@ -312,231 +639,6 @@ curl.exe -sS -u $auth &quot;$base/admin/api/backup/health?probe=1&quot;
 &lt;/ol&gt;
 &lt;p&gt;这样定位会很快，不用盲猜。&lt;/p&gt;
 &lt;hr /&gt;
-&lt;p&gt;title: xin 项目从 0 到可用：Pixiv + Telegram + D1 图站实战（含排坑）
-published: 2026-02-21T23:30:00
-description: 按可复制步骤把 xin 跑起来：后端 Zeabur、前端 Pages/Edge、D1、TG 双频道、备份与常见报错定位。
-image: &quot;../assets/blogimg/前台页.png&quot;
-tags:&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;xin&lt;/li&gt;
-&lt;li&gt;图站&lt;/li&gt;
-&lt;li&gt;Pixiv&lt;/li&gt;
-&lt;li&gt;Telegram&lt;/li&gt;
-&lt;li&gt;D1&lt;/li&gt;
-&lt;li&gt;Zeabur&lt;/li&gt;
-&lt;li&gt;排坑
-draft: false
-lang: &quot;&quot;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;hr /&gt;
-&lt;blockquote&gt;
-&lt;p&gt;这篇是给“能跑起来最重要”的同学写的。&lt;br /&gt;
-目标就三个：&lt;strong&gt;照着做能成功&lt;/strong&gt;、&lt;strong&gt;报错知道去哪看&lt;/strong&gt;、&lt;strong&gt;看完能讲清楚为什么这么做&lt;/strong&gt;。&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;hr /&gt;
-&lt;h2&gt;0. 先说结论：xin 到底在干嘛&lt;/h2&gt;
-&lt;p&gt;&lt;code&gt;xin&lt;/code&gt; 本质是一个 &lt;strong&gt;Go 后端 + 静态前端&lt;/strong&gt; 的图站方案：&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;图来源：Pixiv 收藏爬取、TG 发图、TG 发链接（Pixiv / Yande / X / FANBOX）&lt;/li&gt;
-&lt;li&gt;图存储：
-&lt;ul&gt;
-&lt;li&gt;发布频道 A：放预览图（给前台看）&lt;/li&gt;
-&lt;li&gt;存储频道 B：放原图（留档 + 按钮获取）&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/li&gt;
-&lt;li&gt;元数据：Cloudflare D1&lt;/li&gt;
-&lt;li&gt;可选备份：WebDAV / OpenList&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;&lt;strong&gt;关键设计&lt;/strong&gt;：前台只吃预览图，原图走 B 频道，前端更稳，带宽压力也更小。&lt;/p&gt;
-&lt;blockquote&gt;
-&lt;p&gt;[图位 1：系统架构图（待补）]&lt;br /&gt;
-建议文件：&lt;code&gt;../assets/blogimg/xin-01-arch.png&lt;/code&gt;&lt;br /&gt;
-内容建议：Pixiv/TG -&amp;gt; Go 后端 -&amp;gt; A/B 频道 + D1 + WebDAV&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;hr /&gt;
-&lt;h2&gt;1. 前置条件（不满足就别往下）&lt;/h2&gt;
-&lt;p&gt;先确认你有这些东西：&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;一个 Telegram Bot（拿到 &lt;code&gt;BOT_TOKEN&lt;/code&gt;）&lt;/li&gt;
-&lt;li&gt;两个 Telegram 频道：A（发布）+ B（存储）&lt;/li&gt;
-&lt;li&gt;（可选）A 绑定的讨论组（用于评论区挂原图/详情按钮）&lt;/li&gt;
-&lt;li&gt;Cloudflare D1（已有数据库 ID）&lt;/li&gt;
-&lt;li&gt;Zeabur（部署后端容器）&lt;/li&gt;
-&lt;li&gt;Cloudflare Pages / EdgeOne（部署静态前端）&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h3&gt;1.1 TG 权限&lt;/h3&gt;
-&lt;p&gt;机器人必须是 A、B 两个频道管理员；要用讨论区就让机器人在讨论组也能发消息。&lt;/p&gt;
-&lt;hr /&gt;
-&lt;h2&gt;2. D1：先把库准备好&lt;/h2&gt;
-&lt;p&gt;你有两种方式：&lt;/p&gt;
-&lt;ol&gt;
-&lt;li&gt;直接跑项目里的 &lt;code&gt;schema.sql&lt;/code&gt;（推荐）&lt;/li&gt;
-&lt;li&gt;让后端首次启动自动补齐（更省事，但建议后面手动核对）&lt;/li&gt;
-&lt;/ol&gt;
-&lt;p&gt;如果你是旧库升级，至少确认这些表存在：&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;code&gt;images&lt;/code&gt;&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;favorites&lt;/code&gt;&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;ingest_blocklist&lt;/code&gt;&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;crawler_state&lt;/code&gt;&lt;/li&gt;
-&lt;li&gt;（开备份）&lt;code&gt;image_backups&lt;/code&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;快速检查表：&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;SELECT name FROM sqlite_master WHERE type=&apos;table&apos; ORDER BY name;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;blockquote&gt;
-&lt;p&gt;&lt;img src=&quot;../assets/blogimg/D1%20%E8%A1%A8%E6%B8%85%E5%8D%95%E6%88%AA%E5%9B%BE.png&quot; alt=&quot;D1 表清单截图&quot; /&gt;&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;hr /&gt;
-&lt;h2&gt;3. Zeabur 部署后端（最小可用）&lt;/h2&gt;
-&lt;h3&gt;3.1 必填环境变量&lt;/h3&gt;
-&lt;p&gt;最小集合（先跑起来）：&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;BOT_TOKEN=
-PUBLISH_CHANNEL_ID=
-STORAGE_CHANNEL_ID=
-# 可选：DISCUSSION_GROUP_ID=
-
-CLOUDFLARE_ACCOUNT_ID=
-CLOUDFLARE_API_TOKEN=
-D1_DATABASE_ID=
-
-ADMIN_PASSWORD=
-&lt;/code&gt;&lt;/pre&gt;
-&lt;h3&gt;3.2 Pixiv 相关（要自动爬就配）&lt;/h3&gt;
-&lt;pre&gt;&lt;code&gt;PIXIV_PHPSESSID=
-PIXIV_USER_ID=
-PIXIV_TAG=
-PIXIV_REST=show
-PIXIV_CRAWL_ORDER=desc
-PIXIV_LIMIT=40
-PIXIV_MAX_PAGES=0
-PIXIV_BOOTSTRAP_MAX_PAGES=-1
-PIXIV_INCREMENTAL_MAX_PAGES=2
-PIXIV_INTERVAL_MINUTES=120
-&lt;/code&gt;&lt;/pre&gt;
-&lt;blockquote&gt;
-&lt;p&gt;经验值：全量完成后，把状态切到增量，不然每轮从头扫会很慢。&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;h3&gt;3.3 一眼看启动是否正常&lt;/h3&gt;
-&lt;p&gt;看日志是否有：&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;code&gt;HTTP server listening on :8080&lt;/code&gt;&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;Pixiv crawl started ...&lt;/code&gt;（你配了 Pixiv 时）&lt;/li&gt;
-&lt;/ul&gt;
-&lt;blockquote&gt;
-&lt;p&gt;&lt;img src=&quot;https://i.kyr.us.ci/_astro/8080.BS-N0rsG.png&quot; alt=&quot;前台页&quot; /&gt;&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;hr /&gt;
-&lt;h2&gt;4. 前端部署（Pages/EdgeOne）&lt;/h2&gt;
-&lt;p&gt;前端是静态页，和后端分开部署。&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;后端域名示例：&lt;code&gt;https://pic.example.com&lt;/code&gt;&lt;/li&gt;
-&lt;li&gt;前端域名示例：&lt;code&gt;https://tyr.example.com/gallery.html&lt;/code&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;前端请求后端 API，只要 API 域名填对即可。&lt;/p&gt;
-&lt;blockquote&gt;
-&lt;p&gt;&lt;img src=&quot;../assets/blogimg/%E5%89%8D%E5%8F%B0%E9%A1%B5.png&quot; alt=&quot;前台页&quot; /&gt;&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;blockquote&gt;
-&lt;p&gt;&lt;img src=&quot;../assets/blogimg/%E5%90%8E%E5%8F%B0%E9%A1%B51.png&quot; alt=&quot;后台上传页截图1&quot; /&gt;
-&lt;img src=&quot;https://i.kyr.us.ci/_astro/hputai2.BrmQ0f8Q.png&quot; alt=&quot;后台上传页截图2&quot; /&gt;&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;hr /&gt;
-&lt;h2&gt;5. 先做 5 分钟验收（别一上来就全链路压测）&lt;/h2&gt;
-&lt;p&gt;按顺序测：&lt;/p&gt;
-&lt;ol&gt;
-&lt;li&gt;给 Bot 发一张图
-&lt;ul&gt;
-&lt;li&gt;A 有预览&lt;/li&gt;
-&lt;li&gt;B 有原图&lt;/li&gt;
-&lt;li&gt;D1 有新记录&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/li&gt;
-&lt;li&gt;给 Bot 发一条 Pixiv 链接
-&lt;ul&gt;
-&lt;li&gt;正常入库 + 前台可见&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/li&gt;
-&lt;li&gt;打开后台上传页上传一张图
-&lt;ul&gt;
-&lt;li&gt;成功后前台能看到&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/li&gt;
-&lt;li&gt;（开了备份）看备份健康状态&lt;/li&gt;
-&lt;/ol&gt;
-&lt;p&gt;备份检查：&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$base = &quot;https://你的后端域名&quot;
-$auth = &quot;x:你的ADMIN_PASSWORD&quot;
-curl.exe -sS -u $auth &quot;$base/admin/api/backup/health?probe=1&quot;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;hr /&gt;
-&lt;h2&gt;6. 为什么最近要改成 &lt;code&gt;file_id&lt;/code&gt; 直发&lt;/h2&gt;
-&lt;p&gt;你之前遇到的典型问题是：&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;code&gt;sendDocument ... context deadline exceeded&lt;/code&gt;&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;getUpdates ... context deadline exceeded&lt;/code&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;旧逻辑是：&lt;strong&gt;下载 TG 文件到容器 -&amp;gt; 再上传回 TG&lt;/strong&gt;。&lt;br /&gt;
-这一步非常吃出口网络，容器网络一抖就超时。&lt;/p&gt;
-&lt;p&gt;现在优化后的思路：&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;TG 直传场景优先走 &lt;code&gt;file_id&lt;/code&gt; 直发（预览和原图都尽量不落地）&lt;/li&gt;
-&lt;li&gt;爬虫场景（Pixiv/Twitter/Yande/FANBOX）逻辑不动&lt;/li&gt;
-&lt;li&gt;备份逻辑不动（依然按 &lt;code&gt;origin_id/preview_id&lt;/code&gt; 拉）&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;结论：&lt;strong&gt;最容易超时的一段被剪掉了&lt;/strong&gt;。&lt;/p&gt;
-&lt;hr /&gt;
-&lt;h2&gt;7. 常见坑（按报错关键字定位）&lt;/h2&gt;
-&lt;h3&gt;7.1 &lt;code&gt;getUpdates ... 409 Conflict&lt;/code&gt;&lt;/h3&gt;
-&lt;p&gt;&lt;strong&gt;含义&lt;/strong&gt;：同一个 Bot 有多个实例在轮询。&lt;br /&gt;
-&lt;strong&gt;处理&lt;/strong&gt;：保证只有一个服务在跑（关掉旧实例、重复服务）。&lt;/p&gt;
-&lt;h3&gt;7.2 &lt;code&gt;ghcr.io ... 401 Unauthorized&lt;/code&gt;&lt;/h3&gt;
-&lt;p&gt;&lt;strong&gt;含义&lt;/strong&gt;：拉镜像没权限。&lt;br /&gt;
-&lt;strong&gt;处理&lt;/strong&gt;：检查包是否 public，或给 Zeabur 配 GHCR 拉取凭证。&lt;/p&gt;
-&lt;h3&gt;7.3 &lt;code&gt;chat not found&lt;/code&gt;&lt;/h3&gt;
-&lt;p&gt;&lt;strong&gt;含义&lt;/strong&gt;：机器人不在目标频道，或频道 ID 配错。&lt;br /&gt;
-&lt;strong&gt;处理&lt;/strong&gt;：确认 Bot 在 A/B 频道里、ID 前缀 &lt;code&gt;-100&lt;/code&gt; 没写错。&lt;/p&gt;
-&lt;h3&gt;7.4 &lt;code&gt;context deadline exceeded&lt;/code&gt;&lt;/h3&gt;
-&lt;p&gt;&lt;strong&gt;含义&lt;/strong&gt;：网络链路超时（TG / 目标站 / 容器出口波动）。&lt;br /&gt;
-&lt;strong&gt;处理顺序&lt;/strong&gt;：&lt;/p&gt;
-&lt;ol&gt;
-&lt;li&gt;容器里 &lt;code&gt;wget&lt;/code&gt; 测目标 URL 连通性&lt;/li&gt;
-&lt;li&gt;降低并发/缩小单次抓取量&lt;/li&gt;
-&lt;li&gt;把 TG 直传改成 &lt;code&gt;file_id&lt;/code&gt; 直发&lt;/li&gt;
-&lt;/ol&gt;
-&lt;h3&gt;7.5 &lt;code&gt;pixiv bookmarks error: cannot unmarshal ... id&lt;/code&gt;&lt;/h3&gt;
-&lt;p&gt;&lt;strong&gt;含义&lt;/strong&gt;：上游返回结构变了。&lt;br /&gt;
-&lt;strong&gt;处理&lt;/strong&gt;：更新解析逻辑，别硬写死字段类型。&lt;/p&gt;
-&lt;hr /&gt;
-&lt;h2&gt;8. 我建议的“稳定参数”起步值&lt;/h2&gt;
-&lt;p&gt;用的是go语言轻量、高并发，对配置要求不高。反倒看重&lt;code&gt;线路的质量&lt;/code&gt;。：&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;Pixiv：&lt;code&gt;PIXIV_INTERVAL_MINUTES=120&lt;/code&gt;&lt;/li&gt;
-&lt;li&gt;Pixiv 增量：&lt;code&gt;PIXIV_INCREMENTAL_MAX_PAGES=2&lt;/code&gt;&lt;/li&gt;
-&lt;li&gt;Twitter 作者轮询：&lt;code&gt;TWITTER_AUTHOR_INTERVAL_MINUTES=120&lt;/code&gt;&lt;/li&gt;
-&lt;li&gt;作者抓取数：&lt;code&gt;TWITTER_AUTHOR_FETCH_LIMIT=3~5&lt;/code&gt;&lt;/li&gt;
-&lt;li&gt;备份：&lt;code&gt;BACKUP_WORKERS=1&lt;/code&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;先稳住，再提速。&lt;/p&gt;
-&lt;hr /&gt;
-&lt;h2&gt;9. 你要能复述的原理（核心三句话）&lt;/h2&gt;
-&lt;ol&gt;
-&lt;li&gt;前台看的是预览图，不是原图，原图放 B 频道。&lt;/li&gt;
-&lt;li&gt;D1 只管索引和状态，图文件本体不进 D1。&lt;/li&gt;
-&lt;li&gt;超时大头通常在“下载再上传”，&lt;code&gt;file_id&lt;/code&gt; 直发能明显减压。&lt;/li&gt;
-&lt;/ol&gt;
-&lt;hr /&gt;
-&lt;blockquote&gt;
-&lt;p&gt;&lt;a href=&quot;../assets/blogimg/zeaburrz.png&quot;&gt;日志对照图&lt;/a&gt;&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;hr /&gt;
-&lt;p&gt;如果你照着做卡住了，优先把这 3 个信息贴出来再排：&lt;/p&gt;
-&lt;ol&gt;
-&lt;li&gt;报错原文（完整一段）&lt;/li&gt;
-&lt;li&gt;相关环境变量名（值可打码）&lt;/li&gt;
-&lt;li&gt;你当前访问链路（前端域名、后端域名、有没有 Worker/CDN）&lt;/li&gt;
-&lt;/ol&gt;
-&lt;p&gt;这样定位会很快，不用盲猜。&lt;/p&gt;
 </content:encoded></item><item><title>Pixiv 收藏本地下载器（Python）随手记</title><link>https://i.kyr.us.ci/posts/pixivget/</link><guid isPermaLink="true">https://i.kyr.us.ci/posts/pixivget/</guid><description>记录我用 Python 把 Pixiv 收藏下载到本地的过程，附上配置说明和一些个人踩坑感受。</description><pubDate>Tue, 27 Jan 2026 21:10:00 GMT</pubDate><content:encoded>&lt;blockquote&gt;
 &lt;p&gt;说明：本文仅供个人学习 + 进行本地备份记录，还请遵守 Pixiv 的相关使用条款，不要二次分发。&lt;/p&gt;
 &lt;/blockquote&gt;
