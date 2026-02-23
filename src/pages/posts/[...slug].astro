@@ -26,6 +26,7 @@ const { Content, headings } = await entry.render();
 
 const { remarkPluginFrontmatter } = await entry.render();
 const isTopRandomCover = entry.slug === "top" && !!entry.data.image;
+const postCoverElementId = isTopRandomCover ? "post-cover-top-sync" : "post-cover";
 
 const jsonLd = {
 	"@context": "https://schema.org",
@@ -104,7 +105,7 @@ const jsonLd = {
             <!-- always show cover as long as it has one -->
 
             {entry.data.image &&
-                <ImageWrapper id="post-cover" src={entry.data.image} basePath={path.join("content/posts/", getDir(entry.id))} class="mb-8 rounded-xl banner-container onload-animation"/>
+                <ImageWrapper id={postCoverElementId} src={entry.data.image} basePath={path.join("content/posts/", getDir(entry.id))} class="mb-8 rounded-xl banner-container onload-animation"/>
             }
 
 
@@ -311,7 +312,7 @@ const jsonLd = {
 			}
 
 			function syncTopPostCoverToWallpaper() {
-				const coverImg = document.querySelector("#post-cover img");
+				const coverImg = document.querySelector("#post-cover-top-sync img");
 				if (!(coverImg instanceof HTMLImageElement)) return;
 				const nextUrl = getCurrentWallpaperUrl();
 				if (!isResolvedWallpaperUrl(nextUrl)) return;
