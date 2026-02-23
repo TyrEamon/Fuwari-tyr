@@ -25,10 +25,7 @@ const { entry } = Astro.props;
 const { Content, headings } = await entry.render();
 
 const { remarkPluginFrontmatter } = await entry.render();
-const isTopRandomCover =
-	entry.slug === "top" &&
-	typeof entry.data.image === "string" &&
-	(entry.data.image.includes("/random/h") || entry.data.image.includes("/random/v"));
+const isTopRandomCover = entry.slug === "top" && !!entry.data.image;
 
 const jsonLd = {
 	"@context": "https://schema.org",
@@ -321,6 +318,9 @@ const jsonLd = {
 				const currentUrl = coverImg.currentSrc || coverImg.src || "";
 				if (currentUrl === nextUrl) return;
 				coverImg.src = nextUrl;
+				if (coverImg.alt === "random:h" || coverImg.alt === "random:v") {
+					coverImg.alt = "";
+				}
 				if (coverImg.srcset) coverImg.srcset = "";
 			}
 

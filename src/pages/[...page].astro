@@ -131,6 +131,9 @@ const len = page.data.length;
 					if (currentUrl === nextUrl) return;
 
 					coverImg.src = nextUrl;
+					if (coverImg.alt === "random:h" || coverImg.alt === "random:v") {
+						coverImg.alt = "";
+					}
 					if (coverImg.srcset) coverImg.srcset = "";
 				}
 
