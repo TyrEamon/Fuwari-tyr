@@ -28,10 +28,6 @@ const isPinned = entry.data.pinned === true;
 const className = Astro.props.class;
 
 const hasCover = image !== undefined && image !== null && image !== "";
-const isTopWallpaperSyncCover =
-	hasCover &&
-	entry.slug === "top";
-
 const coverWidth = "28%";
 
 const { remarkPluginFrontmatter } = await entry.render();
@@ -69,7 +65,6 @@ const { remarkPluginFrontmatter } = await entry.render();
     </div>
 
     {hasCover && <a href={url} aria-label={title}
-                    data-sync-wallpaper-cover={isTopWallpaperSyncCover ? "top" : undefined}
                     class:list={["group",
                         "max-h-none mx-0 mt-0",
                         "w-[var(--coverWidth)] absolute top-3 bottom-3 right-3 rounded-xl overflow-hidden active:scale-95"
