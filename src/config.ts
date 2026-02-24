@@ -45,7 +45,7 @@ export const siteConfig: SiteConfig = {
 		enable:true,
 		src: {
 			desktop: "/random/h",
-			mobile: "/random/h",
+			mobile: "/random/v",
 		}, // Relative to the /src directory. Relative to the /public directory if it starts with '/'
 
 		position: "center", // Equivalent to object-position, only supports 'top', 'center', 'bottom'. 'center' by default
@@ -60,7 +60,7 @@ export const siteConfig: SiteConfig = {
 		enable:true, // Enable background image
 		src: {
 			desktop: "/random/h",      //备用随机图：https://t.alcy.cc/ycy  Background image URL (supports HTTPS)
-			mobile: "/random/h",
+			mobile: "/random/v",
 		},   //备用随机图：https://t.alcy.cc/ycy  Background image URL (supports HTTPS)
 		position: "center", // Background position: 'top', 'center', 'bottom'
 		size: "cover", // Background size: 'cover', 'contain', 'auto'

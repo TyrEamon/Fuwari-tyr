@@ -1,6 +1,6 @@
 ---
 title: 欢迎来到我的博客！
-image: /random/h
+image: /wallpaper-sync-placeholder.svg
 published: 2026-01-24
 pinned: true
 category: 置顶

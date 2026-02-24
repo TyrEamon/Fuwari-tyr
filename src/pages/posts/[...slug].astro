@@ -25,7 +25,8 @@ const { entry } = Astro.props;
 const { Content, headings } = await entry.render();
 
 const { remarkPluginFrontmatter } = await entry.render();
-const postCoverElementId = "post-cover";
+const isTopPost = entry.slug === "top";
+const postCoverElementId = isTopPost ? "post-cover-top-sync" : "post-cover";
 
 const jsonLd = {
 	"@context": "https://schema.org",
@@ -328,6 +329,103 @@ const jsonLd = {
     document.addEventListener('DOMContentLoaded', loadPageViews);
     document.addEventListener('swup:contentReplaced', loadPageViews);
 </script>
+
+{isTopPost && entry.data.image && (
+	<script is:inline>
+		(() => {
+			const COVER_SELECTOR = "#post-cover-top-sync img";
+			const TRANSPARENT_GIF =
+				"data:image/gif;base64,R0lGODlhAQABAAAAACwAAAAAAQABAAA=";
+
+			function normalizeUrl(url) {
+				if (!url || typeof url !== "string") return "";
+				const trimmed = url.trim();
+				if (!trimmed) return "";
+				if (
+					trimmed === TRANSPARENT_GIF ||
+					trimmed.includes("/random/h") ||
+					trimmed.includes("/random/v")
+				) {
+					return "";
+				}
+				return trimmed;
+			}
+
+			function extractBgUrl(el) {
+				if (!(el instanceof HTMLElement)) return "";
+				const value = el.style.backgroundImage || getComputedStyle(el).backgroundImage || "";
+				const m = value.match(/url\((['"]?)(.*?)\1\)/i);
+				return normalizeUrl(m?.[2] || "");
+			}
+
+			function getBannerUrl() {
+				const mobile = document.querySelector("#banner-mobile img");
+				const desktop = document.querySelector("#banner img");
+				const mobileVisible =
+					mobile instanceof HTMLImageElement &&
+					getComputedStyle(mobile).display !== "none";
+				if (mobileVisible) return normalizeUrl(mobile.getAttribute("src") || mobile.src || "");
+				if (desktop instanceof HTMLImageElement) {
+					return normalizeUrl(desktop.getAttribute("src") || desktop.src || "");
+				}
+				return "";
+			}
+
+			function getCurrentWallpaperUrl(explicitUrl) {
+				const fromEvent = normalizeUrl(explicitUrl || "");
+				if (fromEvent) return fromEvent;
+				const cached = normalizeUrl(window.__lastAppliedWallpaperUrl || "");
+				if (cached) return cached;
+				const mode = document.documentElement.getAttribute("data-wallpaper-mode");
+				if (mode === "banner") return getBannerUrl();
+				if (mode === "fullscreen") return extractBgUrl(document.getElementById("bg-box"));
+				return getBannerUrl() || extractBgUrl(document.getElementById("bg-box"));
+			}
+
+			function syncTopPostCover(explicitUrl) {
+				const img = document.querySelector(COVER_SELECTOR);
+				if (!(img instanceof HTMLImageElement)) return;
+				const nextUrl = getCurrentWallpaperUrl(explicitUrl);
+				if (!nextUrl) return;
+				const current = img.currentSrc || img.src || img.getAttribute("src") || "";
+				if (current === nextUrl) return;
+
+				const preload = new Image();
+				preload.onload = () => {
+					img.src = nextUrl;
+					img.alt = "Cover Image of the Post";
+					img.dataset.wallpaperSynced = "1";
+				};
+				preload.src = nextUrl;
+			}
+
+			function scheduleSync() {
+				[0, 120, 500, 1200, 2500].forEach((delay) =>
+					setTimeout(() => syncTopPostCover(), delay),
+				);
+			}
+
+			function onWallpaperApplied(event) {
+				syncTopPostCover(event?.detail?.url);
+			}
+
+			function run() {
+				if (!document.querySelector(COVER_SELECTOR)) return;
+				scheduleSync();
+			}
+
+			run();
+			if (window.__topPostWallpaperSyncBound) return;
+			window.__topPostWallpaperSyncBound = true;
+			document.addEventListener("swup:contentReplaced", run);
+			document.addEventListener("astro:page-load", run);
+			document.addEventListener("wallpaper:mode-change", scheduleSync);
+			window.addEventListener("resize", scheduleSync, { passive: true });
+			window.addEventListener("wallpaper:applied", onWallpaperApplied);
+			window.addEventListener("random-pic-api:ready", scheduleSync);
+		})();
+	</script>
+)}
 
 <style is:global>
     /* 确保包裹容器继承原图的圆角等样式 */

@@ -68,7 +68,8 @@ const { remarkPluginFrontmatter } = await entry.render();
                     class:list={["group",
                         "max-h-none mx-0 mt-0",
                         "w-[var(--coverWidth)] absolute top-3 bottom-3 right-3 rounded-xl overflow-hidden active:scale-95"
-                    ]} >
+                    ]}
+					data-top-wallpaper-card-cover={entry.slug === "top" ? "true" : undefined} >
         <div class="absolute pointer-events-none z-10 w-full h-full group-hover:bg-black/30 group-active:bg-black/50 transition"></div>
         <!-- 封面图上的箭头 -->
         <div class="absolute pointer-events-none z-20 w-full h-full flex items-center justify-center ">
