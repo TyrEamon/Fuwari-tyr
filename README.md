@@ -1,187 +1,116 @@
-# Fuwari For AcoFork
+# RuneByte Blog（TyrEamon）
 
-> [!CAUTION]
-> 该仓库由 AcoFork 深度定制，并包含了最新的文章，如果你想以此为模板进行二改，需要一定的动手能力。
+这是我的个人博客源码仓库，基于 `Fuwari` 深度改造，当前主要用于记录折腾过程、教程笔记、项目展示与日常内容。
 
-<img width="1858" height="948" alt="image" src="https://github.com/user-attachments/assets/55c2c63b-0dac-436e-aaa0-451ad2dfb65a" />
+在线站点（示例）：
+- `https://i.kyr.us.ci`
 
+## 说明
 
-一个基于 Astro 构建的现代化个人博客主题，专注于技术分享与实践。
+- 这是**个人使用中的博客仓库**，不是纯净模板仓库。
+- 仓库内包含了我的配置、页面改造、导航结构、画廊页、展览馆入口、随机背景方案等。
+- 如果你要二次 fork，建议先通读 `src/config.ts` 和 `src/layouts/Layout.astro`。
 
-## ✨ 特性
+## 基础栈
 
-- 🚀 基于 Astro 4.0+ 构建，性能卓越
-- 📱 完全响应式设计，支持移动端
-- 🌙 支持深色/浅色主题切换
-- 📝 支持 Markdown 和 MDX 格式
-- 🔍 内置搜索功能
-- 📊 文章阅读时间统计
-- 🏷️ 标签和分类系统
-- 📈 SEO 优化
-- 🎨 可自定义配置
-- 💬 评论系统支持
-- 📡 RSS 订阅支持
+- Astro 5
+- Svelte 5
+- Tailwind CSS
+- Swup（页面切换）
+- Fancybox（图片预览）
+- Masonry / imagesLoaded（画廊瀑布流）
+- Umami（统计）
 
-## 🛠️ 技术栈
+## 我当前做过的主要改造（相对上游）
 
-- **框架**: Astro
-- **样式**: Tailwind CSS + Stylus
-- **交互**: Svelte
-- **构建工具**: Vite
-- **包管理**: pnpm
-- **代码规范**: Biome
+- 壁纸模式切换：`banner / fullscreen / none`
+- 顶栏交互与透明模式联动（参考 Twilight 思路做适配）
+- 开场动画（splash）与主题风格统一
+- 展览馆页（`/exhibition/`）与画廊页（`/gallery/`）
+- 随机图 API 接入（`/random/h`）
+- Umami 分享统计接入（侧栏/文章页）
+- 移动端导航交互优化（含资源折叠）
 
-## 🚀 快速开始
+## 本地开发
 
-### 环境要求
-
+环境要求：
 - Node.js 18+
 - pnpm
 
-### 安装依赖
+安装依赖：
 
 ```bash
 pnpm install
 ```
 
-### 开发模式
+启动开发：
 
 ```bash
 pnpm dev
 ```
 
-### 构建生产版本
+构建：
 
 ```bash
 pnpm build
 ```
 
-### 预览构建结果
+预览构建结果：
 
 ```bash
 pnpm preview
 ```
 
-## 📝 使用指南
-
-### 创建新文章
-
-使用内置脚本快速创建新文章：
+## 常用脚本
 
 ```bash
-pnpm new-post helloword
+pnpm new-post <slug>   # 新建文章
+pnpm clean             # 清理未引用图片
+pnpm del-space         # 清理图片文件名特殊字符/空格
+pnpm format            # 格式化（Biome）
+pnpm lint              # 检查并尝试修复（Biome）
 ```
 
-### 清理未使用的图片
+## 关键配置位置
 
-清理 `src/content/assets` 目录下未被引用的图片文件：
+- 站点主配置：`src/config.ts`
+- 全局布局与首屏逻辑：`src/layouts/Layout.astro`
+- 顶栏：`src/components/Navbar.astro`
+- 壁纸切换组件：`src/components/widget/WallpaperSwitch.svelte`
+- 展览馆：`src/pages/exhibition.astro`
+- 画廊：`src/pages/gallery.astro`
 
-```bash
-pnpm clean
-```
+## 内容目录
 
-### 规范化图片文件名
+- 文章：`src/content/posts/`
+- 关于页：`src/content/spec/about.md`
+- 图片资源：`src/content/assets/`（按需）
 
-扫描 Markdown 文件中的图片引用，将文件名中的空格、逗号、多余的点等特殊字符移除，并同步更新文件引用。这有助于提高多构建平台的兼容性（某些平台不支持特殊字符文件名）。
+## 随机图相关（当前方案）
 
-```bash
-pnpm del-space
-```
+博客背景与部分页面图片依赖外部随机图接口（我自用）：
+- `https://rapi.0w0.us.ci`
 
-### 配置博客
+当前博客使用：
+- `random.js`（在 `Layout.astro` 中引入）
+- 随机图路径（配置中）默认走 `/random/h`
 
-编辑 `src/config.ts` 文件来自定义博客配置：
+如果你 fork 后不用这套随机图接口，请优先修改：
+- `src/config.ts` 的 `banner.src` / `background.src`
+- `src/layouts/Layout.astro` 中的随机图脚本引用
 
-```typescript
-export const siteConfig: SiteConfig = {
-  title: "Fuwari",
-  subtitle: "技术分享与实践",
-  lang: "zh_CN",
-  themeColor: {
-    hue: 250,
-    fixed: false,
-  },
-  banner: {
-    enable: false,
-    src: "assets/images/demo-banner.png",
-    position: "center",
-  },
-  favicon: [
-    {
-      src: "/favicon/icon.png",
-    }
-  ]
-}
-```
+## 部署说明（简要）
 
-### 文章格式
+这是静态站点，`pnpm build` 后产物在 `dist/`，可部署到任意静态托管平台（例如 EdgeOne / Cloudflare Pages / Vercel / Netlify 等）。
 
-文章使用 Markdown 格式，支持 frontmatter：
+## 致谢
 
-```markdown
----
-title: 文章标题
-published: 2024-01-01
-description: 文章描述
-image: ./cover.jpg
-tags: [标签1, 标签2]
-category: 分类
-draft: false
+- 上游主题：`saicaca/fuwari`
+- 灵感参考（部分交互/视觉思路）：Twilight 主题项目
+
 ---
 
-# 文章内容
-
-这里是文章正文...
-```
-
-## 📁 项目结构
-
-```
-├── public/                 # 静态资源
-├── src/
-│   ├── components/         # 组件
-│   ├── content/           # 内容
-│   │   ├── posts/         # 博客文章
-│   │   └── assets/        # 资源文件
-│   ├── layouts/           # 布局
-│   ├── pages/             # 页面
-│   ├── styles/            # 样式
-│   └── config.ts          # 配置文件
-├── scripts/               # 脚本工具
-└── package.json
-```
-
-## 🎨 自定义
-
-### 主题颜色
-
-在 `src/config.ts` 中修改 `themeColor` 配置：
-
-```typescript
-themeColor: {
-  hue: 250,        // 主色调 (0-360)
-  fixed: false,    // 是否固定颜色
-}
-```
-
-### 样式定制
-
-- 全局样式：`src/styles/main.css`
-- Markdown 样式：`src/styles/markdown.css`
-- 变量定义：`src/styles/variables.styl`
-
-## 📦 部署
-
-构建后的静态文件位于 `dist/` 目录，可部署到任何静态托管平台。
-
-## 🤝 贡献
-
-欢迎提交 Issue 和 Pull Request！
-
-## 📄 许可证
-
-[MIT License](LICENSE)
-
-## 🙏 致谢
-
-感谢所有为这个项目做出贡献的开发者们！尤其感谢[上游仓库](https://github.com/saicaca/fuwari)
+如果你是 fork 这个仓库做自己的博客，建议先改这三处：
+1. `src/config.ts`（站点信息/导航/背景/统计）
+2. `src/content/spec/about.md`（关于页）
+3. `src/content/posts/`（删除我的文章，换成你的内容）
