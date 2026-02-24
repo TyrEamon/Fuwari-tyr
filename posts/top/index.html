@@ -23,10 +23,12 @@ const enableFullscreenWallpaper = true;
 					if (url === "/random/v") {
 						if (modeSwitchRandomCarry && modeSwitchRandomCarry.v) return modeSwitchRandomCarry.v;
 						if (window.getRandomPicV) return window.getRandomPicV();
+						return "";
 					}
 					if (url === "/random/h") {
 						if (modeSwitchRandomCarry && modeSwitchRandomCarry.h) return modeSwitchRandomCarry.h;
 						if (window.getRandomPicH) return window.getRandomPicH();
+						return "";
 					}
 					return url;
 				}
@@ -233,6 +235,7 @@ const enableFullscreenWallpaper = true;
 				var onResize = debounce(applyResponsiveBg, 160);
 				window.addEventListener("load", applyResponsiveBg);
 				window.addEventListener("resize", onResize);
+				window.addEventListener("random-pic-api:ready", applyResponsiveBg);
 				document.addEventListener("swup:contentReplaced", applyResponsiveBg);
 				if (window.swup && window.swup.hooks) {
 					window.swup.hooks.on("content:replace", applyResponsiveBg);
@@ -839,6 +842,7 @@ const umamiConfig = {"enable":true,"baseUrl":"https://umamii.zeabur.app","shareI
 			document.addEventListener("swup:contentReplaced", scheduleTopPostCoverSync);
 			document.addEventListener("astro:page-load", scheduleTopPostCoverSync);
 			window.addEventListener("wallpaper:mode-change", scheduleTopPostCoverSync);
+			window.addEventListener("random-pic-api:ready", scheduleTopPostCoverSync);
 			window.addEventListener("resize", scheduleTopPostCoverSync);
 		})();
 	</script> <script>(function(){const umamiConfig = {"enable":true,"baseUrl":"https://umamii.zeabur.app","shareId":"C8gWpSlbh6hrKEUL","timezone":"Asia/Shanghai"};

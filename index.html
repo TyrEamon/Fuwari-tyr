@@ -23,10 +23,12 @@ const enableFullscreenWallpaper = true;
 					if (url === "/random/v") {
 						if (modeSwitchRandomCarry && modeSwitchRandomCarry.v) return modeSwitchRandomCarry.v;
 						if (window.getRandomPicV) return window.getRandomPicV();
+						return "";
 					}
 					if (url === "/random/h") {
 						if (modeSwitchRandomCarry && modeSwitchRandomCarry.h) return modeSwitchRandomCarry.h;
 						if (window.getRandomPicH) return window.getRandomPicH();
+						return "";
 					}
 					return url;
 				}
@@ -233,6 +235,7 @@ const enableFullscreenWallpaper = true;
 				var onResize = debounce(applyResponsiveBg, 160);
 				window.addEventListener("load", applyResponsiveBg);
 				window.addEventListener("resize", onResize);
+				window.addEventListener("random-pic-api:ready", applyResponsiveBg);
 				document.addEventListener("swup:contentReplaced", applyResponsiveBg);
 				if (window.swup && window.swup.hooks) {
 					window.swup.hooks.on("content:replace", applyResponsiveBg);
@@ -660,6 +663,7 @@ Curated, as you see | : )</div> <div class="flex flex-wrap gap-2 justify-center 
 				document.addEventListener("swup:contentReplaced", scheduleTopCoverSync);
 				document.addEventListener("astro:page-load", scheduleTopCoverSync);
 				window.addEventListener("wallpaper:mode-change", scheduleTopCoverSync);
+				window.addEventListener("random-pic-api:ready", scheduleTopCoverSync);
 				window.addEventListener("resize", scheduleTopCoverSync);
 			})();
 		</script><div class="transition flex flex-col rounded-[var(--radius-large)] bg-transparent gap-4 mb-4"> <div class="onload-animation" style="animation-delay: calc(var(--content-delay) + 0ms);"> <div class="card-base card-hover flex flex-col w-full relative" style="undefined; --coverWidth: 28%;" data-astro-cid-iyiqi2so> <div class="pl-9 pr-2 pt-6 pb-6 relative w-[calc(100%_-_var(--coverWidth)_-_12px)]" data-astro-cid-iyiqi2so style="--coverWidth: 28%;"> <a href="/posts/top/" class="transition group w-full block font-bold mb-2 md:mb-3 text-xl md:text-3xl text-90 relative
