@@ -23,12 +23,12 @@ import { Icon } from "astro-icon/components";
 		<div class="mb-5 text-sm leading-relaxed text-50">
 			图片资源托管于：
 			<a
-				href="https://rapi.0w0.us.ci"
+				href="https://rapi.kyr.us.ci"
 				target="_blank"
 				rel="noopener noreferrer"
 				class="font-medium text-75 transition-colors hover:text-[var(--primary)]"
 			>
-				https://rapi.0w0.us.ci
+				https://rapi.kyr.us.ci
 			</a>
 			<br />
 			支持横屏 / 竖屏切换、最新 / 最旧排序、触底自动加载（每批 20 张）。
@@ -65,12 +65,13 @@ import { Icon } from "astro-icon/components";
 		import { Fancybox } from "@fancyapps/ui";
 		import "@fancyapps/ui/dist/fancybox/fancybox.css";
 
-		const RANDOM_JS_URL = "https://rapi.0w0.us.ci/random.js";
-		const DOMAIN = "https://rapi.0w0.us.ci";
+		const COUNTS_URL = "https://rapi.kyr.us.ci/counts.json";
+		const RANDOM_JS_URL = "https://rapi.kyr.us.ci/random.js";
+		const DOMAIN = "https://rapi.kyr.us.ci";
 
 		let counts = { h: 0, v: 0 };
 		let currentType = "h";
-		let isReverse = false;
+		let isReverse = true;
 		let nextIndex = 1;
 		let loading = false;
 		let msnry = null;
@@ -117,7 +118,7 @@ import { Icon } from "astro-icon/components";
 		function updateSortButton() {
 			const btnSort = document.getElementById("btn-sort");
 			if (!btnSort) return;
-			btnSort.textContent = isReverse ? "最旧" : "最新";
+			btnSort.textContent = isReverse ? "最新" : "最旧";
 			const activeClasses = ["ring-2", "ring-[var(--primary)]"];
 			for (const c of activeClasses) {
 				btnSort.classList.toggle(c, isReverse);
@@ -125,8 +126,24 @@ import { Icon } from "astro-icon/components";
 		}
 
 		async function fetchCounts() {
+			const ts = Date.now();
 			try {
-				const res = await fetch(RANDOM_JS_URL, { cache: "no-store" });
+				const countsRes = await fetch(`${COUNTS_URL}?ts=${ts}`, { cache: "no-store" });
+				if (countsRes.ok) {
+					const parsed = await countsRes.json();
+					const h = Number(parsed.h || 0);
+					const v = Number(parsed.v || 0);
+					if (!Number.isFinite(h) || !Number.isFinite(v)) throw new Error("counts invalid");
+					counts = { h, v };
+					updateStatus();
+					return;
+				}
+			} catch (_e) {
+				// Fallback to parsing random.js below.
+			}
+
+			try {
+				const res = await fetch(`${RANDOM_JS_URL}?ts=${ts}`, { cache: "no-store" });
 				if (!res.ok) throw new Error(String(res.status));
 				const text = await res.text();
 				const m = text.match(/(?:var|const|let)\s+counts\s*=\s*(\{[^;]+\})\s*;/);
@@ -139,7 +156,7 @@ import { Icon } from "astro-icon/components";
 				updateStatus();
 			} catch (e) {
 				// Fallback to known-safe defaults if cross-origin fetch fails locally.
-				counts = { h: 1200, v: 4500 };
+				counts = { h: 724, v: 217 };
 				updateStatus();
 			}
 		}
@@ -370,6 +387,18 @@ import { Icon } from "astro-icon/components";
 
 		document.addEventListener("astro:before-swap", () => {
 			Fancybox.destroy();
+			if (io) {
+				io.disconnect();
+				io = null;
+			}
+			if (resizeHandler) {
+				window.removeEventListener("resize", resizeHandler);
+				resizeHandler = null;
+			}
+			if (msnry) {
+				msnry.destroy();
+				msnry = null;
+			}
 		});
 
 		if (document.readyState === "loading") {
@@ -383,4 +412,3 @@ import { Icon } from "astro-icon/components";
 		document.addEventListener("swup:contentReplaced", initIfPresent);
 	</script>
 </MainGridLayout>
-

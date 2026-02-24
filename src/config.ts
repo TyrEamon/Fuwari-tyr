@@ -53,7 +53,7 @@ export const siteConfig: SiteConfig = {
 			enable:false, // Random banner has no stable per-image credit; disable default credit display
 			text: "随机图 API", // Credit text to be displayed
 
-			url: "https://rapi.0w0.us.ci", // (Optional) URL link to the original artwork or artist's page
+			url: "https://rapi.kyr.us.ci", // 备用随机图api：rapi.kyr.us.ci   // (Optional) URL link to the original artwork or artist's page
 		},
 	},
 	background: {
