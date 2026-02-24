@@ -339,6 +339,7 @@ const jsonLd = {
 			document.addEventListener("swup:contentReplaced", scheduleTopPostCoverSync);
 			document.addEventListener("astro:page-load", scheduleTopPostCoverSync);
 			window.addEventListener("wallpaper:mode-change", scheduleTopPostCoverSync);
+			window.addEventListener("random-pic-api:ready", scheduleTopPostCoverSync);
 			window.addEventListener("resize", scheduleTopPostCoverSync);
 		})();
 	</script>

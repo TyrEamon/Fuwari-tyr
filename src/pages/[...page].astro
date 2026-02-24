@@ -157,6 +157,7 @@ const len = page.data.length;
 				document.addEventListener("swup:contentReplaced", scheduleTopCoverSync);
 				document.addEventListener("astro:page-load", scheduleTopCoverSync);
 				window.addEventListener("wallpaper:mode-change", scheduleTopCoverSync);
+				window.addEventListener("random-pic-api:ready", scheduleTopCoverSync);
 				window.addEventListener("resize", scheduleTopCoverSync);
 			})();
 		</script>
