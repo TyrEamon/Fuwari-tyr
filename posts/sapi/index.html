@@ -87,6 +87,20 @@ const enableFullscreenWallpaper = true;
 					window.location.reload();
 				}
 
+				function emitWallpaperApplied(url, target) {
+					if (!url) return;
+					try {
+						window.__lastAppliedWallpaperUrl = url;
+					} catch (_e) {}
+					try {
+						window.dispatchEvent(
+							new CustomEvent("wallpaper:applied", {
+								detail: { url: url, target: target || "unknown" },
+							}),
+						);
+					} catch (_e) {}
+				}
+
 				function normalizeUrlForCompare(url) {
 					if (!url) return "";
 					try {
@@ -165,6 +179,7 @@ const enableFullscreenWallpaper = true;
 						img.onload = function () {
 							bgBox.style.backgroundImage = "url('" + nextUrl + "')";
 							bgBox.classList.add("loaded");
+							emitWallpaperApplied(nextUrl, "fullscreen");
 						};
 						img.src = nextUrl;
 					};
@@ -180,6 +195,7 @@ const enableFullscreenWallpaper = true;
 					var preload = new Image();
 					preload.onload = function () {
 						imgEl.src = nextUrl;
+						emitWallpaperApplied(nextUrl, "banner");
 					};
 					preload.src = nextUrl;
 				}
@@ -862,18 +878,51 @@ const splashAutoCloseMs = 5500;
 				if (!overlay) return;
 				var spinner = overlay.querySelector(".splash-spinner");
 				var closed = false;
+				var pendingClose = false;
+				var forceCloseByTimeout = false;
 				var phase2Started = false;
 				var spinCycleMs = 1200;
 				var minSpinMs = 1800;
 				var phase2FallbackMs = minSpinMs + spinCycleMs + 200;
+				var swupReady = !!(window.swup && window.swup.hooks);
+				var randomReady =
+					!!window.__randomPicApiReady ||
+					(typeof window.getRandomPicH === "function" &&
+						typeof window.getRandomPicV === "function");
+
+				function refreshInitReady() {
+					if (!swupReady && window.swup && window.swup.hooks) {
+						swupReady = true;
+					}
+					if (
+						!randomReady &&
+						(
+							window.__randomPicApiReady ||
+							(
+								typeof window.getRandomPicH === "function" &&
+								typeof window.getRandomPicV === "function"
+							)
+						)
+					) {
+						randomReady = true;
+					}
+					return swupReady && randomReady;
+				}
+
+				function canCloseSplashNow() {
+					if (!phase2Started) return false;
+					if (forceCloseByTimeout) return true;
+					return refreshInitReady();
+				}
 
 				function startPhase2() {
 					if (closed || phase2Started || !overlay) return;
 					phase2Started = true;
 					overlay.classList.add("splash-after");
+					tryCloseSplash();
 				}
 
-				function closeSplash() {
+				function closeSplashNow() {
 					if (closed) return;
 					closed = true;
 					if (overlay) overlay.classList.add("splash-exit");
@@ -882,6 +931,28 @@ const splashAutoCloseMs = 5500;
 					setTimeout(function () {
 						if (overlay) overlay.remove();
 					}, 450);
+				}
+
+				function tryCloseSplash() {
+					if (!pendingClose || closed) return;
+					if (!canCloseSplashNow()) return;
+					closeSplashNow();
+				}
+
+				function requestCloseSplash() {
+					if (closed) return;
+					pendingClose = true;
+					tryCloseSplash();
+				}
+
+				function markSwupReady() {
+					swupReady = true;
+					tryCloseSplash();
+				}
+
+				function markRandomReady() {
+					randomReady = true;
+					tryCloseSplash();
 				}
 
 				var phase2MinReached = false;
@@ -901,14 +972,31 @@ const splashAutoCloseMs = 5500;
 
 				function closeByWheelOrTouch() {
 					if (!overlay || !overlay.classList.contains("splash-after")) return;
-					closeSplash();
+					requestCloseSplash();
 				}
 
-				overlay.addEventListener("click", closeSplash);
+				overlay.addEventListener("click", requestCloseSplash);
 				window.addEventListener("wheel", closeByWheelOrTouch, { passive: true });
 				window.addEventListener("touchstart", closeByWheelOrTouch, { passive: true });
+				window.addEventListener("random-pic-api:ready", markRandomReady);
+				document.addEventListener("swup:enable", markSwupReady);
+				var readyPollTimer = setInterval(function () {
+					if (closed) {
+						clearInterval(readyPollTimer);
+						return;
+					}
+					if (refreshInitReady()) {
+						clearInterval(readyPollTimer);
+						tryCloseSplash();
+					}
+				}, 120);
+				setTimeout(function () {
+					clearInterval(readyPollTimer);
+					forceCloseByTimeout = true;
+					tryCloseSplash();
+				}, Math.max((splashAutoCloseMs || 0) + 2500, 5000));
 				if (splashAutoCloseMs && splashAutoCloseMs > 0) {
-					setTimeout(closeSplash, splashAutoCloseMs);
+					setTimeout(requestCloseSplash, splashAutoCloseMs);
 				}
 			})();
 		})();</script> <script>
