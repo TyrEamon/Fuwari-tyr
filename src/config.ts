@@ -129,6 +129,13 @@ export const navBarConfig: NavBarConfig = {
 			external: false,
 			children: [
 				{
+					name: "画廊",
+					url: "/gallery/",
+					external: false,
+					icon: "material-symbols:photo-library-rounded",
+					description: "瀑布流图片画廊（横屏/竖屏筛选）",
+				},
+				{
 					name: "网页导航",
 					url: "https://www.6858686.xyz/",
 					external: true,
