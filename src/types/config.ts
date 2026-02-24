@@ -104,6 +104,8 @@ export type NavBarLink = {
 	name: string;
 	url: string;
 	external?: boolean;
+	icon?: string;
+	description?: string;
 	children?: (NavBarLink | LinkPreset)[];
 };
 

@@ -97,6 +97,13 @@ export const navBarConfig: NavBarConfig = {
 		LinkPreset.Home,
 		LinkPreset.Archive,
 		{
+			name: "展览馆",
+			url: "/exhibition/",
+			external: false,
+			icon: "fa6-solid:table-cells-large",
+			description: "资源入口与项目导航落地页",
+		},
+		{
 			name: "友链",
 			url: "/friends/", // Internal links should not include the base path, as it is automatically added
 			external: false, // Show an external link icon and will open in a new tab
@@ -125,11 +132,15 @@ export const navBarConfig: NavBarConfig = {
 					name: "网页导航",
 					url: "https://www.6858686.xyz/",
 					external: true,
+					icon: "fa6-solid:compass",
+					description: "常用网站导航与收藏入口",
 				},
 				{
 					name: "图站",
 					url: "https://b.0106010.xyz",
 					external: true,
+					icon: "fa6-solid:images",
+					description: "个人图站 / 图床展示页面",
 				},
 			],
 		},

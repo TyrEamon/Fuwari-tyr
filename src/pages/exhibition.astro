@@ -1,0 +1,104 @@
+---
+import { Icon } from "astro-icon/components";
+import MainGridLayout from "@layouts/MainGridLayout.astro";
+import { navBarConfig } from "@/config";
+import { LinkPresets } from "@/constants/link-presets";
+import { LinkPreset, type NavBarLink } from "@/types/config";
+import { url } from "@/utils/url-utils";
+
+const resolveLink = (item: NavBarLink | LinkPreset): NavBarLink =>
+	typeof item === "number" ? LinkPresets[item] : item;
+
+const navLinks = navBarConfig.links.map(resolveLink);
+const exhibitionMenu = navLinks.find((link) => link.name === "资源" && link.children?.length);
+const exhibitionItems = (exhibitionMenu?.children ?? [])
+	.map(resolveLink)
+	.filter((item) => item.url !== "/exhibition/");
+
+const pageTitle = "Exhibition";
+const pageDescription = "A collection of my resources and navigation entries.";
+---
+
+<MainGridLayout title={pageTitle} description={pageDescription}>
+	<div class="flex w-full rounded-(--radius-large) overflow-hidden relative min-h-32">
+		<div class="card-base z-10 px-6 md:px-9 py-6 relative w-full">
+			<header class="mb-8">
+				<h1 class="text-3xl font-bold text-neutral-900 dark:text-neutral-100 mb-3">
+					{pageTitle}
+				</h1>
+				<p class="text-neutral-600 dark:text-neutral-400">
+					{pageDescription}
+				</p>
+			</header>
+
+			{exhibitionItems.length === 0 ? (
+				<div class="text-center py-12">
+					<p class="text-neutral-600 dark:text-neutral-400">暂无可展示的资源入口。</p>
+				</div>
+			) : (
+				<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+					{exhibitionItems.map((child) => (
+						<a
+							href={child.external ? child.url : url(child.url)}
+							target={child.external ? "_blank" : undefined}
+							rel={child.external ? "noopener noreferrer" : undefined}
+							class="menu-card group flex flex-col items-center justify-center p-8 rounded-xl border transition-all duration-300"
+						>
+							<div class="icon-wrapper w-16 h-16 flex items-center justify-center rounded-full mb-4 transition-all duration-300">
+								{child.icon ? (
+									<Icon name={child.icon} class="text-3xl" />
+								) : (
+									<Icon name="fa6-solid:link" class="text-2xl" />
+								)}
+							</div>
+
+							<h2 class="text-xl font-bold text-neutral-900 dark:text-neutral-100 group-hover:text-(--primary) transition-colors duration-300 text-center">
+								{child.name}
+							</h2>
+
+							{child.description && (
+								<p class="text-sm text-neutral-600 dark:text-neutral-400 text-center mt-2 line-clamp-2">
+									{child.description}
+								</p>
+							)}
+
+							{child.external && (
+								<div class="mt-3 text-xs text-neutral-500 dark:text-neutral-500 inline-flex items-center gap-1">
+									<Icon name="fa6-solid:arrow-up-right-from-square" class="text-[0.65rem]" />
+									<span>External Link</span>
+								</div>
+							)}
+						</a>
+					))}
+				</div>
+			)}
+		</div>
+	</div>
+</MainGridLayout>
+
+<style>
+	.menu-card {
+		cursor: pointer;
+		background-color: transparent;
+		border-color: var(--line-divider);
+	}
+
+	.icon-wrapper {
+		background-color: color-mix(in oklch, var(--primary), transparent 85%);
+		color: var(--primary);
+	}
+
+	.menu-card:hover {
+		background-color: color-mix(in oklch, var(--primary), transparent 95%);
+		border-color: var(--primary);
+		box-shadow: 0 0 20px color-mix(in oklch, var(--primary), transparent 80%);
+		translate: 0 -4px;
+	}
+
+	.menu-card:hover .icon-wrapper {
+		background-color: var(--primary);
+		color: white;
+		box-shadow: 0 0 15px color-mix(in oklch, var(--primary), transparent 50%);
+	}
+</style>
+
