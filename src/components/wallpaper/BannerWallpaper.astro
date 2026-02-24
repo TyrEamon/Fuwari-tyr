@@ -6,9 +6,11 @@ interface Props {
 	mobileSrc: string;
 	position?: "top" | "center" | "bottom";
 	topOffsetVh: number;
+	heroTitle?: string;
+	heroSubtitle?: string;
 }
 
-const { desktopSrc, mobileSrc, position, topOffsetVh } = Astro.props;
+const { desktopSrc, mobileSrc, position, topOffsetVh, heroTitle, heroSubtitle } = Astro.props;
 ---
 
 <div
@@ -32,6 +34,20 @@ const { desktopSrc, mobileSrc, position, topOffsetVh } = Astro.props;
 		src={mobileSrc}
 		position={position}
 	/>
+
+	{(heroTitle || heroSubtitle) && (
+		<div class="banner-hero" aria-hidden="true">
+			<div class="banner-hero-inner">
+				{heroTitle && <div class="banner-hero-title">{heroTitle}</div>}
+				{heroSubtitle && (
+					<div class="banner-hero-subtitle" data-banner-hero-subtitle data-full-text={heroSubtitle}>
+						<span class="banner-hero-subtitle-text">{heroSubtitle}</span>
+						<span class="banner-hero-subtitle-caret" aria-hidden="true"></span>
+					</div>
+				)}
+			</div>
+		</div>
+	)}
 
 	<div class="banner-waves" aria-hidden="true">
 		<svg
@@ -58,7 +74,9 @@ const { desktopSrc, mobileSrc, position, topOffsetVh } = Astro.props;
 	</div>
 </div>
 
-<style>
+<style is:global>
+	@import url("https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;500;700&display=swap");
+
 	@keyframes banner-wave-drift {
 		0% {
 			transform: translate3d(-90px, 0, 0);
@@ -79,6 +97,105 @@ const { desktopSrc, mobileSrc, position, topOffsetVh } = Astro.props;
 		pointer-events: none;
 		z-index: 5;
 		isolation: isolate;
+	}
+
+	#banner-wrapper .banner-hero {
+		position: absolute;
+		inset: 0;
+		display: none;
+		align-items: center;
+		justify-content: center;
+		padding: 4.5rem 1rem 5.5rem;
+		pointer-events: none;
+		z-index: 6;
+	}
+
+	#banner-wrapper .banner-hero-inner {
+		max-width: min(88vw, 54rem);
+		text-align: center;
+		color: rgba(255, 255, 255, 0.96);
+		font-family:
+			"Zen Maru Gothic",
+			"PingFang SC",
+			"Hiragino Sans GB",
+			"Microsoft YaHei",
+			sans-serif;
+		text-shadow:
+			0 2px 20px rgba(0, 0, 0, 0.24),
+			0 1px 2px rgba(0, 0, 0, 0.22);
+	}
+
+	#banner-wrapper .banner-hero-title {
+		font-size: clamp(2rem, 6vw, 5rem);
+		line-height: 0.98;
+		font-weight: 700;
+		letter-spacing: -0.03em;
+	}
+
+	#banner-wrapper .banner-hero-subtitle {
+		margin-top: 0.5rem;
+		font-size: clamp(0.95rem, 1.5vw, 1.9rem);
+		line-height: 1.2;
+		font-weight: 500;
+		opacity: 0.9;
+		letter-spacing: -0.015em;
+		display: inline-flex;
+		align-items: baseline;
+		justify-content: center;
+		gap: 0.1em;
+	}
+
+	#banner-wrapper .banner-hero-subtitle-text {
+		white-space: pre-wrap;
+	}
+
+	@keyframes banner-caret-blink {
+		0%, 45% {
+			opacity: 1;
+		}
+		55%, 100% {
+			opacity: 0;
+		}
+	}
+
+	#banner-wrapper .banner-hero-subtitle-caret {
+		display: inline-block;
+		width: 0.085em;
+		height: 0.95em;
+		background: currentColor;
+		border-radius: 999px;
+		translate: 0 0.04em;
+		opacity: 0;
+	}
+
+	#banner-wrapper .banner-hero-subtitle.is-typing .banner-hero-subtitle-caret,
+	#banner-wrapper .banner-hero-subtitle.is-typed .banner-hero-subtitle-caret {
+		opacity: 1;
+		animation: banner-caret-blink 0.9s steps(1, end) infinite;
+	}
+
+	:root.enable-banner.wallpaper-mode-banner body.lg\:is-home #banner-wrapper .banner-hero,
+	:root.enable-banner.wallpaper-mode-banner body.is-home #banner-wrapper .banner-hero {
+		display: flex;
+	}
+
+	@media (max-width: 767px) {
+		#banner-wrapper .banner-hero {
+			padding: 4.2rem 1rem 3.4rem;
+		}
+
+		#banner-wrapper .banner-hero-title {
+			font-size: clamp(2.45rem, 11vw, 3.35rem);
+			line-height: 1.02;
+		}
+
+		#banner-wrapper .banner-hero-subtitle {
+			font-size: clamp(1.08rem, 4.9vw, 1.38rem);
+			line-height: 1.24;
+			max-width: 20rem;
+			margin-top: 0.6rem;
+			margin-inline: auto;
+		}
 	}
 
 	.banner-waves-svg {
@@ -132,5 +249,111 @@ const { desktopSrc, mobileSrc, position, topOffsetVh } = Astro.props;
 		.banner-wave-layer {
 			animation: none !important;
 		}
+
+		#banner-wrapper .banner-hero-subtitle-caret {
+			animation: none !important;
+			opacity: 0 !important;
+		}
 	}
 </style>
+
+<script>
+	(() => {
+		const key = "__bannerHeroTypingController";
+		if (window[key]?.initialized) return;
+
+		const state = {
+			initialized: true,
+			timer: null,
+			runId: 0,
+		};
+
+		function isBannerHeroActive() {
+			const root = document.documentElement;
+			const body = document.body;
+			if (!root || !body) return false;
+			return (
+				root.classList.contains("enable-banner") &&
+				root.classList.contains("wallpaper-mode-banner") &&
+				(body.classList.contains("lg:is-home") || body.classList.contains("is-home"))
+			);
+		}
+
+		function clearTypingTimer() {
+			if (state.timer) {
+				clearTimeout(state.timer);
+				state.timer = null;
+			}
+		}
+
+		function setSubtitleImmediate(subtitleEl) {
+			const textEl = subtitleEl.querySelector(".banner-hero-subtitle-text");
+			const fullText = subtitleEl.dataset.fullText || "";
+			if (textEl) textEl.textContent = fullText;
+			subtitleEl.classList.remove("is-typing");
+			subtitleEl.classList.add("is-typed");
+		}
+
+		function runTypewriter() {
+			const subtitleEl = document.querySelector("[data-banner-hero-subtitle]");
+			if (!(subtitleEl instanceof HTMLElement)) return;
+
+			const textEl = subtitleEl.querySelector(".banner-hero-subtitle-text");
+			if (!(textEl instanceof HTMLElement)) return;
+
+			const fullText = subtitleEl.dataset.fullText || "";
+			const prefersReducedMotion =
+				window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ?? false;
+
+			clearTypingTimer();
+			state.runId += 1;
+			const runId = state.runId;
+
+			if (!isBannerHeroActive() || prefersReducedMotion) {
+				setSubtitleImmediate(subtitleEl);
+				return;
+			}
+
+			subtitleEl.classList.remove("is-typed");
+			subtitleEl.classList.add("is-typing");
+			textEl.textContent = "";
+
+			let index = 0;
+			const tick = () => {
+				if (runId !== state.runId) return;
+				index += 1;
+				textEl.textContent = fullText.slice(0, index);
+				if (index >= fullText.length) {
+					subtitleEl.classList.remove("is-typing");
+					subtitleEl.classList.add("is-typed");
+					state.timer = null;
+					return;
+				}
+				const ch = fullText[index - 1];
+				const delay = /[.,!?;:，。！？；：]/.test(ch) ? 90 : 42;
+				state.timer = setTimeout(tick, delay);
+			};
+
+			state.timer = setTimeout(tick, 220);
+		}
+
+		function scheduleRun(delay = 0) {
+			clearTypingTimer();
+			state.runId += 1;
+			const id = state.runId;
+			state.timer = setTimeout(() => {
+				if (id !== state.runId) return;
+				state.timer = null;
+				runTypewriter();
+			}, delay);
+		}
+
+		window[key] = state;
+		document.addEventListener("DOMContentLoaded", () => scheduleRun(50));
+		document.addEventListener("astro:page-load", () => scheduleRun(50));
+		document.addEventListener("swup:contentReplaced", () => scheduleRun(80));
+		document.addEventListener("swup:pageView", () => scheduleRun(80));
+		window.addEventListener("wallpaper:mode-change", () => scheduleRun(60));
+		window.addEventListener("resize", () => scheduleRun(80));
+	})();
+</script>

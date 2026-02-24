@@ -45,6 +45,8 @@ const bannerDesktopSrc =
 const bannerMobileSrc =
 	resolveResponsiveImageSource(siteConfig.banner.src, "mobile") ||
 	bannerDesktopSrc;
+const bannerHeroTitle = siteConfig.title;
+const bannerHeroSubtitle = "Memory is a road that leads nowhere back.";
 const hasBannerCredit =
 	bannerFeatureEnabled && siteConfig.banner.credit.enable;
 const hasBannerLink = !!siteConfig.banner.credit.url;
@@ -72,6 +74,8 @@ const mainPanelTopBanner = `calc(${BANNER_HEIGHT}vh - ${MAIN_PANEL_OVERLAPS_BANN
         mobileSrc={bannerMobileSrc}
         position={siteConfig.banner.position}
         topOffsetVh={BANNER_HEIGHT_EXTEND}
+		heroTitle={bannerHeroTitle}
+		heroSubtitle={bannerHeroSubtitle}
     />
 )}
 
