@@ -307,8 +307,22 @@ const jsonLd = {
 
 			function getCurrentWallpaperUrl() {
 				const mode = document.documentElement.dataset.wallpaperMode;
-				if (mode === "banner") return getBannerWallpaperUrl() || getFullscreenWallpaperUrl();
-				return getFullscreenWallpaperUrl() || getBannerWallpaperUrl();
+				if (mode === "banner") {
+					return (
+						getBannerWallpaperUrl() ||
+						getFullscreenWallpaperUrl() ||
+						(typeof window.__lastAppliedWallpaperUrl === "string"
+							? window.__lastAppliedWallpaperUrl
+							: "")
+					);
+				}
+				return (
+					getFullscreenWallpaperUrl() ||
+					getBannerWallpaperUrl() ||
+					(typeof window.__lastAppliedWallpaperUrl === "string"
+						? window.__lastAppliedWallpaperUrl
+						: "")
+				);
 			}
 
 			function syncTopPostCoverToWallpaper() {
@@ -339,6 +353,7 @@ const jsonLd = {
 			document.addEventListener("swup:contentReplaced", scheduleTopPostCoverSync);
 			document.addEventListener("astro:page-load", scheduleTopPostCoverSync);
 			window.addEventListener("wallpaper:mode-change", scheduleTopPostCoverSync);
+			window.addEventListener("wallpaper:applied", scheduleTopPostCoverSync);
 			window.addEventListener("random-pic-api:ready", scheduleTopPostCoverSync);
 			window.addEventListener("resize", scheduleTopPostCoverSync);
 		})();
