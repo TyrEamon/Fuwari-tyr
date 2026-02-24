@@ -112,7 +112,9 @@ for (const post of posts) {
 	async function loadSiteStats() {
 		if (!umamiConfig.enable) return;
 		try {
-			const statsData = await fetchUmamiStats(umamiConfig.baseUrl, umamiConfig.shareId, {
+			const fetchStats = window.fetchUmamiStats;
+			if (typeof fetchStats !== "function") return;
+			const statsData = await fetchStats(umamiConfig.baseUrl, umamiConfig.shareId, {
 				timezone: umamiConfig.timezone
 			});
 			

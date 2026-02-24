@@ -145,44 +145,13 @@ const splashAutoCloseMs = splashConfig?.autoCloseMs ?? 1800;
 		{siteConfig.preconnect?.map((href) => (
 			<link rel="preconnect" href={href} />
 		))}
-		<script is:inline>
-			(function () {
-				function injectScript(src, attrs) {
-					if (!src || document.querySelector('script[src="' + src + '"]')) return;
-					var s = document.createElement("script");
-					s.src = src;
-					s.defer = true;
-					if (attrs) {
-						Object.keys(attrs).forEach(function (key) {
-							s.setAttribute(key, attrs[key]);
-						});
-					}
-					document.head.appendChild(s);
-				}
-
-				function loadAnalyticsScripts() {
-					injectScript("/js/umami-share.js");
-					injectScript("https://umamii.zeabur.app/script.js", {
-						"data-website-id": "0e070921-670c-4363-90fb-943fafc9ee2e",
-						"data-swup-ignore-script": "",
-					});
-				}
-
-				function scheduleAnalyticsLoad() {
-					if ("requestIdleCallback" in window) {
-						window.requestIdleCallback(loadAnalyticsScripts, { timeout: 2500 });
-					} else {
-						setTimeout(loadAnalyticsScripts, 600);
-					}
-				}
-
-				if (document.readyState === "complete") {
-					scheduleAnalyticsLoad();
-				} else {
-					window.addEventListener("load", scheduleAnalyticsLoad, { once: true });
-				}
-			})();
-		</script>
+		<script src="/js/umami-share.js" defer data-swup-ignore-script></script>
+		<script
+			defer
+			src="https://umamii.zeabur.app/script.js"
+			data-website-id="0e070921-670c-4363-90fb-943fafc9ee2e"
+			data-swup-ignore-script
+		></script>
 
 		<script data-swup-ignore-script src="https://rapi.0w0.us.ci/random.js" defer></script>     {/*不用r2的随机图api就注释掉*/}
 		<script is:inline define:vars={{ backgroundDesktopSrc, backgroundMobileSrc, enableFullscreenWallpaper }}>
