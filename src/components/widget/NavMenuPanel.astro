@@ -11,7 +11,7 @@ const links = Astro.props.links;
 ---
 <div id="nav-menu-panel" class:list={["float-panel float-panel-closed absolute fixed right-4 px-2 py-2 w-40 max-w-[calc(100vw-2rem)] transition-[opacity,transform]"]}>
     {links.map((link) => {
-        const children = link.children ?? [];
+        const children = (link.children ?? []).filter((child) => !child.hideInNavMenu);
         if (children.length > 0) {
             return (
                 <div class="px-1 py-1 mobile-nav-group" data-mobile-nav-group>

@@ -1,0 +1,22 @@
+---
+import { Icon } from "astro-icon/components";
+import MainGridLayout from "@layouts/MainGridLayout.astro";
+---
+
+<MainGridLayout title="日志" description="每日见闻与随记">
+	<div class="card-base p-6 md:p-8">
+		<div class="flex items-center gap-3 mb-4">
+			<div class="h-10 w-10 rounded-lg bg-[var(--primary)]/15 text-[var(--primary)] flex items-center justify-center">
+				<Icon name="material-symbols:menu-book-rounded" class="text-[1.5rem]" />
+			</div>
+			<div>
+				<h1 class="text-2xl font-bold text-90">日志</h1>
+				<p class="text-sm text-50">上传一些每日见闻与随记</p>
+			</div>
+		</div>
+
+		<div class="rounded-xl border border-[var(--line-divider)] bg-[var(--card-bg)] p-5 text-sm text-60">
+			页面已预留。后续可以在这里发布每日记录、短想法、生活片段或更新日志。
+		</div>
+	</div>
+</MainGridLayout>

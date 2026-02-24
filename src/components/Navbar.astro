@@ -62,7 +62,7 @@ const navbarScrollThresholdFullscreen = getNavbarScrollThresholdForWallpaperMode
 		</a>
 		<div class="hidden md:flex items-center space-x-1">
 			{links.map((l) => {
-				const children = l.children ?? [];
+				const children = (l.children ?? []).filter((child) => !child.hideInNavMenu);
 				if (children.length > 0) {
 					return (
 						<div class="nav-dropdown">

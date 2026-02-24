@@ -106,6 +106,7 @@ export type NavBarLink = {
 	external?: boolean;
 	icon?: string;
 	description?: string;
+	hideInNavMenu?: boolean;
 	children?: (NavBarLink | LinkPreset)[];
 };
 
