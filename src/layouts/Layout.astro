@@ -55,6 +55,10 @@ const backgroundMobileSrc =
 	resolveResponsiveImageSource(siteConfig.background.src, "mobile") ||
 	backgroundDesktopSrc;
 const backgroundBaseSrc = backgroundDesktopSrc || backgroundMobileSrc;
+const backgroundBaseCssSrc =
+	backgroundBaseSrc === "/random/h" || backgroundBaseSrc === "/random/v"
+		? ""
+		: backgroundBaseSrc;
 const fullscreenWallpaperOpacity =
 	siteConfig.wallpaper?.fullscreen?.opacity ??
 	siteConfig.background.opacity ??
@@ -141,13 +145,44 @@ const splashAutoCloseMs = splashConfig?.autoCloseMs ?? 1800;
 		{siteConfig.preconnect?.map((href) => (
 			<link rel="preconnect" href={href} />
 		))}
-		<script src="/js/umami-share.js" defer></script>
-		<script
-			defer
-			src="https://umamii.zeabur.app/script.js"
-			data-website-id="0e070921-670c-4363-90fb-943fafc9ee2e"
-			data-swup-ignore-script
-		></script>
+		<script is:inline>
+			(function () {
+				function injectScript(src, attrs) {
+					if (!src || document.querySelector('script[src="' + src + '"]')) return;
+					var s = document.createElement("script");
+					s.src = src;
+					s.defer = true;
+					if (attrs) {
+						Object.keys(attrs).forEach(function (key) {
+							s.setAttribute(key, attrs[key]);
+						});
+					}
+					document.head.appendChild(s);
+				}
+
+				function loadAnalyticsScripts() {
+					injectScript("/js/umami-share.js");
+					injectScript("https://umamii.zeabur.app/script.js", {
+						"data-website-id": "0e070921-670c-4363-90fb-943fafc9ee2e",
+						"data-swup-ignore-script": "",
+					});
+				}
+
+				function scheduleAnalyticsLoad() {
+					if ("requestIdleCallback" in window) {
+						window.requestIdleCallback(loadAnalyticsScripts, { timeout: 2500 });
+					} else {
+						setTimeout(loadAnalyticsScripts, 600);
+					}
+				}
+
+				if (document.readyState === "complete") {
+					scheduleAnalyticsLoad();
+				} else {
+					window.addEventListener("load", scheduleAnalyticsLoad, { once: true });
+				}
+			})();
+		</script>
 
 		<script data-swup-ignore-script src="https://rapi.0w0.us.ci/random.js" defer></script>     {/*不用r2的随机图api就注释掉*/}
 		<script is:inline define:vars={{ backgroundDesktopSrc, backgroundMobileSrc, enableFullscreenWallpaper }}>
@@ -549,7 +584,7 @@ const splashAutoCloseMs = splashConfig?.autoCloseMs ?? 1800;
 		<style is:global define:vars={{
 			configHue,
 			'page-width': `${PAGE_WIDTH}rem`,
-			'bg-url': backgroundBaseSrc ? `url(${backgroundBaseSrc})` : 'none',
+			'bg-url': backgroundBaseCssSrc ? `url(${backgroundBaseCssSrc})` : 'none',
 			'bg-enable': enableFullscreenWallpaper ? '1' : '0',
 			'bg-position': siteConfig.background.position || 'center',
 			'bg-size': siteConfig.background.size || 'cover',
@@ -1021,7 +1056,9 @@ const splashAutoCloseMs = splashConfig?.autoCloseMs ?? 1800;
 					) {
 						randomReady = true;
 					}
-					return swupReady && randomReady;
+					// Do not block splash close on random helper readiness.
+					// Random-dependent UI can resync asynchronously after entrance.
+					return swupReady;
 				}
 
 				function canCloseSplashNow() {
@@ -1370,9 +1407,29 @@ const splashAutoCloseMs = splashConfig?.autoCloseMs ?? 1800;
 					document.addEventListener("wallpaper:mode-change", refresh);
 				}
 
-				ensureSprite();
+				var started = false;
+				function startParticles() {
+					if (started) return;
+					started = true;
+					ensureSprite();
+					tick();
+				}
+
+				function scheduleParticleStart() {
+					if (started) return;
+					if ("requestIdleCallback" in window) {
+						window.requestIdleCallback(startParticles, { timeout: 1600 });
+					} else {
+						setTimeout(startParticles, 350);
+					}
+				}
+
 				window[globalKey] = { refresh: refresh };
-				tick();
+				if (document.readyState === "complete") {
+					scheduleParticleStart();
+				} else {
+					window.addEventListener("load", scheduleParticleStart, { once: true });
+				}
 			})();
 		</script>
 
