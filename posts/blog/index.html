@@ -1,41 +1,4 @@
-<!DOCTYPE html><html lang="zh-CN" class="bg-[var(--page-bg)] transition text-[12px] md:text-[16px] dark" data-overlayscrollbars-initialize data-astro-cid-sckkx6r4 style="--bannerOffset: 18vh;--banner-height-home: 66vh;--banner-height: 30vh;--configHue: 361;--page-width: 75rem;--bg-url: none;--bg-enable: 1;--bg-position: center;--bg-size: cover;--bg-repeat: no-repeat;--bg-attachment: fixed;--bg-opacity: 1;--configHue: 361;"> <!-- 手机端适配 --> <head><title>踩着前人的脚印，RuneByte Blog 终于建站成功了 - RuneByte Blog</title><meta charset="UTF-8"><meta name="description" content="记录我从 fork 到上线的个人博客搭建过程，展示成果、简单部署流程和致谢清单。"><meta name="author" content="TyrEamon"><meta name="keywords" content="你的关键词"><meta property="og:site_name" content="RuneByte Blog"><meta property="og:url" content="https://i.kyr.us.ci/posts/blog/"><meta property="og:title" content="踩着前人的脚印，RuneByte Blog 终于建站成功了 - RuneByte Blog"><meta property="og:description" content="记录我从 fork 到上线的个人博客搭建过程，展示成果、简单部署流程和致谢清单。"><meta property="og:type" content="article"><meta name="twitter:card" content="summary_large_image"><meta property="twitter:url" content="https://i.kyr.us.ci/posts/blog/"><meta name="twitter:title" content="踩着前人的脚印，RuneByte Blog 终于建站成功了 - RuneByte Blog"><meta name="twitter:description" content="记录我从 fork 到上线的个人博客搭建过程，展示成果、简单部署流程和致谢清单。"><meta name="viewport" content="width=device-width"><meta name="generator" content="Astro v5.7.9"><link rel="preconnect" href="https://umamii.zeabur.app"><link rel="preconnect" href="https://rapi.0w0.us.ci"><script>
-			(function () {
-				function injectScript(src, attrs) {
-					if (!src || document.querySelector('script[src="' + src + '"]')) return;
-					var s = document.createElement("script");
-					s.src = src;
-					s.defer = true;
-					if (attrs) {
-						Object.keys(attrs).forEach(function (key) {
-							s.setAttribute(key, attrs[key]);
-						});
-					}
-					document.head.appendChild(s);
-				}
-
-				function loadAnalyticsScripts() {
-					injectScript("/js/umami-share.js");
-					injectScript("https://umamii.zeabur.app/script.js", {
-						"data-website-id": "0e070921-670c-4363-90fb-943fafc9ee2e",
-						"data-swup-ignore-script": "",
-					});
-				}
-
-				function scheduleAnalyticsLoad() {
-					if ("requestIdleCallback" in window) {
-						window.requestIdleCallback(loadAnalyticsScripts, { timeout: 2500 });
-					} else {
-						setTimeout(loadAnalyticsScripts, 600);
-					}
-				}
-
-				if (document.readyState === "complete") {
-					scheduleAnalyticsLoad();
-				} else {
-					window.addEventListener("load", scheduleAnalyticsLoad, { once: true });
-				}
-			})();
-		</script><script data-swup-ignore-script src="https://rapi.0w0.us.ci/random.js" defer></script><script>(function(){const backgroundDesktopSrc = "/random/h";
+<!DOCTYPE html><html lang="zh-CN" class="bg-[var(--page-bg)] transition text-[12px] md:text-[16px] dark" data-overlayscrollbars-initialize data-astro-cid-sckkx6r4 style="--bannerOffset: 18vh;--banner-height-home: 66vh;--banner-height: 30vh;--configHue: 361;--page-width: 75rem;--bg-url: none;--bg-enable: 1;--bg-position: center;--bg-size: cover;--bg-repeat: no-repeat;--bg-attachment: fixed;--bg-opacity: 1;--configHue: 361;"> <!-- 手机端适配 --> <head><title>踩着前人的脚印，RuneByte Blog 终于建站成功了 - RuneByte Blog</title><meta charset="UTF-8"><meta name="description" content="记录我从 fork 到上线的个人博客搭建过程，展示成果、简单部署流程和致谢清单。"><meta name="author" content="TyrEamon"><meta name="keywords" content="你的关键词"><meta property="og:site_name" content="RuneByte Blog"><meta property="og:url" content="https://i.kyr.us.ci/posts/blog/"><meta property="og:title" content="踩着前人的脚印，RuneByte Blog 终于建站成功了 - RuneByte Blog"><meta property="og:description" content="记录我从 fork 到上线的个人博客搭建过程，展示成果、简单部署流程和致谢清单。"><meta property="og:type" content="article"><meta name="twitter:card" content="summary_large_image"><meta property="twitter:url" content="https://i.kyr.us.ci/posts/blog/"><meta name="twitter:title" content="踩着前人的脚印，RuneByte Blog 终于建站成功了 - RuneByte Blog"><meta name="twitter:description" content="记录我从 fork 到上线的个人博客搭建过程，展示成果、简单部署流程和致谢清单。"><meta name="viewport" content="width=device-width"><meta name="generator" content="Astro v5.7.9"><link rel="preconnect" href="https://umamii.zeabur.app"><link rel="preconnect" href="https://rapi.0w0.us.ci"><script src="/js/umami-share.js" defer data-swup-ignore-script></script><script defer src="https://umamii.zeabur.app/script.js" data-website-id="0e070921-670c-4363-90fb-943fafc9ee2e" data-swup-ignore-script></script><script data-swup-ignore-script src="https://rapi.0w0.us.ci/random.js" defer></script><script>(function(){const backgroundDesktopSrc = "/random/h";
 const backgroundMobileSrc = "/random/h";
 const enableFullscreenWallpaper = true;
 
@@ -523,7 +486,9 @@ Curated, as you see | : )</div> <div class="flex flex-wrap gap-2 justify-center 
 	async function loadSiteStats() {
 		if (!umamiConfig.enable) return;
 		try {
-			const statsData = await fetchUmamiStats(umamiConfig.baseUrl, umamiConfig.shareId, {
+			const fetchStats = window.fetchUmamiStats;
+			if (typeof fetchStats !== "function") return;
+			const statsData = await fetchStats(umamiConfig.baseUrl, umamiConfig.shareId, {
 				timezone: umamiConfig.timezone
 			});
 			
@@ -622,7 +587,9 @@ const umamiConfig = {"enable":true,"baseUrl":"https://umamii.zeabur.app","shareI
     async function fetchPageViews() {
         if (!umamiConfig.enable) return;
         try {
-            const statsData = await fetchUmamiStats(umamiConfig.baseUrl, umamiConfig.shareId, {
+            const fetchStats = window.fetchUmamiStats;
+            if (typeof fetchStats !== "function") return;
+            const statsData = await fetchStats(umamiConfig.baseUrl, umamiConfig.shareId, {
                 timezone: umamiConfig.timezone,
                 path: `eq./posts/${slug}/`
             });
@@ -800,7 +767,9 @@ const postUrl = "/posts/blog/";
     async function loadPageViews() {
         if (!umamiConfig.enable) return;
         try {
-            const statsData = await fetchUmamiStats(umamiConfig.baseUrl, umamiConfig.shareId, {
+            const fetchStats = window.fetchUmamiStats;
+            if (typeof fetchStats !== "function") return;
+            const statsData = await fetchStats(umamiConfig.baseUrl, umamiConfig.shareId, {
                 url: postUrl,
                 timezone: umamiConfig.timezone
             });
