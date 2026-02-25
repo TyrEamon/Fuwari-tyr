@@ -203,7 +203,7 @@ export const exhibitionCardLinks: NavBarLink[] = [
 export const profileConfig: ProfileConfig = {
 	avatar: "https://pan.0106010.xyz/file/openlist-Theme/1772014316776_icon.webp", // Relative to the /src directory. Relative to the /public directory if it starts with '/'
 	name: "TyrEamon",
-	bio: "我家的猫不会变成猫娘这档事\n明明一点也不科学！\n\n我家猫会后空翻(ฅ´ω`ฅ)\n------------------------------------------------\nCurated, as you see | : )",
+	bio: "论我家的猫不会变成猫娘这档事\n明明一点也不科学！\n\n我家猫会后空翻(ฅ´ω`ฅ)\n------------------------------------------------\nCurated, as you see | : )",
 	links: [
 		{
 			name: "QQ",
