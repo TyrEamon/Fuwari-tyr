@@ -2,7 +2,7 @@
 title: xin 项目一个“自用”的图片采集/发布/展示系统，从 0 到部署
 published: 2026-02-21T23:30:00
 description: 个人插画收藏的全链路系统：后端使用Go，自动同步，图&链监听，元数据写入 Cloudflare D1，支持 OpenList(WebDAV/OneDrive) 异步备份。前端提供图库展示、随机图 API、收藏与筛选，后台支持上传、隐藏黑名单、喜欢列表和运行状态查看。
-image: "../assets/blogimg/前台页.png"
+image: "../assets/blogimg/前台页.webp"
 tags:
   - gallery
   - Pixiv
@@ -75,7 +75,7 @@ lang: ""
 SELECT name FROM sqlite_master WHERE type='table' ORDER BY name;
 ```
 
-> ![D1 表清单截图](../assets/blogimg/D1%20表清单截图.png)
+> ![D1 表清单截图](../assets/blogimg/D1%20表清单截图.webp)
 
 ---
 
@@ -121,7 +121,7 @@ PIXIV_INTERVAL_MINUTES=120
 
 - `HTTP server listening on :8080`
 - `Pixiv crawl started ...`（你配了 Pixiv 时）
-> ![前台页](../assets/blogimg/8080.png)
+> ![前台页](../assets/blogimg/8080.webp)
 ---
 
 ## 4. 前端部署（Pages/EdgeOne）
@@ -133,11 +133,11 @@ PIXIV_INTERVAL_MINUTES=120
 
 前端请求后端 API，只要 API 域名填对即可。
 
-> ![前台页](../assets/blogimg/前台页.png) 
+> ![前台页](../assets/blogimg/前台页.webp) 
 
 
-> ![后台上传页截图1](../assets/blogimg/后台页1.png)
-> ![后台上传页截图2](../assets/blogimg/hputai2.png)
+> ![后台上传页截图1](../assets/blogimg/后台页1.webp)
+> ![后台上传页截图2](../assets/blogimg/hputai2.webp)
 
 ---
 
@@ -219,7 +219,7 @@ curl.exe -sS -u $auth "$base/admin/api/backup/health?probe=1"
 
 ---
 
-> [日志对照图](../assets/blogimg/zeaburrz.png)
+> [日志对照图](../assets/blogimg/zeaburrz.webp)
 ---
 
 如果你照着做卡住了，优先把这 3 个信息贴出来再排：

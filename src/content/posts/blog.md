@@ -27,7 +27,7 @@ lang: ""
 ## 首先
 - fork 原作者项目 
 >这里`原作者[saicaca]`的[`Fuwari`](https://github.com/saicaca/fuwari)、作者`二叉树树[afoim]`二改过[`Fuwari`](https://github.com/afoim/fuwari)
- >>  我本人用的是[魔改版的fuwari](https://github.com/afoim/fuwari)
+ >>  我本人用的是[以fuwari为底的新一代博客](https://github.com/Spr-Aachen/Twilight)
 - 先在自己本地跑起来，方便调试改动。
 ```bash
 pnpm install #如果没有项目依赖包的话
@@ -40,7 +40,7 @@ pnpm dev
 - 浏览器访问，成功返回博客页面ok了，博客到这里旧通了。  
 
 >> EdgeOne的线路说是国内挺快的(但是要得是备案域名，可惜我的域名还没备案)，看看后面吧！要不要给它整一个备案。目前就这样吧，先建着站玩玩先。
-![itdog 结果](../assets/blogimg/1769621915743.png)
+![itdog 结果](../assets/blogimg/1769621915743.webp)
 
 - 还过得去，后面再研究研究优化一下。
 ---

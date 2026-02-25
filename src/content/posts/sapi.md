@@ -59,7 +59,7 @@ lang: ""
 
 ## 操作过程
 
-![一坨初始文件](../assets/blogimg/file1.png)
+![一坨初始文件](../assets/blogimg/file1.webp)
 
 ### 1.好了也是问ai将项目搓好了，虽然没做什么但是辛苦我了...玩个梗哈哈。弄好之后我们，得到了这一坨文件。
 拿到文件，我们先把config.json里的域名，给他改改。改成你R2的存储公共开放域名。
@@ -86,7 +86,7 @@ npm install
 node build.js
 ```
 耐心等待
-![](../assets/blogimg/bulid1.png)
+![](../assets/blogimg/bulid1.webp)
 如图，拿到产物。我们lib就是gallery页面相关逻辑js了，图片就存在ri里。
 **给他本地预览一下**继续命令行
   ```bash
@@ -100,8 +100,8 @@ node build.js
 `个人用的是rclone，不过推荐用Cyberduck，有GUI界面更直观友好。`
 
 首先登录cloudflare获取你的：
-![在R2页里，创建用户Token](../assets/blogimg/r2.png)
-![](../assets/blogimg/s3s3.png)
+![在R2页里，创建用户Token](../assets/blogimg/r2.webp)
+![](../assets/blogimg/s3s3.webp)
   - *R2 的 Access Key ID*
   - *R2 的 Secret Access Key*
   - *R2 的 Endpoint（S3 兼容地址）*
@@ -117,7 +117,7 @@ rclone sync "C:\Users\Tyr.Eamon\Desktop\博客背景文件\随机图\dist" r2:YO
   - Port：443
   - Access Key ID：填你的 R2 Access Key ID
   - Secret Access Key：填你的 R2 Secret Access Key
-![](../assets/blogimg/bupl.png)
+![](../assets/blogimg/bupl.webp)
 
 上传文件完全后，直接访问你的R2公开域就能看到SPA的界面了。
 
@@ -136,7 +136,6 @@ rclone sync "C:\Users\Tyr.Eamon\Desktop\博客背景文件\随机图\dist" r2:YO
 ## 最后的最后：尊重原创
 
 - 这是 fork 项目的优化记录，不是从零开发。感谢原作者AcoFork提供的基础结构。  
-- 如果你也喜欢或正在在用这个项目，可以去关注他的[二叉树树的博客](https://2x.nz)。
 
 ---
 # ——自此本章完结——

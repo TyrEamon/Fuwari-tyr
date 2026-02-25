@@ -2,7 +2,7 @@
 title: Alist/OpenList 美化教程：自定义头部快速上手（背景/毛玻璃/切换按钮）
 published: 2026-02-23
 description: 一篇实用向 OpenList 美化教程：通过自定义头部注入 CSS/JS，实现背景图、毛玻璃面板和日夜切换按钮，重点讲怎么用。
-image: ../assets/blogimg/openlist-theme-cover.png
+image: ../assets/blogimg/openlist-theme-cover.webp
 draft: false
 lang: ""
 ---
@@ -20,8 +20,8 @@ lang: ""
 3. 左下角手动切换按钮
 4. 一些细节样式（导航、代码块、底部渐变）
 
-![效果图占位-白天模式](../assets/blogimg/openlist-theme-1.png)
-![效果图占位-夜间模式](../assets/blogimg/openlist-theme-2.png)
+![效果图占位-白天模式](../assets/blogimg/openlist-theme-1.webp)
+![效果图占位-夜间模式](../assets/blogimg/openlist-theme-2.webp)
 
 ## 使用前准备
 
@@ -339,9 +339,9 @@ button#hope-menu-daynight-switch-trigger {
 2. 修复daynightswitch() 在手机端会按索引错误触发“新建文件夹/上传” 按钮
 3. 修复白天模式下面板发黑（补 `light/dark` 前缀和兜底样式）
 - 问题示意图
-> ![问题示意占位图（白天黑面板）](../assets/blogimg/openlist-theme-3.png)
+> ![问题示意占位图（白天黑面板）](../assets/blogimg/openlist-theme-3.webp)
 - 修复后示意图
-> ![修复后占位图](../assets/blogimg/openlist-theme-4.png)
+> ![修复后占位图](../assets/blogimg/openlist-theme-4.webp)
 
 如果你只是拿来用，不需要关心太多实现细节，直接用调好的版本即可。
 

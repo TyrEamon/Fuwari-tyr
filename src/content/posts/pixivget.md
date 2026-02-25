@@ -2,7 +2,7 @@
 title: Pixiv 收藏本地下载器（Python）随手记
 published: 2026-01-27T21:10:00
 description: 记录我用 Python 把 Pixiv 收藏下载到本地的过程，附上配置说明和一些个人踩坑感受。
-image: ../assets/blogimg/1769661912955.png
+image: ../assets/blogimg/1769661912955.webp
 tags:
   - 工具
   - 折腾记录
@@ -54,9 +54,9 @@ pixiv_mylove/
 
 - 获取你自己的`Pixiv Cookie/PHPSESSID`、个人`uid`
 - 登录你的Pixiv账号，`F12` 开发者面板
-![](../assets/blogimg/1769671892275.png)
+![](../assets/blogimg/1769671892275.webp)
 - 找到PHPSESSID，里面的值就是我们要的Cookie了
-![](../assets/blogimg/1769671929543.png)
+![](../assets/blogimg/1769671929543.webp)
 > 接下来进入实操
 # 使用步骤
 ###  ① Clone仓库文件到本地
@@ -81,7 +81,7 @@ python main.py
 或者直接双击 `run.bat`。
 
 ### -正常运行-
-![运行状态](../assets/blogimg/1769672990592.png)
+![运行状态](../assets/blogimg/1769672990592.webp)
 
 > 拿到图片文件，你可以存在本地或上传到图床。
 >> 说到上传你可以原图直传，但你下次获取的时候也是原图，图片体量会非常大（十到几十M）。这里我会用到[Xnconvert](https://www.xnview.com/en/xnconvert/)，它能批量在保证图片质量下给你转成webp。更多详见[文章]()

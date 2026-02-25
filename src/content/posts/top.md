@@ -108,7 +108,7 @@ description: 致谢板及简介
 <details>
 <summary>点击查看</summary>
 
-![](../assets/blogimg/1769622880981.png)
+![](../assets/blogimg/1769622880981.webp)
 
 </details>
 
