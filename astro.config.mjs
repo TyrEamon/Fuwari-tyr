@@ -23,6 +23,7 @@ import { expressiveCodeConfig } from "./src/config.ts";
 import { pluginCustomCopyButton } from "./src/plugins/expressive-code/custom-copy-button.js";
 import { AdmonitionComponent } from "./src/plugins/rehype-component-admonition.mjs";
 import { GithubCardComponent } from "./src/plugins/rehype-component-github-card.mjs";
+import { MusicCardComponent } from "./src/plugins/rehype-component-music-card.mjs";
 import { UrlCardComponent } from "./src/plugins/rehype-component-url-card.mjs";
 import rehypeImageFallback from "./src/plugins/rehype-image-fallback.mjs";
 import { parseDirectiveNode } from "./src/plugins/remark-directive-rehype.js";
@@ -196,6 +197,7 @@ export default defineConfig({
 				{
 					components: {
 						github: GithubCardComponent,
+						music: MusicCardComponent,
 						url: UrlCardComponent,
 						note: (x, y) => AdmonitionComponent(x, y, "note"),
 						tip: (x, y) => AdmonitionComponent(x, y, "tip"),

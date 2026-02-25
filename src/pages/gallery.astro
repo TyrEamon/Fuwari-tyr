@@ -1,10 +1,14 @@
 ---
 import MainGridLayout from "@layouts/MainGridLayout.astro";
 import { Icon } from "astro-icon/components";
+import BackToExhibitionChip from "@components/misc/BackToExhibitionChip.astro";
 ---
 
 <MainGridLayout title="画廊" description="瀑布流图片画廊">
 	<div class="card-base p-6 md:p-8">
+		<div class="mb-4">
+			<BackToExhibitionChip />
+		</div>
 		<div class="mb-6 flex flex-wrap items-center justify-between gap-3">
 			<div class="flex flex-wrap items-center gap-2">
 				<div class="flex h-8 w-8 items-center justify-center rounded-lg bg-[var(--primary)] text-white dark:text-black/70">

@@ -1,22 +1,12 @@
 ---
 import { Icon } from "astro-icon/components";
 import MainGridLayout from "@layouts/MainGridLayout.astro";
-import { navBarConfig } from "@/config";
-import { LinkPresets } from "@/constants/link-presets";
-import { LinkPreset, type NavBarLink } from "@/types/config";
+import { exhibitionCardLinks } from "@/config";
 import { url } from "@/utils/url-utils";
+const exhibitionItems = exhibitionCardLinks.filter((item) => item.url !== "/exhibition/");
 
-const resolveLink = (item: NavBarLink | LinkPreset): NavBarLink =>
-	typeof item === "number" ? LinkPresets[item] : item;
-
-const navLinks = navBarConfig.links.map(resolveLink);
-const exhibitionMenu = navLinks.find((link) => link.name === "资源" && link.children?.length);
-const exhibitionItems = (exhibitionMenu?.children ?? [])
-	.map(resolveLink)
-	.filter((item) => item.url !== "/exhibition/");
-
-const pageTitle = "Exhibition";
-const pageDescription = "A collection of my resources and navigation entries.";
+const pageTitle = "展览馆";
+const pageDescription = "我的资源和导航条目合集。";
 ---
 
 <MainGridLayout title={pageTitle} description={pageDescription}>
@@ -101,4 +91,3 @@ const pageDescription = "A collection of my resources and navigation entries.";
 		box-shadow: 0 0 15px color-mix(in oklch, var(--primary), transparent 50%);
 	}
 </style>
-

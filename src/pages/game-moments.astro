@@ -1,10 +1,14 @@
 ---
 import { Icon } from "astro-icon/components";
 import MainGridLayout from "@layouts/MainGridLayout.astro";
+import BackToExhibitionChip from "@components/misc/BackToExhibitionChip.astro";
 ---
 
 <MainGridLayout title="游戏时刻" description="精彩瞬间与片段记录">
 	<div class="card-base p-6 md:p-8">
+		<div class="mb-4">
+			<BackToExhibitionChip />
+		</div>
 		<div class="flex items-center gap-3 mb-4">
 			<div class="h-10 w-10 rounded-lg bg-[var(--primary)]/15 text-[var(--primary)] flex items-center justify-center">
 				<Icon name="material-symbols:sports-esports-rounded" class="text-[1.5rem]" />

@@ -1,0 +1,657 @@
+---
+import { Icon } from "astro-icon/components";
+import MainGridLayout from "@layouts/MainGridLayout.astro";
+import BackToExhibitionChip from "@components/misc/BackToExhibitionChip.astro";
+import { url } from "@/utils/url-utils";
+
+type ToolboxEntry = {
+	title: string;
+	description: string;
+	icon: string;
+	url: string;
+	external?: boolean;
+	tags?: string[];
+	status?: "稳定" | "测试中";
+	actionLabel?: string;
+	secondaryLabel?: string;
+	secondaryUrl?: string;
+	secondaryExternal?: boolean;
+};
+
+const tools: ToolboxEntry[] = [
+	{
+		title: "博客画廊",
+		description: "本地瀑布流画廊页，支持横竖筛选、最新/最旧排序与触底加载。",
+		icon: "fa6-solid:images",
+		url: "/gallery/",
+		tags: ["Gallery", "Masonry", "Fancybox"],
+		status: "稳定",
+		actionLabel: "打开画廊",
+	},
+	{
+		title: "BGCrawler 图站",
+		description: "随机图项目的图站前端页面，用于展示与管理图池内容。",
+		icon: "material-symbols:image-rounded",
+		url: "https://rapi.kyr.us.ci/gallery.html",
+		external: true,
+		tags: ["BGCrawler", "图站"],
+		status: "稳定",
+		actionLabel: "打开图站",
+	},
+	{
+		title: "随机图 API",
+		description: "博客背景与画廊使用的随机图接口入口（counts / random.js / random-img-only.js）。",
+		icon: "fa6-solid:server",
+		url: "https://rapi.kyr.us.ci",
+		external: true,
+		tags: ["API", "RandomPic"],
+		status: "稳定",
+		actionLabel: "访问接口",
+	},
+	{
+		title: "网页导航",
+		description: "常用站点导航与收藏入口，作为日常访问的聚合页。",
+		icon: "fa6-solid:compass",
+		url: "https://www.6858686.xyz/",
+		external: true,
+		tags: ["导航", "收藏"],
+		status: "稳定",
+		actionLabel: "打开导航",
+	},
+];
+
+const spaces: ToolboxEntry[] = [
+	{
+		title: "日志",
+		description: "记录日常见闻、随记、临时想法和短内容。",
+		icon: "material-symbols:menu-book-rounded",
+		url: "/journal/",
+		tags: ["Daily", "Notes"],
+		status: "测试中",
+		actionLabel: "进入分区",
+	},
+	{
+		title: "游戏时刻",
+		description: "用于发布游戏截图、精彩瞬间和片段记录。",
+		icon: "material-symbols:sports-esports-rounded",
+		url: "/game-moments/",
+		tags: ["Game", "Moments"],
+		status: "测试中",
+		actionLabel: "进入分区",
+	},
+	{
+		title: "动漫角",
+		description: "收录看过的动漫/电影/观后感，后续可拓展为卡片墙。",
+		icon: "material-symbols:movie-rounded",
+		url: "/anime-corner/",
+		tags: ["Anime", "Movie", "Review"],
+		status: "测试中",
+		actionLabel: "进入分区",
+	},
+];
+
+const articles: ToolboxEntry[] = [
+	{
+		title: "Tools Docs Index",
+		description: "工具箱文档入口页，用于集中放置不进入首页文章流的功能说明页面。",
+		icon: "fa6-solid:book-open",
+		url: "/tools-docs/",
+		tags: ["Docs", "Index", "Toolbox"],
+		actionLabel: "打开文档中心",
+	},
+	{
+		title: "Shortlink Docs (tools-docs)",
+		description: "Example docs page stored under /src/pages/tools-docs. It is a toolbox document entry and will not be listed in the homepage post feed.",
+		icon: "fa6-solid:link",
+		url: "/tools-docs/shortlink/",
+		tags: ["Docs", "Toolbox", "Example"],
+		actionLabel: "Open docs page",
+	},
+];
+
+const getHref = (entry: ToolboxEntry) => (entry.external ? entry.url : url(entry.url));
+---
+
+<MainGridLayout title="工具箱" description="功能页、项目入口与功能文章的集中入口。">
+	<section class="toolbox-hero card-base">
+		<div class="toolbox-hero__back">
+			<BackToExhibitionChip />
+		</div>
+		<div class="toolbox-hero__badge">
+			<Icon name="fa6-solid:toolbox" class="text-lg" />
+			<span>Toolbox</span>
+		</div>
+		<h1 class="toolbox-hero__title">工具箱</h1>
+		<p class="toolbox-hero__desc">
+			这里集中放功能型页面、项目入口，以及配套的教程文章。工具负责“能用”，文章负责“讲清楚”。
+		</p>
+		<div class="toolbox-hero__legend">
+			<span class="legend-chip"><i class="dot dot-tool"></i>工具 / 微应用</span>
+			<span class="legend-chip"><i class="dot dot-space"></i>记录分区</span>
+			<span class="legend-chip"><i class="dot dot-article"></i>功能文章</span>
+		</div>
+	</section>
+
+	<section class="toolbox-section card-base">
+		<header class="toolbox-section__header">
+			<div>
+				<p class="toolbox-section__eyebrow">Tools</p>
+				<h2 class="toolbox-section__title">工具 / 微应用</h2>
+			</div>
+			<span class="toolbox-count">{tools.length} 项</span>
+		</header>
+		<div class="toolbox-grid">
+			{tools.map((entry) => (
+				<article class="toolbox-card">
+					<div class="toolbox-card__head">
+						<div class="toolbox-card__icon">
+							<Icon name={entry.icon} class="text-[1.35rem]" />
+						</div>
+						<div class="toolbox-card__meta">
+							<h3>{entry.title}</h3>
+							{entry.status && <span class:list={["status-chip", entry.status === "稳定" ? "is-stable" : "is-beta"]}>{entry.status}</span>}
+						</div>
+					</div>
+					<p class="toolbox-card__desc">{entry.description}</p>
+					{entry.tags && entry.tags.length > 0 && (
+						<div class="toolbox-card__tags">
+							{entry.tags.map((tag) => (
+								<span class="tag-chip">{tag}</span>
+							))}
+						</div>
+					)}
+					<div class="toolbox-card__actions">
+						<a
+							class="primary-link"
+							href={getHref(entry)}
+							target={entry.external ? "_blank" : undefined}
+							rel={entry.external ? "noopener noreferrer" : undefined}
+						>
+							{entry.actionLabel ?? "打开"}
+							<Icon name={entry.external ? "fa6-solid:arrow-up-right-from-square" : "fa6-solid:arrow-right"} class="text-xs" />
+						</a>
+					</div>
+				</article>
+			))}
+		</div>
+	</section>
+
+	<section class="toolbox-section card-base">
+		<header class="toolbox-section__header">
+			<div>
+				<p class="toolbox-section__eyebrow">Spaces</p>
+				<h2 class="toolbox-section__title">记录分区</h2>
+			</div>
+			<span class="toolbox-count">{spaces.length} 项</span>
+		</header>
+		<div class="toolbox-grid toolbox-grid--compact">
+			{spaces.map((entry) => (
+				<a class="toolbox-mini" href={getHref(entry)}>
+					<div class="toolbox-mini__icon">
+						<Icon name={entry.icon} class="text-[1.2rem]" />
+					</div>
+					<div class="toolbox-mini__body">
+						<div class="toolbox-mini__title">{entry.title}</div>
+						<p class="toolbox-mini__desc">{entry.description}</p>
+					</div>
+					<Icon name="fa6-solid:arrow-right" class="toolbox-mini__arrow" />
+				</a>
+			))}
+		</div>
+	</section>
+
+	<section class="toolbox-section card-base">
+		<header class="toolbox-section__header">
+			<div>
+				<p class="toolbox-section__eyebrow">Docs</p>
+				<h2 class="toolbox-section__title">功能文章 / 教程</h2>
+			</div>
+			<span class="toolbox-count">{articles.length} 篇</span>
+		</header>
+		<div class="toolbox-grid">
+			{articles.map((entry) => (
+				<a
+					class="toolbox-card toolbox-card--article toolbox-card--link"
+					href={getHref(entry)}
+					target={entry.external ? "_blank" : undefined}
+					rel={entry.external ? "noopener noreferrer" : undefined}
+				>
+					<div class="toolbox-card__head">
+						<div class="toolbox-card__icon">
+							<Icon name={entry.icon} class="text-[1.2rem]" />
+						</div>
+						<div class="toolbox-card__meta">
+							<h3>{entry.title}</h3>
+							{entry.status && <span class:list={["status-chip", entry.status === "稳定" ? "is-stable" : "is-beta"]}>{entry.status}</span>}
+						</div>
+					</div>
+					<p class="toolbox-card__desc">{entry.description}</p>
+					{entry.tags && entry.tags.length > 0 && (
+						<div class="toolbox-card__tags">
+							{entry.tags.map((tag) => (
+								<span class="tag-chip">{tag}</span>
+							))}
+						</div>
+					)}
+					<div class="toolbox-card__actions">
+						<span class="primary-link primary-link--ghost">
+							{entry.actionLabel ?? "阅读"}
+							<Icon name={entry.external ? "fa6-solid:arrow-up-right-from-square" : "fa6-solid:arrow-right"} class="text-xs" />
+						</span>
+					</div>
+				</a>
+			))}
+		</div>
+	</section>
+</MainGridLayout>
+
+<style>
+	:global(:root) {
+		--toolbox-text-main: rgba(24, 24, 27, 0.92);
+		--toolbox-text-muted: rgba(39, 39, 42, 0.68);
+	}
+
+	:global(:root.dark) {
+		--toolbox-text-main: rgba(255, 255, 255, 0.92);
+		--toolbox-text-muted: rgba(228, 228, 231, 0.68);
+	}
+
+	.toolbox-hero {
+		position: relative;
+		padding: 1.25rem;
+		margin-bottom: 1rem;
+		overflow: hidden;
+	}
+
+	.toolbox-hero::before {
+		content: "";
+		position: absolute;
+		inset: 0;
+		background:
+			radial-gradient(
+				80% 120% at 0% 0%,
+				color-mix(in oklch, var(--primary), transparent 88%) 0%,
+				transparent 55%
+			),
+			radial-gradient(
+				80% 120% at 100% 100%,
+				color-mix(in oklch, var(--primary), transparent 92%) 0%,
+				transparent 60%
+			);
+		pointer-events: none;
+	}
+
+	.toolbox-hero > * {
+		position: relative;
+		z-index: 1;
+	}
+
+	.toolbox-hero__badge {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.4rem;
+		border: 1px solid color-mix(in oklch, var(--primary), transparent 60%);
+		background: color-mix(in oklch, var(--primary), transparent 92%);
+		color: var(--primary);
+		padding: 0.35rem 0.6rem;
+		border-radius: 999px;
+		font-size: 0.78rem;
+		font-weight: 700;
+		letter-spacing: 0.02em;
+	}
+
+	.toolbox-hero__back {
+		margin-bottom: 0.55rem;
+	}
+
+	.toolbox-hero__title {
+		margin-top: 0.85rem;
+		font-size: clamp(1.5rem, 1.15rem + 1.6vw, 2.1rem);
+		line-height: 1.15;
+		font-weight: 800;
+		color: var(--toolbox-text-main);
+	}
+
+	.toolbox-hero__desc {
+		margin-top: 0.55rem;
+		font-size: 0.95rem;
+		line-height: 1.6;
+		color: var(--toolbox-text-muted);
+		max-width: 46rem;
+	}
+
+	.toolbox-hero__legend {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.5rem;
+		margin-top: 0.85rem;
+	}
+
+	.legend-chip {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.35rem;
+		padding: 0.28rem 0.55rem;
+		border-radius: 999px;
+		border: 1px solid var(--line-divider);
+		background: color-mix(in oklch, var(--card-bg), transparent 12%);
+		color: var(--toolbox-text-muted);
+		font-size: 0.72rem;
+	}
+
+	.dot {
+		display: inline-block;
+		width: 0.45rem;
+		height: 0.45rem;
+		border-radius: 999px;
+	}
+
+	.dot-tool {
+		background: color-mix(in oklch, var(--primary), white 18%);
+	}
+
+	.dot-space {
+		background: color-mix(in oklch, var(--primary), transparent 25%);
+		opacity: 0.75;
+	}
+
+	.dot-article {
+		background: color-mix(in oklch, var(--primary), transparent 40%);
+		opacity: 0.55;
+	}
+
+	.toolbox-section {
+		padding: 1rem;
+		margin-bottom: 1rem;
+	}
+
+	.toolbox-section__header {
+		display: flex;
+		align-items: flex-end;
+		justify-content: space-between;
+		gap: 1rem;
+		margin-bottom: 0.9rem;
+	}
+
+	.toolbox-section__eyebrow {
+		margin: 0;
+		font-size: 0.72rem;
+		color: var(--toolbox-text-muted);
+		text-transform: uppercase;
+		letter-spacing: 0.08em;
+	}
+
+	.toolbox-section__title {
+		margin: 0.15rem 0 0;
+		font-size: 1.12rem;
+		font-weight: 750;
+		color: var(--toolbox-text-main);
+	}
+
+	.toolbox-count {
+		font-size: 0.75rem;
+		color: var(--toolbox-text-muted);
+		border: 1px solid var(--line-divider);
+		border-radius: 999px;
+		padding: 0.22rem 0.55rem;
+		white-space: nowrap;
+	}
+
+	.toolbox-grid {
+		display: grid;
+		grid-template-columns: repeat(1, minmax(0, 1fr));
+		gap: 0.75rem;
+	}
+
+	.toolbox-grid--compact {
+		gap: 0.6rem;
+	}
+
+	@media (min-width: 720px) {
+		.toolbox-grid {
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+		}
+	}
+
+	.toolbox-card {
+		display: flex;
+		flex-direction: column;
+		gap: 0.7rem;
+		padding: 0.9rem;
+		border: 1px solid var(--line-divider);
+		border-radius: 0.95rem;
+		background:
+			linear-gradient(
+				180deg,
+				color-mix(in oklch, var(--card-bg), transparent 0%) 0%,
+				color-mix(in oklch, var(--card-bg), transparent 8%) 100%
+			);
+		transition:
+			transform 0.2s ease,
+			box-shadow 0.2s ease,
+			border-color 0.2s ease;
+	}
+
+	.toolbox-card--link {
+		text-decoration: none;
+		color: inherit;
+		cursor: pointer;
+	}
+
+	.toolbox-card:hover {
+		transform: translateY(-2px);
+		box-shadow: var(--card-shadow);
+		border-color: color-mix(in oklch, var(--primary), transparent 62%);
+	}
+
+	.toolbox-card--article {
+		background:
+			linear-gradient(
+				180deg,
+				color-mix(in oklch, var(--card-bg), transparent 0%) 0%,
+				color-mix(in oklch, var(--card-bg), transparent 2%) 100%
+			);
+		border-color: color-mix(in oklch, var(--line-divider), transparent 0%);
+	}
+
+	.toolbox-card--article .toolbox-card__meta h3 {
+		font-size: 1rem;
+		color: var(--toolbox-text-main);
+	}
+
+	.toolbox-card--article .toolbox-card__desc {
+		color: color-mix(in oklch, var(--toolbox-text-main), transparent 28%);
+	}
+
+	.toolbox-card__head {
+		display: flex;
+		gap: 0.7rem;
+		align-items: flex-start;
+	}
+
+	.toolbox-card__icon {
+		flex: 0 0 auto;
+		width: 2.2rem;
+		height: 2.2rem;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		border-radius: 0.75rem;
+		color: var(--primary);
+		background: color-mix(in oklch, var(--primary), transparent 88%);
+		border: 1px solid color-mix(in oklch, var(--primary), transparent 78%);
+	}
+
+	.toolbox-card__meta {
+		min-width: 0;
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 0.35rem 0.45rem;
+	}
+
+	.toolbox-card__meta h3 {
+		margin: 0;
+		font-size: 0.98rem;
+		line-height: 1.3;
+		color: var(--toolbox-text-main);
+		font-weight: 700;
+	}
+
+	.status-chip {
+		display: inline-flex;
+		align-items: center;
+		padding: 0.12rem 0.4rem;
+		border-radius: 999px;
+		font-size: 0.68rem;
+		line-height: 1.1;
+		border: 1px solid var(--line-divider);
+		color: var(--toolbox-text-muted);
+		background: color-mix(in oklch, var(--card-bg), transparent 8%);
+	}
+
+	.status-chip.is-stable {
+		color: color-mix(in oklch, var(--primary), white 5%);
+		border-color: color-mix(in oklch, var(--primary), transparent 70%);
+		background: color-mix(in oklch, var(--primary), transparent 92%);
+	}
+
+	.status-chip.is-beta {
+		color: var(--toolbox-text-muted);
+		opacity: 0.9;
+	}
+
+	.toolbox-card__desc {
+		margin: 0;
+		font-size: 0.86rem;
+		line-height: 1.55;
+		color: var(--toolbox-text-muted);
+	}
+
+	.toolbox-card__tags {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.35rem;
+	}
+
+	.tag-chip {
+		display: inline-flex;
+		align-items: center;
+		padding: 0.16rem 0.45rem;
+		border-radius: 999px;
+		font-size: 0.67rem;
+		color: var(--toolbox-text-muted);
+		background: color-mix(in oklch, var(--card-bg), transparent 8%);
+		border: 1px solid var(--line-divider);
+	}
+
+	.toolbox-card__actions {
+		margin-top: auto;
+		display: flex;
+		gap: 0.5rem;
+	}
+
+	.primary-link {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.35rem;
+		font-size: 0.8rem;
+		font-weight: 700;
+		color: var(--primary);
+		padding: 0.4rem 0.55rem;
+		border-radius: 0.65rem;
+		border: 1px solid color-mix(in oklch, var(--primary), transparent 76%);
+		background: color-mix(in oklch, var(--primary), transparent 93%);
+		transition:
+			background-color 0.2s ease,
+			border-color 0.2s ease,
+			transform 0.2s ease;
+	}
+
+	.primary-link--ghost {
+		pointer-events: none;
+	}
+
+	.primary-link:hover {
+		transform: translateY(-1px);
+		border-color: color-mix(in oklch, var(--primary), transparent 58%);
+		background: color-mix(in oklch, var(--primary), transparent 88%);
+	}
+
+	.toolbox-mini {
+		display: grid;
+		grid-template-columns: auto 1fr auto;
+		align-items: center;
+		gap: 0.7rem;
+		padding: 0.75rem 0.85rem;
+		border: 1px solid var(--line-divider);
+		border-radius: 0.9rem;
+		background: color-mix(in oklch, var(--card-bg), transparent 4%);
+		transition:
+			transform 0.2s ease,
+			box-shadow 0.2s ease,
+			border-color 0.2s ease;
+	}
+
+	.toolbox-mini:hover {
+		transform: translateY(-1px);
+		box-shadow: var(--card-shadow);
+		border-color: color-mix(in oklch, var(--primary), transparent 70%);
+	}
+
+	.toolbox-mini__icon {
+		width: 2rem;
+		height: 2rem;
+		border-radius: 0.65rem;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		color: var(--primary);
+		background: color-mix(in oklch, var(--primary), transparent 89%);
+		border: 1px solid color-mix(in oklch, var(--primary), transparent 80%);
+	}
+
+	.toolbox-mini__body {
+		min-width: 0;
+	}
+
+	.toolbox-mini__title {
+		color: var(--toolbox-text-main);
+		font-size: 0.9rem;
+		font-weight: 700;
+		line-height: 1.2;
+	}
+
+	.toolbox-mini__desc {
+		margin: 0.15rem 0 0;
+		color: var(--toolbox-text-muted);
+		font-size: 0.8rem;
+		line-height: 1.45;
+	}
+
+	.toolbox-mini__arrow {
+		color: var(--toolbox-text-muted);
+		font-size: 0.8rem;
+		opacity: 0.9;
+	}
+
+	@media (max-width: 767px) {
+		.toolbox-hero {
+			padding: 1rem;
+		}
+
+		.toolbox-section {
+			padding: 0.85rem;
+		}
+
+		.toolbox-card {
+			padding: 0.8rem;
+			border-radius: 0.85rem;
+		}
+
+		.toolbox-mini {
+			padding: 0.7rem 0.75rem;
+			border-radius: 0.8rem;
+		}
+	}
+</style>

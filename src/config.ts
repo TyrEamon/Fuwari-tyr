@@ -4,6 +4,7 @@
 	ImageFallbackConfig,
 	LicenseConfig,
 	NavBarConfig,
+	NavBarLink,
 	ProfileConfig,
 	SiteConfig,
 	UmamiConfig,
@@ -129,38 +130,6 @@ export const navBarConfig: NavBarConfig = {
 			external: false,
 			children: [
 				{
-					name: "画廊",
-					url: "/gallery/",
-					external: false,
-					icon: "fa6-solid:images",
-					description: "瀑布流图片画廊（横屏/竖屏筛选）",
-					hideInNavMenu: true,
-				},
-				{
-					name: "日志",
-					url: "/journal/",
-					external: false,
-					icon: "material-symbols:menu-book-rounded",
-					description: "上传一些每日见闻与随记",
-					hideInNavMenu: true,
-				},
-				{
-					name: "游戏时刻",
-					url: "/game-moments/",
-					external: false,
-					icon: "material-symbols:sports-esports-rounded",
-					description: "记录游戏里的精彩瞬间与片段",
-					hideInNavMenu: true,
-				},
-				{
-					name: "动漫角",
-					url: "/anime-corner/",
-					external: false,
-					icon: "material-symbols:movie-rounded",
-					description: "记录看过的动漫、电影与观后感",
-					hideInNavMenu: true,
-				},
-				{
 					name: "网页导航",
 					url: "https://www.6858686.xyz/",
 					external: true,
@@ -179,15 +148,67 @@ export const navBarConfig: NavBarConfig = {
 	],
 };
 
+export const exhibitionCardLinks: NavBarLink[] = [
+	{
+		name: "工具箱",
+		url: "/toolbox/",
+		external: false,
+		icon: "fa6-solid:toolbox",
+		description: "工具项目入口与功能文章集合页",
+	},
+	{
+		name: "画廊",
+		url: "/gallery/",
+		external: false,
+		icon: "fa6-solid:images",
+		description: "瀑布流图片画廊（横屏/竖屏筛选）",
+	},
+	{
+		name: "日志",
+		url: "/journal/",
+		external: false,
+		icon: "material-symbols:menu-book-rounded",
+		description: "上传一些每日见闻与随记",
+	},
+	{
+		name: "游戏时刻",
+		url: "/game-moments/",
+		external: false,
+		icon: "material-symbols:sports-esports-rounded",
+		description: "记录游戏里的精彩瞬间与片段",
+	},
+	{
+		name: "动漫角",
+		url: "/anime-corner/",
+		external: false,
+		icon: "material-symbols:movie-rounded",
+		description: "记录看过的动漫、电影与观后感",
+	},
+	{
+		name: "网页导航",
+		url: "https://www.6858686.xyz/",
+		external: true,
+		icon: "fa6-solid:compass",
+		description: "常用网站导航与收藏入口",
+	},
+	{
+		name: "图站",
+		url: "https://b.0106010.xyz",
+		external: true,
+		icon: "material-symbols:image-rounded",
+		description: "个人图站 / 图床展示页面",
+	},
+];
+
 export const profileConfig: ProfileConfig = {
-	avatar: "https://pan.0106010.xyz/file/Bimg/1769431532412_h1.webp", // Relative to the /src directory. Relative to the /public directory if it starts with '/'
+	avatar: "https://pan.0106010.xyz/file/openlist-Theme/1772014316776_icon.webp", // Relative to the /src directory. Relative to the /public directory if it starts with '/'
 	name: "TyrEamon",
-	bio: "爱折腾的小白,似乎什么都不会\n那就好好学吧！小子\n------------------------------------------------\nCurated, as you see | : )",
+	bio: "我家的猫不会变成猫娘这档事\n明明一点也不科学！\n\n我家猫会后空翻(ฅ´ω`ฅ)\n------------------------------------------------\nCurated, as you see | : )",
 	links: [
 		{
 			name: "QQ",
 			icon: "qq", // Local icon
-			url: "https://2409355340",
+			url: "https://pan.0106010.xyz/file/openlist-Theme/1772014307560_QQ.webp",
 		},
 		{
 			name: "Telegram",

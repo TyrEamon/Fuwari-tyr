@@ -11,11 +11,13 @@ description: 致谢板及简介
 
 >  *---你好陌生人，这里是Tyreamon的博客---* 
 
+> *---`献上一首nbuna的歌给你`---*
+> ::music{meting="https://api.i-meto.com/meting/api?server=netease&type=song&id=2666842841"}
 
 ##  [如何联系？ ](#mycontact)
 ---
 # ❤️‍🔥致谢板❤️‍🔥
-> 致谢以下博客框架的作者和文章中引用项目的各位前辈。
+> 致谢以下博客框架的作者和文章中引用项目的各位前辈，为我的博客搭建提供了极大的帮助。
 > 站在巨人肩膀上，借着光能走的更远。
 
 <div class="thanks-wall">
@@ -50,12 +52,12 @@ description: 致谢板及简介
   </div>
 
   <div class="thanks-card">
-    <img class="thanks-avatar" src="https://github.com/tailwindlabs.png" />
+    <img class="thanks-avatar" src="https://github.com/Spr-Aachen.png" />
     <div>
       <b>Tailwind CSS</b><br/>
-      作者：tailwindlabs<br/>
-      <a href="https://github.com/tailwindlabs/tailwindcss">GitHub</a><br/>
-      <span class="thanks-tag">样式系统</span>
+      作者：Spr-Aachen<br/>
+      <a href="https://github.com/Spr-Aachen/Twilight">GitHub</a><br/>
+      <span class="thanks-tag">构建框架</span>
     </div>
   </div>
 
@@ -95,13 +97,13 @@ description: 致谢板及简介
 # 博客简介
 ## 由来
 > 偷得浮生半日闲，我也有了自己的个人博客
-说起来也随意，无聊在家冲浪发现一位博主在完善自己的博客，乍一看着实不错。再接着后面也陆陆续续刷到别人搭建博客的视频。于是萌生了自己搭建博客，去记录些许东西。所以这么滴。该站就怎么` 诞生 `了。
+说起来也随意，无聊在家冲浪发现一位博主在完善自己的博客，乍一看着实不错。再接着后面在github上遇到Twilight&Fuwari等博客框架。于是萌生了自己搭建博客，去记录些许东西。由此自然而然。该站就怎么` 诞生 `了。
 
 
 <a id="mycontact"></a>
 ## 加群方式
 
-> 由于个人不怎么看QQ,主用wx和Telegream。所以我这边就懒得开Q群了。
+> 由于个人不怎么看QQ,主用wx和Telegream。
 
 **So [Telegram：Join Group [tyr的树洞].](https://t.me/+EZ-bVy07k2xjMzY1)**
 - *TG二维码*
@@ -123,4 +125,6 @@ description: 致谢板及简介
 ---
 ——ZHIDINGLANWANJIE——
 
-- 同样的，欢迎你加入 *(`目前没啥人就是了`)* 
+- 同样的，欢迎你加入 
+
+

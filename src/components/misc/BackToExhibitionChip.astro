@@ -1,0 +1,25 @@
+---
+import { Icon } from "astro-icon/components";
+import { url } from "@/utils/url-utils";
+
+interface Props {
+	label?: string;
+	class?: string;
+}
+
+const { label = "返回展览馆", class: className = "" } = Astro.props as Props;
+---
+
+<a
+	class:list={[
+		"inline-flex items-center gap-1.5 rounded-full border border-[var(--line-divider)] bg-[var(--card-bg)] px-3 py-1.5 text-[11px] md:text-xs font-medium text-70 transition hover:-translate-y-px hover:border-[var(--primary)]/35 hover:bg-[var(--btn-plain-bg-hover)] hover:text-[var(--primary)] active:translate-y-0",
+		className,
+	]}
+	href={url("/exhibition/")}
+	aria-label={label}
+>
+	<span class="inline-flex h-4 w-4 items-center justify-center text-[var(--primary)]" aria-hidden="true">
+		<Icon name="fa6-solid:angle-left" class="text-[0.68rem]" />
+	</span>
+	<span class="whitespace-nowrap tracking-[0.01em]">{label}</span>
+</a>
