@@ -6,10 +6,37 @@ import { h } from "hastscript";
  *
  * Supported examples:
  * ::music{meting="https://api.i-meto.com/meting/api?..."}
+ * ::music{netease="1390882521"}
+ * ::music{netease="playlist:123456789"}
  * ::music{title="..." artist="..." cover="..." audio="..." lrc="..."}
  */
 export function MusicCardComponent(properties, children) {
 	const attrs = properties || {};
+	const METING_API = String(attrs.metingApi || "https://api.i-meto.com/meting/api");
+
+	const buildShortcutMetingUrl = (server, rawValue) => {
+		const raw = String(rawValue || "").trim();
+		if (!raw) return "";
+
+		let type = "song";
+		let id = raw;
+
+		// Support shorthand like "playlist:123456" or "song:1390882521"
+		if (raw.includes(":")) {
+			const [maybeType, ...rest] = raw.split(":");
+			const joined = rest.join(":").trim();
+			const normalizedType = maybeType.trim().toLowerCase();
+			const allowedTypes = new Set(["song", "playlist", "album", "artist"]);
+			if (allowedTypes.has(normalizedType) && joined) {
+				type = normalizedType;
+				id = joined;
+			}
+		}
+
+		if (!id) return "";
+		const params = new URLSearchParams({ server, type, id });
+		return `${METING_API}?${params.toString()}`;
+	};
 
 	const resolvePath = (value) => {
 		if (!value) return "";
@@ -18,7 +45,11 @@ export function MusicCardComponent(properties, children) {
 		return `/${value}`;
 	};
 
-	const metingUrl = String(attrs.meting || "");
+	const metingUrl =
+		String(attrs.meting || "") ||
+		buildShortcutMetingUrl("netease", attrs.netease) ||
+		buildShortcutMetingUrl("tencent", attrs.qq) ||
+		buildShortcutMetingUrl("kugou", attrs.kugou);
 	const title = String(attrs.title || (metingUrl ? "Loading..." : "Unknown Title"));
 	const artist = String(attrs.artist || (metingUrl ? "Loading..." : "Unknown Artist"));
 	const coverSrc = resolvePath(String(attrs.cover || ""));
@@ -330,4 +361,3 @@ export function MusicCardComponent(properties, children) {
 		nScript,
 	]);
 }
-

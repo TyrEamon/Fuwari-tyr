@@ -18,6 +18,22 @@ type ToolboxEntry = {
 	secondaryExternal?: boolean;
 };
 
+type ToolsDocFrontmatter = {
+	title?: string;
+	description?: string;
+	subtitle?: string;
+	badgeIcon?: string;
+	toolboxIcon?: string;
+	toolboxTags?: string[];
+	toolboxActionLabel?: string;
+	toolboxOrder?: number;
+	toolboxHide?: boolean;
+};
+
+type ToolsDocModule = {
+	frontmatter?: ToolsDocFrontmatter;
+};
+
 const tools: ToolboxEntry[] = [
 	{
 		title: "博客画廊",
@@ -90,24 +106,37 @@ const spaces: ToolboxEntry[] = [
 	},
 ];
 
-const articles: ToolboxEntry[] = [
-	{
-		title: "Tools Docs Index",
-		description: "工具箱文档入口页，用于集中放置不进入首页文章流的功能说明页面。",
-		icon: "fa6-solid:book-open",
-		url: "/tools-docs/",
-		tags: ["Docs", "Index", "Toolbox"],
-		actionLabel: "打开文档中心",
-	},
-	{
-		title: "Shortlink Docs (tools-docs)",
-		description: "Example docs page stored under /src/pages/tools-docs. It is a toolbox document entry and will not be listed in the homepage post feed.",
-		icon: "fa6-solid:link",
-		url: "/tools-docs/shortlink/",
-		tags: ["Docs", "Toolbox", "Example"],
-		actionLabel: "Open docs page",
-	},
-];
+const toolsDocsModules = import.meta.glob<ToolsDocModule>("./tools-docs/*.md", { eager: true });
+
+const docsEntries = Object.entries(toolsDocsModules)
+	.map(([filePath, mod]) => {
+		const frontmatter = mod.frontmatter ?? {};
+		if (frontmatter.toolboxHide) return null;
+
+		const fileName = filePath.split("/").pop() ?? "";
+		const slug = fileName.replace(/\.md$/i, "");
+		const docUrl = slug === "index" ? "/tools-docs/" : `/tools-docs/${slug}/`;
+		const title = frontmatter.title?.trim();
+		const description = (frontmatter.description ?? frontmatter.subtitle ?? "工具箱文档页面").trim();
+
+		if (!title) return null;
+
+		return {
+			order: frontmatter.toolboxOrder ?? (slug === "index" ? 0 : 999),
+			entry: {
+				title,
+				description,
+				icon: frontmatter.toolboxIcon ?? frontmatter.badgeIcon ?? "fa6-solid:book-open",
+				url: docUrl,
+				tags: frontmatter.toolboxTags ?? ["Docs"],
+				actionLabel: frontmatter.toolboxActionLabel ?? (slug === "index" ? "打开文档中心" : "打开文档"),
+			} satisfies ToolboxEntry,
+		};
+	})
+	.filter((item): item is { order: number; entry: ToolboxEntry } => item !== null)
+	.sort((a, b) => a.order - b.order || a.entry.title.localeCompare(b.entry.title, "zh-CN"));
+
+const articles: ToolboxEntry[] = docsEntries.map((item) => item.entry);
 
 const getHref = (entry: ToolboxEntry) => (entry.external ? entry.url : url(entry.url));
 ---

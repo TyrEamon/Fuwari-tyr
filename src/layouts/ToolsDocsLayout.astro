@@ -1,0 +1,176 @@
+---
+import { Icon } from "astro-icon/components";
+import MainGridLayout from "@layouts/MainGridLayout.astro";
+import BackToExhibitionChip from "@components/misc/BackToExhibitionChip.astro";
+import { url } from "@/utils/url-utils";
+
+const { frontmatter } = Astro.props;
+
+const pageTitle = frontmatter?.title ?? "工具文档";
+const pageDescription = frontmatter?.description ?? frontmatter?.subtitle ?? "工具文档页面";
+const subtitle = frontmatter?.subtitle ?? "";
+const badgeLabel = frontmatter?.badgeLabel ?? "工具文档";
+const badgeIcon = frontmatter?.badgeIcon ?? "fa6-solid:book";
+
+const navChipClass =
+	"inline-flex items-center gap-2 rounded-full border border-[var(--line-divider)] bg-[var(--card-bg)] px-3 py-1.5 text-[11px] md:text-xs font-medium text-70 transition hover:-translate-y-px hover:border-[var(--primary)]/35 hover:bg-[var(--btn-plain-bg-hover)] hover:text-[var(--primary)] active:translate-y-0";
+---
+
+<MainGridLayout title={pageTitle} description={pageDescription}>
+	<article class="card-base p-6 md:p-8 space-y-6">
+		<div class="flex flex-wrap items-center gap-3">
+			<BackToExhibitionChip />
+			<a href={url("/toolbox/")} class={navChipClass}>
+				<span class="inline-flex h-4 w-4 items-center justify-center text-[var(--primary)]">
+					<Icon name="fa6-solid:toolbox" class="text-[0.68rem]" />
+				</span>
+				返回工具箱
+			</a>
+			<a href={url("/tools-docs/")} class={navChipClass}>
+				<span class="inline-flex h-4 w-4 items-center justify-center text-[var(--primary)]">
+					<Icon name="fa6-solid:book" class="text-[0.68rem]" />
+				</span>
+				文档目录
+			</a>
+		</div>
+
+		<header class="space-y-2">
+			<div class="inline-flex items-center gap-2 rounded-full bg-[var(--primary)]/10 px-3 py-1 text-xs font-medium text-[var(--primary)]">
+				<Icon name={badgeIcon} class="text-xs" />
+				{badgeLabel}
+			</div>
+			<h1 class="text-2xl md:text-3xl font-bold text-90">{pageTitle}</h1>
+			{subtitle && <p class="text-sm md:text-base text-60">{subtitle}</p>}
+		</header>
+
+		<div class="tools-docs-content">
+			<slot />
+		</div>
+	</article>
+</MainGridLayout>
+
+<style is:global>
+	:root {
+		--tools-docs-text-main: rgba(24, 24, 27, 0.92);
+		--tools-docs-text-muted: rgba(39, 39, 42, 0.74);
+		--tools-docs-code-bg: rgba(24, 24, 27, 0.06);
+		--tools-docs-code-border: rgba(24, 24, 27, 0.08);
+	}
+
+	:root.dark {
+		--tools-docs-text-main: rgba(255, 255, 255, 0.92);
+		--tools-docs-text-muted: rgba(228, 228, 231, 0.76);
+		--tools-docs-code-bg: rgba(255, 255, 255, 0.06);
+		--tools-docs-code-border: rgba(255, 255, 255, 0.1);
+	}
+
+	.tools-docs-content {
+		display: grid;
+		gap: 1.25rem;
+		color: inherit;
+		/* Reuse prose-like variables for custom markdown widgets (e.g. ::music). */
+		--tw-prose-body: var(--tools-docs-text-muted);
+		--tw-prose-headings: var(--tools-docs-text-main);
+	}
+
+	.tools-docs-content h2 {
+		font-size: 1.05rem;
+		line-height: 1.35;
+		font-weight: 600;
+		color: var(--tools-docs-text-main);
+		margin: 0;
+	}
+
+	.tools-docs-content h3 {
+		font-size: 0.95rem;
+		line-height: 1.35;
+		font-weight: 600;
+		color: var(--tools-docs-text-main);
+		margin: 0;
+	}
+
+	.tools-docs-content p,
+	.tools-docs-content li {
+		font-size: 0.92rem;
+		line-height: 1.7;
+		color: var(--tools-docs-text-muted);
+	}
+
+	.tools-docs-content p {
+		margin: 0;
+	}
+
+	.tools-docs-content ul,
+	.tools-docs-content ol {
+		margin: 0;
+		padding-left: 1.25rem;
+		display: grid;
+		gap: 0.2rem;
+	}
+
+	.tools-docs-content code {
+		font-family: var(--code-font, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace);
+		font-size: 0.9em;
+		background: var(--tools-docs-code-bg);
+		border: 1px solid var(--tools-docs-code-border);
+		border-radius: 0.4rem;
+		padding: 0.08rem 0.32rem;
+		color: var(--tools-docs-text-main);
+	}
+
+	.tools-docs-content pre {
+		margin: 0;
+		padding: 0.95rem 1rem;
+		border-radius: 0.75rem;
+		border: 1px solid var(--line-divider);
+		background: color-mix(in srgb, var(--card-bg) 92%, black 8%);
+		overflow-x: auto;
+	}
+
+	:root.dark .tools-docs-content pre {
+		background: color-mix(in srgb, var(--card-bg) 88%, black 12%);
+	}
+
+	.tools-docs-content pre code {
+		background: none;
+		border: none;
+		padding: 0;
+		border-radius: 0;
+		display: block;
+		font-size: 0.8rem;
+		line-height: 1.65;
+		white-space: pre-wrap;
+		word-break: break-word;
+	}
+
+	.tools-docs-content .doc-panel {
+		border-radius: 0.75rem;
+		border: 1px solid var(--line-divider);
+		background: var(--card-bg);
+		padding: 1rem;
+	}
+
+	.tools-docs-content .doc-panel p,
+	.tools-docs-content .doc-panel li {
+		margin: 0;
+	}
+
+	@media (min-width: 768px) {
+		.tools-docs-content {
+			gap: 1.4rem;
+		}
+
+		.tools-docs-content h2 {
+			font-size: 1.1rem;
+		}
+
+		.tools-docs-content p,
+		.tools-docs-content li {
+			font-size: 0.95rem;
+		}
+
+		.tools-docs-content pre code {
+			font-size: 0.84rem;
+		}
+	}
+</style>
