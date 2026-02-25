@@ -637,13 +637,13 @@ const umamiConfig = {"enable":true,"baseUrl":"https://umamii.zeabur.app","shareI
     } else {
         fetchPageViews();
     }
-})();</script>  </div> <!-- always show cover as long as it has one --> <div id="post-cover" class="mb-8 rounded-xl banner-container onload-animation overflow-hidden relative image-wrapper" style="--theme-hue: 361" data-astro-cid-i2xmscho> <img src="/_astro/openlist-theme-cover.BfQpRKFR.png" alt style="object-position: center" data-astro-cid-i2xmscho="true" width="1001" height="546" loading="lazy" decoding="async" class="w-full h-full object-cover image-content">  </div>  <div data-pagefind-body class="prose dark:prose-invert prose-base !max-w-none custom-md mb-6 markdown-content onload-animation"> <!--<div class="prose dark:prose-invert max-w-none custom-md">--> <!--<div class="max-w-none custom-md">-->  <section><h1 id="alistopenlist-美化教程自定义头部快速上手背景毛玻璃切换按钮">Alist/OpenList 美化教程：自定义头部快速上手（背景/毛玻璃/切换按钮）<a class="anchor" href="#alistopenlist-美化教程自定义头部快速上手背景毛玻璃切换按钮"><span class="anchor-icon" data-pagefind-ignore="">#</span></a></h1><p>这篇就写一个简单实用版：用 Alist/OpenList 后台的 <strong>“自定义头部（Customize head）”</strong>，做背景图、毛玻璃和切换按钮。</p><p>重点放在怎么使用，优化过程只简单带过。</p><section><h2 id="最终效果这篇能做什么">最终效果（这篇能做什么）<a class="anchor" href="#最终效果这篇能做什么"><span class="anchor-icon" data-pagefind-ignore="">#</span></a></h2><ol>
+})();</script>  </div> <!-- always show cover as long as it has one --> <div id="post-cover" class="mb-8 rounded-xl banner-container onload-animation overflow-hidden relative image-wrapper" style="--theme-hue: 361" data-astro-cid-i2xmscho> <img src="/_astro/openlist-theme-cover.b_TTJDC7.webp" alt style="object-position: center" data-astro-cid-i2xmscho="true" width="1001" height="546" loading="lazy" decoding="async" class="w-full h-full object-cover image-content">  </div>  <div data-pagefind-body class="prose dark:prose-invert prose-base !max-w-none custom-md mb-6 markdown-content onload-animation"> <!--<div class="prose dark:prose-invert max-w-none custom-md">--> <!--<div class="max-w-none custom-md">-->  <section><h1 id="alistopenlist-美化教程自定义头部快速上手背景毛玻璃切换按钮">Alist/OpenList 美化教程：自定义头部快速上手（背景/毛玻璃/切换按钮）<a class="anchor" href="#alistopenlist-美化教程自定义头部快速上手背景毛玻璃切换按钮"><span class="anchor-icon" data-pagefind-ignore="">#</span></a></h1><p>这篇就写一个简单实用版：用 Alist/OpenList 后台的 <strong>“自定义头部（Customize head）”</strong>，做背景图、毛玻璃和切换按钮。</p><p>重点放在怎么使用，优化过程只简单带过。</p><section><h2 id="最终效果这篇能做什么">最终效果（这篇能做什么）<a class="anchor" href="#最终效果这篇能做什么"><span class="anchor-icon" data-pagefind-ignore="">#</span></a></h2><ol>
 <li>白天/夜间模式不同背景图</li>
 <li>列表/卡片毛玻璃效果</li>
 <li>左下角手动切换按钮</li>
 <li>一些细节样式（导航、代码块、底部渐变）</li>
-</ol><p><img alt="效果图占位-白天模式" width="1916" height="911" loading="lazy" decoding="async" src="/_astro/openlist-theme-1.Rw2D7mhb.png" >
-<img alt="效果图占位-夜间模式" width="1915" height="920" loading="lazy" decoding="async" src="/_astro/openlist-theme-2.BZLfFOlg.png" ></p></section><section><h2 id="使用前准备">使用前准备<a class="anchor" href="#使用前准备"><span class="anchor-icon" data-pagefind-ignore="">#</span></a></h2><p>你需要准备：</p><ol>
+</ol><p><img alt="效果图占位-白天模式" width="1916" height="911" loading="lazy" decoding="async" src="/_astro/openlist-theme-1.BzXV6Iuy.webp" >
+<img alt="效果图占位-夜间模式" width="1915" height="920" loading="lazy" decoding="async" src="/_astro/openlist-theme-2.DJ0wjZ-x.webp" ></p></section><section><h2 id="使用前准备">使用前准备<a class="anchor" href="#使用前准备"><span class="anchor-icon" data-pagefind-ignore="">#</span></a></h2><p>你需要准备：</p><ol>
 <li>一份主题片段文件（<code>openlist-Theme.html</code>）</li>
 <li>背景图链接（推荐 4 张）</li>
 </ol><p>推荐准备 4 张图，分别对应：</p><ol>
@@ -687,11 +687,11 @@ const umamiConfig = {"enable":true,"baseUrl":"https://umamii.zeabur.app","shareI
 </ol><ul>
 <li>问题示意图</li>
 </ul><blockquote>
-<p><img alt="问题示意占位图（白天黑面板）" width="1212" height="804" loading="lazy" decoding="async" src="/_astro/openlist-theme-3.CWrGbbnH.png" ></p>
+<p><img alt="问题示意占位图（白天黑面板）" width="1212" height="804" loading="lazy" decoding="async" src="/_astro/openlist-theme-3.Cy4DLlOe.webp" ></p>
 </blockquote><ul>
 <li>修复后示意图</li>
 </ul><blockquote>
-<p><img alt="修复后占位图" width="1914" height="910" loading="lazy" decoding="async" src="/_astro/openlist-theme-4.Vf6-i6FB.png" ></p>
+<p><img alt="修复后占位图" width="1914" height="910" loading="lazy" decoding="async" src="/_astro/openlist-theme-4.EWnL-2GT.webp" ></p>
 </blockquote><p>如果你只是拿来用，不需要关心太多实现细节，直接用调好的版本即可。</p></section><section><h2 id="使用建议推荐">使用建议（推荐）<a class="anchor" href="#使用建议推荐"><span class="anchor-icon" data-pagefind-ignore="">#</span></a></h2><ol>
 <li>背景图尽量用 <code>webp</code>，加载更快</li>
 <li>图片链接尽量走 CDN/图床，避免加载慢</li>

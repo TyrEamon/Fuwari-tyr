@@ -91,7 +91,7 @@
 &amp;lt;details&amp;gt;
 &amp;lt;summary&amp;gt;点击查看&amp;lt;/summary&amp;gt;&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;&lt;img src=&quot;https://i.kyr.us.ci/_astro/1769622880981.DcWRA1Ni.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://i.kyr.us.ci/_astro/1769622880981.CVvUDg5D.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
 &lt;p&gt;&amp;lt;/details&amp;gt;&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;点击链接加入群聊【暂无打算】： &lt;a&gt;QQ群&lt;/a&gt;&lt;/strong&gt;&lt;/p&gt;
 &lt;ul&gt;
@@ -115,8 +115,8 @@
 &lt;li&gt;左下角手动切换按钮&lt;/li&gt;
 &lt;li&gt;一些细节样式（导航、代码块、底部渐变）&lt;/li&gt;
 &lt;/ol&gt;
-&lt;p&gt;&lt;img src=&quot;https://i.kyr.us.ci/_astro/openlist-theme-1.Rw2D7mhb.png&quot; alt=&quot;效果图占位-白天模式&quot; /&gt;
-&lt;img src=&quot;https://i.kyr.us.ci/_astro/openlist-theme-2.BZLfFOlg.png&quot; alt=&quot;效果图占位-夜间模式&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://i.kyr.us.ci/_astro/openlist-theme-1.BzXV6Iuy.webp&quot; alt=&quot;效果图占位-白天模式&quot; /&gt;
+&lt;img src=&quot;https://i.kyr.us.ci/_astro/openlist-theme-2.DJ0wjZ-x.webp&quot; alt=&quot;效果图占位-夜间模式&quot; /&gt;&lt;/p&gt;
 &lt;h2&gt;使用前准备&lt;/h2&gt;
 &lt;p&gt;你需要准备：&lt;/p&gt;
 &lt;ol&gt;
@@ -421,13 +421,13 @@ button#hope-menu-daynight-switch-trigger {
 &lt;li&gt;问题示意图&lt;/li&gt;
 &lt;/ul&gt;
 &lt;blockquote&gt;
-&lt;p&gt;&lt;img src=&quot;https://i.kyr.us.ci/_astro/openlist-theme-3.CWrGbbnH.png&quot; alt=&quot;问题示意占位图（白天黑面板）&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://i.kyr.us.ci/_astro/openlist-theme-3.Cy4DLlOe.webp&quot; alt=&quot;问题示意占位图（白天黑面板）&quot; /&gt;&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;ul&gt;
 &lt;li&gt;修复后示意图&lt;/li&gt;
 &lt;/ul&gt;
 &lt;blockquote&gt;
-&lt;p&gt;&lt;img src=&quot;https://i.kyr.us.ci/_astro/openlist-theme-4.Vf6-i6FB.png&quot; alt=&quot;修复后占位图&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://i.kyr.us.ci/_astro/openlist-theme-4.EWnL-2GT.webp&quot; alt=&quot;修复后占位图&quot; /&gt;&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;如果你只是拿来用，不需要关心太多实现细节，直接用调好的版本即可。&lt;/p&gt;
 &lt;h2&gt;使用建议（推荐）&lt;/h2&gt;
@@ -502,7 +502,7 @@ button#hope-menu-daynight-switch-trigger {
 &lt;pre&gt;&lt;code&gt;SELECT name FROM sqlite_master WHERE type=&apos;table&apos; ORDER BY name;
 &lt;/code&gt;&lt;/pre&gt;
 &lt;blockquote&gt;
-&lt;p&gt;&lt;img src=&quot;../assets/blogimg/D1%20%E8%A1%A8%E6%B8%85%E5%8D%95%E6%88%AA%E5%9B%BE.png&quot; alt=&quot;D1 表清单截图&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../assets/blogimg/D1%20%E8%A1%A8%E6%B8%85%E5%8D%95%E6%88%AA%E5%9B%BE.webp&quot; alt=&quot;D1 表清单截图&quot; /&gt;&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;hr /&gt;
 &lt;h2&gt;3. Zeabur 部署后端（最小可用）&lt;/h2&gt;
@@ -541,7 +541,7 @@ PIXIV_INTERVAL_MINUTES=120
 &lt;li&gt;&lt;code&gt;Pixiv crawl started ...&lt;/code&gt;（你配了 Pixiv 时）&lt;/li&gt;
 &lt;/ul&gt;
 &lt;blockquote&gt;
-&lt;p&gt;&lt;img src=&quot;https://i.kyr.us.ci/_astro/8080.BS-N0rsG.png&quot; alt=&quot;前台页&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://i.kyr.us.ci/_astro/8080.tYApyGsX.webp&quot; alt=&quot;前台页&quot; /&gt;&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;hr /&gt;
 &lt;h2&gt;4. 前端部署（Pages/EdgeOne）&lt;/h2&gt;
@@ -552,11 +552,11 @@ PIXIV_INTERVAL_MINUTES=120
 &lt;/ul&gt;
 &lt;p&gt;前端请求后端 API，只要 API 域名填对即可。&lt;/p&gt;
 &lt;blockquote&gt;
-&lt;p&gt;&lt;img src=&quot;../assets/blogimg/%E5%89%8D%E5%8F%B0%E9%A1%B5.png&quot; alt=&quot;前台页&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../assets/blogimg/%E5%89%8D%E5%8F%B0%E9%A1%B5.webp&quot; alt=&quot;前台页&quot; /&gt;&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;blockquote&gt;
-&lt;p&gt;&lt;img src=&quot;../assets/blogimg/%E5%90%8E%E5%8F%B0%E9%A1%B51.png&quot; alt=&quot;后台上传页截图1&quot; /&gt;
-&lt;img src=&quot;https://i.kyr.us.ci/_astro/hputai2.BrmQ0f8Q.png&quot; alt=&quot;后台上传页截图2&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;../assets/blogimg/%E5%90%8E%E5%8F%B0%E9%A1%B51.webp&quot; alt=&quot;后台上传页截图1&quot; /&gt;
+&lt;img src=&quot;https://i.kyr.us.ci/_astro/hputai2.GFajBADO.webp&quot; alt=&quot;后台上传页截图2&quot; /&gt;&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;hr /&gt;
 &lt;h2&gt;5. 先做 5 分钟验收（别一上来就全链路压测）&lt;/h2&gt;
@@ -628,7 +628,7 @@ curl.exe -sS -u $auth &quot;$base/admin/api/backup/health?probe=1&quot;
 &lt;/ol&gt;
 &lt;hr /&gt;
 &lt;blockquote&gt;
-&lt;p&gt;&lt;a href=&quot;../assets/blogimg/zeaburrz.png&quot;&gt;日志对照图&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;../assets/blogimg/zeaburrz.webp&quot;&gt;日志对照图&lt;/a&gt;&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;hr /&gt;
 &lt;p&gt;如果你照着做卡住了，优先把这 3 个信息贴出来再排：&lt;/p&gt;
@@ -679,9 +679,9 @@ curl.exe -sS -u $auth &quot;$base/admin/api/backup/health?probe=1&quot;
 &lt;ul&gt;
 &lt;li&gt;获取你自己的&lt;code&gt;Pixiv Cookie/PHPSESSID&lt;/code&gt;、个人&lt;code&gt;uid&lt;/code&gt;&lt;/li&gt;
 &lt;li&gt;登录你的Pixiv账号，&lt;code&gt;F12&lt;/code&gt; 开发者面板
-&lt;img src=&quot;https://i.kyr.us.ci/_astro/1769671892275.BMfcDC0y.png&quot; alt=&quot;&quot; /&gt;&lt;/li&gt;
+&lt;img src=&quot;https://i.kyr.us.ci/_astro/1769671892275.pghPLcWi.webp&quot; alt=&quot;&quot; /&gt;&lt;/li&gt;
 &lt;li&gt;找到PHPSESSID，里面的值就是我们要的Cookie了
-&lt;img src=&quot;https://i.kyr.us.ci/_astro/1769671929543.DKJ9gRWl.png&quot; alt=&quot;&quot; /&gt;&lt;/li&gt;
+&lt;img src=&quot;https://i.kyr.us.ci/_astro/1769671929543.Dkz64QuV.webp&quot; alt=&quot;&quot; /&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;blockquote&gt;
 &lt;p&gt;接下来进入实操&lt;/p&gt;
@@ -705,7 +705,7 @@ curl.exe -sS -u $auth &quot;$base/admin/api/backup/health?probe=1&quot;
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;或者直接双击 &lt;code&gt;run.bat&lt;/code&gt;。&lt;/p&gt;
 &lt;h3&gt;-正常运行-&lt;/h3&gt;
-&lt;p&gt;&lt;img src=&quot;https://i.kyr.us.ci/_astro/1769672990592.idxx9ZsR.png&quot; alt=&quot;运行状态&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://i.kyr.us.ci/_astro/1769672990592.bvWtO-u8.webp&quot; alt=&quot;运行状态&quot; /&gt;&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;拿到图片文件，你可以存在本地或上传到图床。&lt;/p&gt;
 &lt;blockquote&gt;
@@ -751,7 +751,7 @@ curl.exe -sS -u $auth &quot;$base/admin/api/backup/health?probe=1&quot;
 &lt;blockquote&gt;
 &lt;p&gt;这里&lt;code&gt;原作者[saicaca]&lt;/code&gt;的&lt;a href=&quot;https://github.com/saicaca/fuwari&quot;&gt;&lt;code&gt;Fuwari&lt;/code&gt;&lt;/a&gt;、作者&lt;code&gt;二叉树树[afoim]&lt;/code&gt;二改过&lt;a href=&quot;https://github.com/afoim/fuwari&quot;&gt;&lt;code&gt;Fuwari&lt;/code&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;blockquote&gt;
-&lt;p&gt;我本人用的是&lt;a href=&quot;https://github.com/afoim/fuwari&quot;&gt;魔改版的fuwari&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;我本人用的是&lt;a href=&quot;https://github.com/Spr-Aachen/Twilight&quot;&gt;以fuwari为底的新一代博客&lt;/a&gt;&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;/blockquote&gt;
 &lt;ul&gt;
@@ -772,7 +772,7 @@ pnpm dev
 &lt;blockquote&gt;
 &lt;blockquote&gt;
 &lt;p&gt;EdgeOne的线路说是国内挺快的(但是要得是备案域名，可惜我的域名还没备案)，看看后面吧！要不要给它整一个备案。目前就这样吧，先建着站玩玩先。
-&lt;img src=&quot;https://i.kyr.us.ci/_astro/1769621915743.J3EPJRNS.png&quot; alt=&quot;itdog 结果&quot; /&gt;&lt;/p&gt;
+&lt;img src=&quot;https://i.kyr.us.ci/_astro/1769621915743.oao8gkLE.webp&quot; alt=&quot;itdog 结果&quot; /&gt;&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;/blockquote&gt;
 &lt;ul&gt;
@@ -832,7 +832,7 @@ pnpm dev
 &lt;/ul&gt;
 &lt;hr /&gt;
 &lt;h2&gt;操作过程&lt;/h2&gt;
-&lt;p&gt;&lt;img src=&quot;https://i.kyr.us.ci/_astro/file1.D138oEQn.png&quot; alt=&quot;一坨初始文件&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://i.kyr.us.ci/_astro/file1.Cr4xpaHn.webp&quot; alt=&quot;一坨初始文件&quot; /&gt;&lt;/p&gt;
 &lt;h3&gt;1.好了也是问ai将项目搓好了，虽然没做什么但是辛苦我了...玩个梗哈哈。弄好之后我们，得到了这一坨文件。&lt;/h3&gt;
 &lt;p&gt;拿到文件，我们先把config.json里的域名，给他改改。改成你R2的存储公共开放域名。
 图1&lt;/p&gt;
@@ -848,7 +848,7 @@ pnpm dev
 &lt;p&gt;&lt;code&gt;注意啊，如果你按教程来，那么那个图库基本上是fork仓库原作者的图（应该有4000多张），我自己是在本地新建的ri文件存的是自己的图。是否要换用自己的图库，看你·_·自己。&lt;/code&gt;&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;我自己就差不多700来张图，自己存的和一些从pixiv上爬我自己的个人收藏图。你问，这个脚本有吗？&lt;strong&gt;&lt;code&gt;有的！兄弟有的 &lt;/code&gt;&lt;/strong&gt;。你可以自己github搜索、搓一个或者我在用的这个&lt;a href=&quot;https://github.com/TyrEamon/Pixiv-mylove&quot;&gt;Pixiv-Tool&lt;/a&gt;
-&lt;img src=&quot;https://i.kyr.us.ci/_astro/mmmmm1.CU43b_ha.webp&quot; alt=&quot;&quot; /&gt;&lt;/li&gt;
+&lt;img src=&quot;https://i.kyr.us.ci/_astro/mmmmm1.BumhdE_y.webp&quot; alt=&quot;&quot; /&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;&lt;em&gt;填完，接下来我们就能本地 build 构建 dist 瞧瞧。&lt;/em&gt;&lt;/p&gt;
 &lt;h3&gt;直接命令行 &lt;code&gt;node build.js&lt;/code&gt; 得到构建产物/dist。（如果你没有装过依赖，你要执行一次 &lt;code&gt;npm install&lt;/code&gt;）&lt;/h3&gt;
@@ -856,19 +856,19 @@ pnpm dev
 node build.js
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;耐心等待
-&lt;img src=&quot;https://i.kyr.us.ci/_astro/bulid1.DbguTGbe.png&quot; alt=&quot;&quot; /&gt;
+&lt;img src=&quot;https://i.kyr.us.ci/_astro/bulid1.C0XOlU04.webp&quot; alt=&quot;&quot; /&gt;
 如图，拿到产物。我们lib就是gallery页面相关逻辑js了，图片就存在ri里。
 &lt;strong&gt;给他本地预览一下&lt;/strong&gt;继续命令行&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;npx serve dist
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;你会在终端得到 http://localhost:3000 本地预览地址,进行网页访问。得到如下
-&lt;img src=&quot;https://i.kyr.us.ci/_astro/1769493099959.B0NGK9xB.webp&quot; alt=&quot;&quot; /&gt;
+&lt;img src=&quot;https://i.kyr.us.ci/_astro/1769493099959.CuV1qap-.webp&quot; alt=&quot;&quot; /&gt;
 接下来，就是把它丢到R2上去部署。&lt;/p&gt;
 &lt;h3&gt;上传部署（以 Cloudflare R2 为例）&lt;/h3&gt;
 &lt;p&gt;&lt;code&gt;个人用的是rclone，不过推荐用Cyberduck，有GUI界面更直观友好。&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;首先登录cloudflare获取你的：
-&lt;img src=&quot;https://i.kyr.us.ci/_astro/r2.BIMSVTaQ.png&quot; alt=&quot;在R2页里，创建用户Token&quot; /&gt;
-&lt;img src=&quot;https://i.kyr.us.ci/_astro/s3s3.4s0mLvKJ.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;img src=&quot;https://i.kyr.us.ci/_astro/r2.Biip682i.webp&quot; alt=&quot;在R2页里，创建用户Token&quot; /&gt;
+&lt;img src=&quot;https://i.kyr.us.ci/_astro/s3s3.DXA0kiTz.webp&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;
 &lt;p&gt;&lt;em&gt;R2 的 Access Key ID&lt;/em&gt;&lt;/p&gt;
@@ -894,7 +894,7 @@ node build.js
 &lt;li&gt;Port：443&lt;/li&gt;
 &lt;li&gt;Access Key ID：填你的 R2 Access Key ID&lt;/li&gt;
 &lt;li&gt;Secret Access Key：填你的 R2 Secret Access Key
-&lt;img src=&quot;https://i.kyr.us.ci/_astro/bupl.JRSgxLbc.png&quot; alt=&quot;&quot; /&gt;&lt;/li&gt;
+&lt;img src=&quot;https://i.kyr.us.ci/_astro/bupl.2LInjD9f.webp&quot; alt=&quot;&quot; /&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
@@ -903,13 +903,12 @@ node build.js
 &amp;lt;details&amp;gt;
 &amp;lt;summary&amp;gt;点击展开&amp;lt;/summary&amp;gt;&lt;/p&gt;
 &lt;p&gt;这里默认你部署前绑好了。
-&lt;img src=&quot;https://i.kyr.us.ci/_astro/1769493099959.B0NGK9xB.webp&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;img src=&quot;https://i.kyr.us.ci/_astro/1769493099959.CuV1qap-.webp&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
 &lt;p&gt;&amp;lt;/details&amp;gt;&lt;/p&gt;
 &lt;h2&gt;&lt;strong&gt;OK啊，到这里算部署出成功了，接下来就是愉快的玩耍了&lt;/strong&gt;&lt;/h2&gt;
 &lt;h2&gt;最后的最后：尊重原创&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;这是 fork 项目的优化记录，不是从零开发。感谢原作者AcoFork提供的基础结构。&lt;/li&gt;
-&lt;li&gt;如果你也喜欢或正在在用这个项目，可以去关注他的&lt;a href=&quot;https://2x.nz&quot;&gt;二叉树树的博客&lt;/a&gt;。&lt;/li&gt;
 &lt;/ul&gt;
 &lt;hr /&gt;
 &lt;h1&gt;——自此本章完结——&lt;/h1&gt;
