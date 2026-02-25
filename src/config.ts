@@ -208,7 +208,7 @@ export const profileConfig: ProfileConfig = {
 		{
 			name: "QQ",
 			icon: "qq", // Local icon
-			url: "https://pan.0106010.xyz/file/openlist-Theme/1772014307560_QQ.webp",
+			url: "https://i.kyr.us.ci/qq",
 		},
 		{
 			name: "Telegram",

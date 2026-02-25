@@ -100,6 +100,10 @@ export default defineConfig({
 			status: 302,
 			destination: "https://acofork.notion.site/2e11e011d4e5800fa050e8f7cf448347",
 		},
+		"/qq": {
+			status: 302,
+			destination: "https://pan.0106010.xyz/file/openlist-Theme/1772014307560_QQ.webp",
+		},
 	},
 	integrations: [
 		tailwind({
