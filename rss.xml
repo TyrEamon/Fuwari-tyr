@@ -1,11 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>RuneByte Blog</title><description>tyreamon的个人博客</description><link>https://i.kyr.us.ci/</link><language>zh_CN</language><item><title>欢迎来到我的博客！</title><link>https://i.kyr.us.ci/posts/top/</link><guid isPermaLink="true">https://i.kyr.us.ci/posts/top/</guid><description>致谢板及简介</description><pubDate>Sat, 24 Jan 2026 00:00:00 GMT</pubDate><content:encoded>&lt;blockquote&gt;
 &lt;p&gt;&lt;em&gt;---你好陌生人，这里是Tyreamon的博客---&lt;/em&gt;&lt;/p&gt;
 &lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;em&gt;---&lt;code&gt;献上一首nbuna的歌给你&lt;/code&gt;---&lt;/em&gt;
+::music{meting=&quot;https://api.i-meto.com/meting/api?server=netease&amp;amp;type=song&amp;amp;id=2666842841&quot;}&lt;/p&gt;
+&lt;/blockquote&gt;
 &lt;h2&gt;&lt;a href=&quot;#mycontact&quot;&gt;如何联系？ &lt;/a&gt;&lt;/h2&gt;
 &lt;hr /&gt;
 &lt;h1&gt;❤️‍🔥致谢板❤️‍🔥&lt;/h1&gt;
 &lt;blockquote&gt;
-&lt;p&gt;致谢以下博客框架的作者和文章中引用项目的各位前辈。
+&lt;p&gt;致谢以下博客框架的作者和文章中引用项目的各位前辈，为我的博客搭建提供了极大的帮助。
 站在巨人肩膀上，借着光能走的更远。&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;&amp;lt;div class=&quot;thanks-wall&quot;&amp;gt;
@@ -37,12 +41,12 @@
 &amp;lt;/div&amp;gt;
 &amp;lt;/div&amp;gt;&lt;/p&gt;
 &lt;p&gt;&amp;lt;div class=&quot;thanks-card&quot;&amp;gt;
-&amp;lt;img class=&quot;thanks-avatar&quot; src=&quot;https://github.com/tailwindlabs.png&quot; /&amp;gt;
+&amp;lt;img class=&quot;thanks-avatar&quot; src=&quot;https://github.com/Spr-Aachen.png&quot; /&amp;gt;
 &amp;lt;div&amp;gt;
 &amp;lt;b&amp;gt;Tailwind CSS&amp;lt;/b&amp;gt;&amp;lt;br/&amp;gt;
-作者：tailwindlabs&amp;lt;br/&amp;gt;
-&amp;lt;a href=&quot;https://github.com/tailwindlabs/tailwindcss&quot;&amp;gt;GitHub&amp;lt;/a&amp;gt;&amp;lt;br/&amp;gt;
-&amp;lt;span class=&quot;thanks-tag&quot;&amp;gt;样式系统&amp;lt;/span&amp;gt;
+作者：Spr-Aachen&amp;lt;br/&amp;gt;
+&amp;lt;a href=&quot;https://github.com/Spr-Aachen/Twilight&quot;&amp;gt;GitHub&amp;lt;/a&amp;gt;&amp;lt;br/&amp;gt;
+&amp;lt;span class=&quot;thanks-tag&quot;&amp;gt;构建框架&amp;lt;/span&amp;gt;
 &amp;lt;/div&amp;gt;
 &amp;lt;/div&amp;gt;&lt;/p&gt;
 &lt;p&gt;&amp;lt;div class=&quot;thanks-card&quot;&amp;gt;
@@ -78,12 +82,12 @@
 &lt;h2&gt;由来&lt;/h2&gt;
 &lt;blockquote&gt;
 &lt;p&gt;偷得浮生半日闲，我也有了自己的个人博客
-说起来也随意，无聊在家冲浪发现一位博主在完善自己的博客，乍一看着实不错。再接着后面也陆陆续续刷到别人搭建博客的视频。于是萌生了自己搭建博客，去记录些许东西。所以这么滴。该站就怎么&lt;code&gt;诞生&lt;/code&gt;了。&lt;/p&gt;
+说起来也随意，无聊在家冲浪发现一位博主在完善自己的博客，乍一看着实不错。再接着后面在github上遇到Twilight&amp;amp;Fuwari等博客框架。于是萌生了自己搭建博客，去记录些许东西。由此自然而然。该站就怎么&lt;code&gt;诞生&lt;/code&gt;了。&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;&amp;lt;a id=&quot;mycontact&quot;&amp;gt;&amp;lt;/a&amp;gt;&lt;/p&gt;
 &lt;h2&gt;加群方式&lt;/h2&gt;
 &lt;blockquote&gt;
-&lt;p&gt;由于个人不怎么看QQ,主用wx和Telegream。所以我这边就懒得开Q群了。&lt;/p&gt;
+&lt;p&gt;由于个人不怎么看QQ,主用wx和Telegream。&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;&lt;strong&gt;So &lt;a href=&quot;https://t.me/+EZ-bVy07k2xjMzY1&quot;&gt;Telegram：Join Group [tyr的树洞].&lt;/a&gt;&lt;/strong&gt;&lt;/p&gt;
 &lt;ul&gt;
@@ -103,7 +107,7 @@
 &lt;h2&gt;&amp;lt;/details&amp;gt;&lt;/h2&gt;
 &lt;p&gt;——ZHIDINGLANWANJIE——&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;同样的，欢迎你加入 &lt;em&gt;(&lt;code&gt;目前没啥人就是了&lt;/code&gt;)&lt;/em&gt;&lt;/li&gt;
+&lt;li&gt;同样的，欢迎你加入&lt;/li&gt;
 &lt;/ul&gt;
 </content:encoded></item><item><title>Alist/OpenList 美化教程：自定义头部快速上手（背景/毛玻璃/切换按钮）</title><link>https://i.kyr.us.ci/posts/openlist-theme/</link><guid isPermaLink="true">https://i.kyr.us.ci/posts/openlist-theme/</guid><description>一篇实用向 OpenList 美化教程：通过自定义头部注入 CSS/JS，实现背景图、毛玻璃面板和日夜切换按钮，重点讲怎么用。</description><pubDate>Mon, 23 Feb 2026 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;Alist/OpenList 美化教程：自定义头部快速上手（背景/毛玻璃/切换按钮）&lt;/h1&gt;
 &lt;p&gt;这篇就写一个简单实用版：用 Alist/OpenList 后台的 &lt;strong&gt;“自定义头部（Customize head）”&lt;/strong&gt;，做背景图、毛玻璃和切换按钮。&lt;/p&gt;
