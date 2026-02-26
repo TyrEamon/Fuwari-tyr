@@ -4,9 +4,13 @@
 	"version": "0.0.1",
 	"scripts": {
 		"dev": "astro dev",
+		"dev:22": "nvm use 22.14.0 && pnpm dev",
 		"start": "astro dev",
 		"build": "astro build",
+		"build:22": "nvm use 22.14.0 && pnpm build",
 		"preview": "astro preview",
+		"install:22": "nvm use 22.14.0 && pnpm install",
+		"use-node": "nvm use 22.14.0",
 		"astro": "astro",
 		"type-check": "tsc --noEmit --isolatedDeclarations",
 		"new-post": "node scripts/new-post.js",
