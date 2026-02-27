@@ -71,6 +71,23 @@ function closePanel() {
 	isOpen = false;
 }
 
+function isHoverPointerDevice() {
+	if (typeof window === "undefined" || typeof window.matchMedia !== "function") {
+		return false;
+	}
+	return window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+}
+
+function handleHoverOpen() {
+	if (!isHoverPointerDevice()) return;
+	openPanel();
+}
+
+function handleHoverClose() {
+	if (!isHoverPointerDevice()) return;
+	closePanel();
+}
+
 function togglePanel() {
 	isOpen = !isOpen;
 }
@@ -134,13 +151,13 @@ onMount(() => {
 </script>
 
 {#if wallpaperCapabilities.enabled}
-	<div class="relative z-50 block" role="menu" tabindex="-1" on:mouseleave={closePanel}>
+	<div class="relative z-50 block" role="menu" tabindex="-1" on:mouseleave={handleHoverClose}>
 		<button
 			aria-label="Wallpaper Mode"
 			role="menuitem"
 			class="relative btn-plain scale-animation rounded-lg h-11 w-11 active:scale-90"
 			id="wallpaper-mode-switch"
-			on:mouseenter={openPanel}
+			on:mouseenter={handleHoverOpen}
 			on:click={handleSwitchClick}
 		>
 			<div class="absolute inset-0 flex items-center justify-center transition-opacity" class:opacity-0={wallpaperMode !== "banner"}>
