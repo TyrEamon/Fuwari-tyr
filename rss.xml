@@ -116,7 +116,7 @@
 &amp;lt;summary&amp;gt;点击展开&amp;lt;/summary&amp;gt;
 &amp;lt;p&amp;gt;https://github.com/TyrEamon/video-ts&amp;lt;/p&amp;gt;
 &amp;lt;/details&amp;gt;&lt;/p&gt;
-&lt;h1&gt;前言&lt;/h1&gt;
+&lt;h1&gt;&lt;code&gt;#&lt;/code&gt;前言&lt;/h1&gt;
 &lt;p&gt;如果你想把视频放进博客，但又不想自建流媒体服务器，那么你可以考虑用强大的FFmpeg工具和video-ts项目。这种“静态分片 + CDN 分发”的方案会非常实用。
 核心思路是：&lt;/p&gt;
 &lt;blockquote&gt;
@@ -131,7 +131,7 @@
 &lt;pre&gt;&lt;code&gt;::video-ts{url=&quot;https://你的域名/_v/001/index.m3u8&quot;}
 &lt;/code&gt;&lt;/pre&gt;
 &lt;h2&gt;&lt;img src=&quot;../assets/blogimg/%E6%92%AD%E6%94%BE.webp&quot; alt=&quot;&quot; /&gt;&lt;/h2&gt;
-&lt;h2&gt;1、为什么用 Cloudflare Pages 或 Worker 托管视频&lt;/h2&gt;
+&lt;h2&gt;&lt;code&gt;#&lt;/code&gt;1、为什么用 Cloudflare Pages 或 Worker 托管视频&lt;/h2&gt;
 &lt;p&gt;用cloudflare托管我们可以享受它的服务：&lt;code&gt;我们不用自己搭流媒体服务器&lt;/code&gt;、&lt;code&gt;自带有 CDN&lt;/code&gt;，跨地区访问更稳。&lt;code&gt;自带 HTTPS 和自定义域名&lt;/code&gt;，不用自己配置。&lt;code&gt;可用缓存规则把热分片打到边缘缓存（HIT）&lt;/code&gt;&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;ul&gt;
@@ -144,7 +144,7 @@
 &lt;li&gt;如果你后面想做更复杂逻辑（鉴权、签名、反代）：再加 Worker&lt;/li&gt;
 &lt;/ul&gt;
 &lt;hr /&gt;
-&lt;h2&gt;2、想托管到cf，首先得进行HLS 和 DASH 分片&lt;/h2&gt;
+&lt;h2&gt;&lt;code&gt;#&lt;/code&gt;2、想托管到cf，首先得进行HLS 和 DASH 分片&lt;/h2&gt;
 &lt;blockquote&gt;
 &lt;p&gt;Cloudflare Pages 托管静态文件的约束：&lt;/p&gt;
 &lt;ul&gt;
@@ -161,7 +161,7 @@
 &lt;/ul&gt;
 &lt;p&gt;进行播放时，播放器会先读清单，再按顺序拉分片。&lt;/p&gt;
 &lt;hr /&gt;
-&lt;h2&gt;3、分片前要先考虑视频的编码格式。选H.264(AVC) 还是 AV1？兼容性和压缩率怎么选?&lt;/h2&gt;
+&lt;h2&gt;&lt;code&gt;#&lt;/code&gt;3、分片前要先考虑视频的编码格式。选H.264(AVC) 还是 AV1？兼容性和压缩率怎么选?&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;目前主流上最稳定的视频编码格式是 &lt;code&gt;H.264&lt;/code&gt;（AVC）。它是最老的视频编码格式，兼容性最强。&lt;/li&gt;
 &lt;li&gt;&lt;code&gt;AV1&lt;/code&gt;：同画质通常更省码率兼并高压缩率、文件更小更省流量，但前提是得设备支持 AV1 解码。&lt;/li&gt;
@@ -172,7 +172,7 @@
 &lt;li&gt;你有精力再补 AV1 版本（省流量）&lt;/li&gt;
 &lt;/ul&gt;
 &lt;hr /&gt;
-&lt;h2&gt;4、工具推荐 FFmpeg（含命令 + 关键参数）&lt;/h2&gt;
+&lt;h2&gt;&lt;code&gt;#&lt;/code&gt;4、工具推荐 FFmpeg（含命令 + 关键参数）&lt;/h2&gt;
 &lt;p&gt;FFmpeg处理视频、音频界的&lt;code&gt;瑞士军刀&lt;/code&gt;，功能强大，支持几乎所有视频格式。我们的转码和分片都在FFmpeg里进行。&lt;/p&gt;
 &lt;h3&gt;4.1 转 AV1（示例）&lt;/h3&gt;
 &lt;pre&gt;&lt;code&gt;ffmpeg -i &quot;input.mp4&quot; -c:v libsvtav1 -crf 30 -preset 6 -pix_fmt yuv420p -c:a libopus -b:a 160k &quot;output-av1.mkv&quot;
@@ -207,7 +207,7 @@
 &lt;li&gt;&lt;code&gt;-use_template 1 -use_timeline 1&lt;/code&gt;：模板 + 时间线&lt;/li&gt;
 &lt;/ul&gt;
 &lt;hr /&gt;
-&lt;h2&gt;5、分片后的&lt;code&gt;.m3u8&lt;/code&gt;和&lt;code&gt;.ts&lt;/code&gt;、&lt;code&gt;.mpd&lt;/code&gt;和&lt;code&gt;.m4s/webm&lt;/code&gt;文件放,统一放在 &lt;code&gt;_v&lt;/code&gt; 下&lt;/h2&gt;
+&lt;h2&gt;&lt;code&gt;#&lt;/code&gt;5、分片后的&lt;code&gt;.m3u8&lt;/code&gt;和&lt;code&gt;.ts&lt;/code&gt;、&lt;code&gt;.mpd&lt;/code&gt;和&lt;code&gt;.m4s/webm&lt;/code&gt;文件放,统一放在 &lt;code&gt;_v&lt;/code&gt; 下&lt;/h2&gt;
 &lt;p&gt;在 &lt;code&gt;video-ts&lt;/code&gt; 里统一放：&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;public/_v/&amp;lt;slug&amp;gt;/
 &lt;/code&gt;&lt;/pre&gt;
@@ -218,7 +218,7 @@ public/_v/001/manifest.mpd
 public/_v/001/chunk-stream0-00001.m4s
 &lt;/code&gt;&lt;/pre&gt;
 &lt;hr /&gt;
-&lt;h2&gt;6、video-ts的首次部署&amp;amp;日常使用流程（最实用）&lt;/h2&gt;
+&lt;h2&gt;&lt;code&gt;#&lt;/code&gt;6、video-ts的首次部署&amp;amp;日常使用流程（最实用）&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;
 &lt;p&gt;（1）首次部署：&lt;/p&gt;
@@ -256,7 +256,7 @@ public/_v/001/chunk-stream0-00001.m4s
 &lt;li&gt;push到远端github仓库，cf pages等会自动部署&lt;/li&gt;
 &lt;/ol&gt;
 &lt;hr /&gt;
-&lt;h1&gt;后记&lt;/h1&gt;
+&lt;h1&gt;&lt;code&gt;#&lt;/code&gt;后记&lt;/h1&gt;
 &lt;p&gt;&lt;code&gt;_headers&lt;/code&gt; 和 &lt;code&gt;player.html&lt;/code&gt; 是干嘛的&lt;/p&gt;
 &lt;h3&gt;&lt;code&gt;_headers&lt;/code&gt;： Cloudflare 静态响应头配置。&lt;/h3&gt;
 &lt;ul&gt;
