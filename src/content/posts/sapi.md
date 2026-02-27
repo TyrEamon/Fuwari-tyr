@@ -1,4 +1,4 @@
-﻿---
+---
 title: Static.Random.PicAPI的随机图 Gallery的样式性能优化
 published: 2026-01-27T14:43:00
 description: Fork 随机图库项目后，仓库项目似乎还没更新。于是照葫芦画瓢搓了 gallery的（sticky 顶栏、日夜模式、占位防跳动、触底分批加载逻辑），并把部署步骤交给到给你。
