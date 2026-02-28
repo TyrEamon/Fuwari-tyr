@@ -44,13 +44,17 @@ export default defineConfig({
 			status: 302,
 			destination: "https://www.6858686.xyz",
 		},
+		"/v": {
+			status: 302,
+			destination: "https://v.kyr.us.ci",
+		},
 		"/top": {
 			status: 302,
 			destination: "/posts/top",
 		},
 		"/ak": {
 			status: 302,
-			destination: "https://akile.io/register?aff_code=503fe5ea-e7c5-4d68-ae05-6de99513680e",
+			destination: "https://akile.io",
 		},
 		"/acg": {
 			status: 302,
@@ -58,19 +62,19 @@ export default defineConfig({
 		},
 		"/opl": {
 			status: 302,
-			destination: "https://wl.awcmam.com/#/register?code=FNQwOQBM",
+			destination: "https://wl.awcmam.com",
 		},
 		"/mly": {
 			status: 302,
-			destination: "https://muleyun.com/aff/GOTRJLPN",
+			destination: "https://muleyun.com",
 		},
 		"/tly": {
 			status: 302,
-			destination: "https://tianlicloud.cn/aff/HNNCFKGP",
+			destination: "https://tianlicloud.cn",
 		},
 		"/kook": {
 			status: 302,
-			destination: "https://kook.vip/K29zpT",
+			destination: "https://kook.vip",
 		},
 		"/gal": {
 			status: 302,

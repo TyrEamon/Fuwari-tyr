@@ -2,7 +2,7 @@
 	"redirects": [
 		{
 			"source": "/ak",
-			"destination": "https://akile.io/register?aff_code=503fe5ea-e7c5-4d68-ae05-6de99513680e",
+			"destination": "https://akile.io",
 			"statusCode": 302
 		},
 		{
@@ -12,17 +12,17 @@
 		},
 		{
 			"source": "/long",
-			"destination": "https://iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii.iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii.in/",
+			"destination": "https://t.com",
 			"statusCode": 302
 		},
 		{
 			"source": "/mly",
-			"destination": "https://muleyun.com/aff/GOTRJLPN",
+			"destination": "https://muleyun.com",
 			"statusCode": 302
 		},
 		{
 			"source": "/tg",
-			"destination": "https://t.me/+_07DERp7k1ljYTc1",
+			"destination": "https://t.me/+EZ-bVy07k2xjMzY1",
 			"statusCode": 302
 		},
 		{
@@ -32,27 +32,27 @@
 		},
 		{
 			"source": "/tly",
-			"destination": "https://tianlicloud.cn/aff/HNNCFKGP",
+			"destination": "https://tianlicloud.cn/",
 			"statusCode": 302
 		},
 		{
 			"source": "/wly",
-			"destination": "https://wl.awcmam.com/#/register?code=FNQwOQBM",
+			"destination": "https://wl.awcmam.com/",
 			"statusCode": 302
 		},
 		{
 			"source": "/yyb",
-			"destination": "https://www.rainyun.com/acofork_?s=bilibili",
+			"destination": "https://www.rainyun.com",
 			"statusCode": 302
 		},
 		{
 			"source": "/iku",
-			"destination": "https://ikuuu.de/auth/register?code=Bjou",
+			"destination": "https://ikuuu.de/auth",
 			"statusCode": 302
 		},
 		{
 			"source": "/esa",
-			"destination": "https://tianchi.aliyun.com/specials/promotion/freetier/esa?taskCode=25254&recordId=c856e61228828a0423417a767828d166",
+			"destination": "https://tianchi.aliyun.com",
 			"statusCode": 302
 		}
 	]
