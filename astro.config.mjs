@@ -48,6 +48,18 @@ export default defineConfig({
 			status: 302,
 			destination: "https://v.kyr.us.ci",
 		},
+		"/eo": {
+			status: 302,
+			destination: "https://console.cloud.tencent.com/",
+		},
+		"/hw": {
+			status: 302,
+			destination: "https://support.huaweicloud.com",
+		},
+		"/kook": {
+			status: 302,
+			destination: "https://kook.vip",
+		},
 		"/top": {
 			status: 302,
 			destination: "/posts/top",
@@ -72,17 +84,9 @@ export default defineConfig({
 			status: 302,
 			destination: "https://tianlicloud.cn",
 		},
-		"/kook": {
-			status: 302,
-			destination: "https://kook.vip",
-		},
 		"/gal": {
 			status: 302,
 			destination: "https://i.2x.nz/posts/94",
-		},
-		"/egp": {
-			status: 302,
-			destination: "https://console.cloud.tencent.com/",
 		},
 		"/donate": {
 			status: 302,

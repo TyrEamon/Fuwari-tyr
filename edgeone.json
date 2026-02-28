@@ -1,13 +1,33 @@
 {
 	"redirects": [
 		{
-			"source": "/ak",
-			"destination": "https://akile.io",
+			"source": "/v",
+			"destination": "https://v.kyr.us.ci",
 			"statusCode": 302
 		},
 		{
-			"source": "/v",
-			"destination": "https://v.kyr.us.ci",
+			"source": "/nav",
+			"destination": "https://6858686.xyz",
+			"statusCode": 302
+		},
+		{
+			"source": "/eo",
+			"destination": "https://console.cloud.tencent.com",
+			"statusCode": 302
+		},
+		{
+			"source": "/hw",
+			"destination": "https://support.huaweicloud.com",
+			"statusCode": 302
+		},
+		{
+			"source": "/cf",
+			"destination": "https://dash.cloudflare.com",
+			"statusCode": 302
+		},
+		{
+			"source": "/ak",
+			"destination": "https://akile.io",
 			"statusCode": 302
 		},
 		{
@@ -32,12 +52,12 @@
 		},
 		{
 			"source": "/tly",
-			"destination": "https://tianlicloud.cn/",
+			"destination": "https://tianlicloud.cn",
 			"statusCode": 302
 		},
 		{
 			"source": "/wly",
-			"destination": "https://wl.awcmam.com/",
+			"destination": "https://wl.awcmam.com",
 			"statusCode": 302
 		},
 		{
