@@ -13,7 +13,7 @@ draft: false
 lang: ""
 ---
 `项目仓库地址:` 
-::github{repo="TyrEamon/video-ts"}
+::github{repo="TyrEamon/video-tsp"}
 <details>
   <summary>点击展开</summary>
   <p>https://github.com/TyrEamon/video-ts</p>
