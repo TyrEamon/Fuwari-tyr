@@ -111,7 +111,7 @@
 &lt;li&gt;同样的，欢迎你加入&lt;/li&gt;
 &lt;/ul&gt;
 </content:encoded></item><item><title>用 video-ts 在 Cloudflare Pages / Worker 零成本托管你的视频文件</title><link>https://i.kyr.us.ci/posts/cfplay/</link><guid isPermaLink="true">https://i.kyr.us.ci/posts/cfplay/</guid><description>不用自建流媒体服务器，hls/dash静态分片托管到cloudflare在线播放，享受CDN 分发。</description><pubDate>Fri, 27 Feb 2026 16:30:00 GMT</pubDate><content:encoded>&lt;p&gt;&lt;code&gt;项目仓库地址:&lt;/code&gt;
-::github{repo=&quot;TyrEamon/video-ts&quot;}
+::github{repo=&quot;TyrEamon/video-tsp&quot;}
 &amp;lt;details&amp;gt;
 &amp;lt;summary&amp;gt;点击展开&amp;lt;/summary&amp;gt;
 &amp;lt;p&amp;gt;https://github.com/TyrEamon/video-ts&amp;lt;/p&amp;gt;
