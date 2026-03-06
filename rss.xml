@@ -82,13 +82,14 @@
 &lt;h1&gt;博客简介&lt;/h1&gt;
 &lt;h2&gt;由来&lt;/h2&gt;
 &lt;blockquote&gt;
-&lt;p&gt;偷得浮生半日闲，我也有了自己的个人博客
-说起来也随意，无聊在家冲浪发现一位博主在完善自己的博客，乍一看着实不错。再接着后面在github上遇到Twilight&amp;amp;Fuwari等博客框架。于是萌生了自己搭建博客，去记录些许东西。由此自然而然。该站就怎么&lt;code&gt;诞生&lt;/code&gt;了。&lt;/p&gt;
+&lt;p&gt;其实说来早些时候就有建站这个念头，留意过&lt;code&gt;WordPress&lt;/code&gt;、&lt;code&gt;VuePress&lt;/code&gt;框架和
+不少个人博客站。但是都不太合心意，所以一直搁置。真正的契机：是某天刷到让我&amp;gt;
+一眼就甚是满意的博客主题—— &lt;code&gt;Fuwari&lt;/code&gt;，果然还得是&lt;code&gt;Astro&lt;/code&gt;上限还是太高了（个人观点）。于是拉取修改部署，本站就&lt;code&gt;诞生&lt;/code&gt;了。（顺带一提本站挂载在CloudFlare上，自带全球CDN,Dos防护&lt;code&gt;直接夯爆啦&lt;/code&gt;。只能说cflare&lt;code&gt;善，还是太善了&lt;/code&gt;。），还有&lt;code&gt;Yukina&lt;/code&gt; &amp;amp; &lt;code&gt;Mizuki&lt;/code&gt;以及二者衍生&lt;code&gt;Twilight&lt;/code&gt;都非常优秀，所以相当元素本站都有借鉴学习。总之Fuwari都是非常推荐上手试一试。&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;&amp;lt;a id=&quot;mycontact&quot;&amp;gt;&amp;lt;/a&amp;gt;&lt;/p&gt;
-&lt;h2&gt;加群方式&lt;/h2&gt;
+&lt;h2&gt;联系方式&lt;/h2&gt;
 &lt;blockquote&gt;
-&lt;p&gt;由于个人不怎么看QQ,主用wx和Telegream。&lt;/p&gt;
+&lt;p&gt;你可以通过以下的方式联系到我。&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;&lt;strong&gt;So &lt;a href=&quot;https://t.me/+EZ-bVy07k2xjMzY1&quot;&gt;Telegram：Join Group [tyr的树洞].&lt;/a&gt;&lt;/strong&gt;&lt;/p&gt;
 &lt;ul&gt;
