@@ -1,6 +1,17 @@
 ﻿import { type CollectionEntry, getCollection } from "astro:content";
 import { getCategoryUrl } from "@/utils/url-utils";
 
+export const JOURNAL_CATEGORY = "日志";
+
+export function isJournalCategory(category: string | null | undefined): boolean {
+	if (!category || typeof category !== "string") return false;
+	return category.trim() === JOURNAL_CATEGORY;
+}
+
+export function isJournalPost(post: { data: { category?: string | null } }): boolean {
+	return isJournalCategory(post.data.category ?? null);
+}
+
 export async function getSortedPosts() {
 	const allBlogPosts = await getCollection("posts", ({ data }) => {
 		return import.meta.env.PROD ? data.draft !== true : true;

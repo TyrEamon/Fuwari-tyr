@@ -1,7 +1,23 @@
----
+﻿---
+import path from "node:path";
 import { Icon } from "astro-icon/components";
-import MainGridLayout from "@layouts/MainGridLayout.astro";
 import BackToExhibitionChip from "@components/misc/BackToExhibitionChip.astro";
+import ImageWrapper from "@components/misc/ImageWrapper.astro";
+import MainGridLayout from "@layouts/MainGridLayout.astro";
+import { umamiConfig } from "@/config";
+import { getSortedPosts, isJournalPost } from "@/utils/content-utils";
+import { getDir, getPostUrlBySlug } from "@/utils/url-utils";
+
+const logEntries = (await getSortedPosts()).filter((entry) => isJournalPost(entry));
+
+function formatDateTime(date: Date): string {
+	const yyyy = date.getFullYear();
+	const mm = String(date.getMonth() + 1).padStart(2, "0");
+	const dd = String(date.getDate()).padStart(2, "0");
+	const hh = String(date.getHours()).padStart(2, "0");
+	const min = String(date.getMinutes()).padStart(2, "0");
+	return `${yyyy}-${mm}-${dd} ${hh}:${min}`;
+}
 ---
 
 <MainGridLayout title="日志" description="每日见闻与随记">
@@ -9,18 +25,222 @@ import BackToExhibitionChip from "@components/misc/BackToExhibitionChip.astro";
 		<div class="mb-4">
 			<BackToExhibitionChip />
 		</div>
-		<div class="flex items-center gap-3 mb-4">
+		<div class="flex items-center gap-3 mb-6">
 			<div class="h-10 w-10 rounded-lg bg-[var(--primary)]/15 text-[var(--primary)] flex items-center justify-center">
 				<Icon name="material-symbols:menu-book-rounded" class="text-[1.5rem]" />
 			</div>
 			<div>
 				<h1 class="text-2xl font-bold text-90">日志</h1>
-				<p class="text-sm text-50">上传一些每日见闻与随记</p>
+				<p class="text-sm text-50">独立时间线，不进入首页文章流</p>
 			</div>
 		</div>
 
-		<div class="rounded-xl border border-[var(--line-divider)] bg-[var(--card-bg)] p-5 text-sm text-60">
-			页面已预留。后续可以在这里发布每日记录、短想法、生活片段或更新日志。
-		</div>
+		{logEntries.length === 0 ? (
+			<div class="rounded-xl border border-[var(--line-divider)] bg-[var(--card-bg)] p-5 text-sm text-60">
+				还没有日志。你可以先在 <code>src/content/posts/</code> 新建 md，并写上
+				<code>category: 日志</code>。
+			</div>
+		) : (
+			<div class="journal-stream">
+				{logEntries.map((entry) => (
+					<article class="journal-card">
+						<a href={getPostUrlBySlug(entry.slug)} class="journal-link" aria-label={`打开日志：${entry.data.title}`}>
+							<div class="journal-header">
+								<div class="journal-avatar" aria-hidden="true">志</div>
+								<div class="journal-header-text">
+									<div class="journal-author text-90">日志</div>
+									<div class="journal-handle text-50">@{entry.slug}</div>
+								</div>
+							</div>
+
+							<h2 class="journal-title text-90">{entry.data.title}</h2>
+							{entry.data.description && <p class="journal-desc text-60">{entry.data.description}</p>}
+
+							{entry.data.image && (
+								<div class="journal-media">
+									<ImageWrapper
+										src={entry.data.image}
+										basePath={path.join("content/posts/", getDir(entry.id))}
+										alt={entry.data.title}
+										class="journal-media-image"
+									/>
+								</div>
+							)}
+
+							<div class="journal-meta text-50" aria-label="日志统计">
+								<span class="journal-meta-item">
+									<Icon name="material-symbols:schedule-outline-rounded" class="text-base" />
+									<time>{formatDateTime(entry.data.published)}</time>
+								</span>
+								<span class="journal-meta-item">
+									<Icon name="material-symbols:visibility-outline-rounded" class="text-base" />
+									<span data-role="views" data-slug={entry.slug}>0</span>
+								</span>
+								<span class="journal-meta-item" title="评论数暂按静态值显示">
+									<Icon name="material-symbols:chat-bubble-outline-rounded" class="text-base" />
+									<span data-role="comments">0</span>
+								</span>
+							</div>
+						</a>
+					</article>
+				))}
+			</div>
+		)}
 	</div>
 </MainGridLayout>
+
+<script define:vars={{ umamiConfig }}>
+	async function loadJournalViews() {
+		if (!umamiConfig.enable) return;
+		const fetchStats = window.fetchUmamiStats;
+		if (typeof fetchStats !== "function") return;
+
+		const viewNodes = Array.from(
+			document.querySelectorAll('[data-role="views"][data-slug]'),
+		);
+		if (viewNodes.length === 0) return;
+
+		await Promise.all(
+			viewNodes.map(async (node) => {
+				if (!(node instanceof HTMLElement)) return;
+				const slug = node.dataset.slug;
+				if (!slug) return;
+				try {
+					const statsData = await fetchStats(umamiConfig.baseUrl, umamiConfig.shareId, {
+						timezone: umamiConfig.timezone,
+						path: `eq./posts/${slug}/`,
+					});
+					const pageViews = (statsData.pageviews && statsData.pageviews.value) || statsData.pageviews || 0;
+					node.textContent = String(pageViews);
+				} catch (_err) {
+					node.textContent = "0";
+				}
+			}),
+		);
+	}
+
+	function bootJournalViews() {
+		void loadJournalViews();
+	}
+
+	if (document.readyState === "loading") {
+		document.addEventListener("DOMContentLoaded", bootJournalViews);
+	} else {
+		bootJournalViews();
+	}
+
+	document.addEventListener("swup:contentReplaced", bootJournalViews);
+</script>
+
+<style>
+	.journal-stream {
+		display: flex;
+		flex-direction: column;
+		gap: 0.9rem;
+	}
+
+	.journal-card {
+		border: 1px solid var(--line-divider);
+		border-radius: 1rem;
+		background: color-mix(in oklch, var(--card-bg), black 10%);
+		overflow: hidden;
+	}
+
+	.journal-link {
+		display: block;
+		padding: 0.9rem;
+		cursor: pointer;
+		transition: background-color 180ms ease, border-color 180ms ease;
+	}
+
+	.journal-link:hover {
+		background: color-mix(in oklch, var(--card-bg), var(--primary) 6%);
+	}
+
+	.journal-header {
+		display: flex;
+		align-items: center;
+		gap: 0.65rem;
+		margin-bottom: 0.7rem;
+	}
+
+	.journal-avatar {
+		height: 2rem;
+		width: 2rem;
+		border-radius: 9999px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		font-size: 0.875rem;
+		font-weight: 700;
+		color: var(--primary);
+		background: color-mix(in oklch, var(--primary), transparent 82%);
+	}
+
+	.journal-header-text {
+		min-width: 0;
+	}
+
+	.journal-author {
+		font-size: 0.875rem;
+		font-weight: 600;
+	}
+
+	.journal-handle {
+		font-size: 0.75rem;
+		line-height: 1.15;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+
+	.journal-title {
+		font-size: 1rem;
+		font-weight: 700;
+		line-height: 1.45;
+		margin: 0;
+	}
+
+	.journal-desc {
+		margin: 0.5rem 0 0;
+		font-size: 0.9rem;
+		line-height: 1.55;
+	}
+
+	.journal-media {
+		margin-top: 0.75rem;
+		border-radius: 1rem;
+		overflow: hidden;
+		border: 1px solid color-mix(in oklch, var(--line-divider), transparent 20%);
+		background: #000;
+	}
+
+	.journal-media-image {
+		aspect-ratio: 16 / 10;
+		max-height: min(70vh, 560px);
+	}
+
+	.journal-meta {
+		margin-top: 0.75rem;
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.85rem;
+		align-items: center;
+		font-size: 0.78rem;
+	}
+
+	.journal-meta-item {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.2rem;
+	}
+
+	@media (min-width: 768px) {
+		.journal-link {
+			padding: 1rem;
+		}
+		.journal-title {
+			font-size: 1.06rem;
+		}
+	}
+</style>
