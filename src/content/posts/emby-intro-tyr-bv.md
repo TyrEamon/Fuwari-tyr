@@ -2,7 +2,7 @@
 title: Emby 是什么？一篇给新手看的入门和种草指南
 published: 2026-03-15T20:00:00
 description: 如果你经常看到别人聊 Emby，却一直没搞明白它和 Netflix、爱优腾到底有什么关系，这篇文章会用最短的篇幅带你快速入门。
-image: ../assets/images/embytop.webp
+image: ../assets/blogimg/embytop.webp
 tags:
   - Emby
   - 流媒体
