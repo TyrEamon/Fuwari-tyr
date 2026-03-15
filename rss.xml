@@ -111,7 +111,7 @@
 &lt;ul&gt;
 &lt;li&gt;同样的，欢迎你加入&lt;/li&gt;
 &lt;/ul&gt;
-</content:encoded></item><item><title>Emby 是什么？一篇给新手看的入门和种草指南</title><link>https://i.kyr.us.ci/posts/emby-intro-tyr-bv/</link><guid isPermaLink="true">https://i.kyr.us.ci/posts/emby-intro-tyr-bv/</guid><description>如果你经常看到别人聊 Emby，却一直没搞明白它和 Netflix、爱优腾到底有什么关系，这篇文章会用最短的篇幅带你快速入门。</description><pubDate>Sun, 15 Mar 2026 20:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;引言&lt;/h1&gt;
+</content:encoded></item><item><title>Emby 是什么？一篇给新手看的入门和种草指南</title><link>https://i.kyr.us.ci/posts/emby-intro-tyr-bv/</link><guid isPermaLink="true">https://i.kyr.us.ci/posts/emby-intro-tyr-bv/</guid><description>如果你经常看到别人聊 Emby，却一直没搞明白它和 Netflix、爱优腾到底有什么关系，这篇文章会用最短的篇幅带你快速入门。</description><pubDate>Sun, 15 Mar 2026 20:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;&lt;code&gt;#&lt;/code&gt;引言&lt;/h1&gt;
 &lt;p&gt;&lt;strong&gt;你是不是经常在群里、论坛里，甚至某些 Telegram 频道里看到别人提到 Emby？&lt;/strong&gt;&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;ul&gt;
@@ -161,7 +161,7 @@
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;h1&gt;原理&lt;/h1&gt;
+&lt;h1&gt;&lt;code&gt;#&lt;/code&gt;原理&lt;/h1&gt;
 &lt;p&gt;众所周知，电影、电视剧、动漫、音乐这些东西，本质上都只是媒体文件。&lt;/p&gt;
 &lt;p&gt;而 Emby 干的事情，简单来说，就是把这些原本乱糟糟堆在硬盘里的媒体文件，整理成一个能刮削信息、分类展示、跨设备播放、记录观看进度的媒体库系统。&lt;/p&gt;
 &lt;p&gt;你可以把它理解成一个更像“私人流媒体站”的东西。&lt;/p&gt;
@@ -180,7 +180,7 @@
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;h1&gt;为什么很多人会用 Emby？&lt;/h1&gt;
+&lt;h1&gt;&lt;code&gt;#&lt;/code&gt;为什么很多人会用 Emby？&lt;/h1&gt;
 &lt;p&gt;原因其实很简单：体验确实比“文件夹里找视频”优雅太多了。&lt;/p&gt;
 &lt;p&gt;比如你以前看剧，可能是电脑上一个文件夹，手机上另一个播放器，看到哪一集全靠自己记；而用了 Emby 之后，封面、简介、分集、播放记录、继续观看这些东西，基本都能自动给你整理好。&lt;/p&gt;
 &lt;p&gt;这是不是一下子就有点像 Netflix 了？对吧。&lt;/p&gt;
@@ -190,7 +190,7 @@
 &lt;p&gt;不过也正因为它很像流媒体，所以很多人第一次接触 Emby 时，会误以为它是一个“资源网站”。&lt;/p&gt;
 &lt;p&gt;并不是。&lt;/p&gt;
 &lt;p&gt;更准确一点说，Emby 是平台，是壳子，是播放器和媒体库管理系统；至于你能在里面看到什么内容，那取决于具体是谁在搭、怎么搭、资源从哪里来。&lt;/p&gt;
-&lt;h1&gt;正式开始&lt;/h1&gt;
+&lt;h1&gt;&lt;code&gt;#&lt;/code&gt;正式开始&lt;/h1&gt;
 &lt;p&gt;那么如果你是第一次接触 Emby，最值得先知道的，其实就三件事。&lt;/p&gt;
 &lt;h2&gt;1. 你看到的 Emby，不一定是“官方服务”&lt;/h2&gt;
 &lt;p&gt;这一点非常重要。&lt;/p&gt;
@@ -210,7 +210,7 @@
 &lt;p&gt;如果你只是想临时找个视频点开就走，那 Emby 未必是最直接的方案。&lt;/p&gt;
 &lt;p&gt;但如果你很在意封面墙、分类、观看记录、跨设备续播、家庭共享这些体验，那么 Emby 往往会让你一用就回不去。&lt;/p&gt;
 &lt;p&gt;说白了，它卖的不是“能不能播”，而是“播得是不是舒服”。&lt;/p&gt;
-&lt;h1&gt;电报服推荐&lt;/h1&gt;
+&lt;h1&gt;&lt;code&gt;#&lt;/code&gt;电报服推荐&lt;/h1&gt;
 &lt;p&gt;那么问题来了。&lt;/p&gt;
 &lt;p&gt;如果你已经知道 Emby 是什么了，接下来最容易纠结的，往往不是“要不要用”，而是“第一家该先蹲哪个”。&lt;/p&gt;
 &lt;p&gt;其实这事也不用想得太复杂。你不用把所有 Emby 服都看成同一种东西，有的适合当主力，有的适合当备用，有的胜在线路，有的赢在库量。&lt;/p&gt;
@@ -292,14 +292,14 @@
 &lt;p&gt;Emby 相关客户端和各种改版非常多，不同设备上的兼容性真的不完全一样。所以最稳的做法不是“别人说哪个好我就只装那一个”，而是先从上面这些主流选择里试，再留下你自己设备上最顺手的那个。&lt;/p&gt;
 &lt;p&gt;另外，苹果系很多人第一反应会去装 &lt;code&gt;Infuse&lt;/code&gt;，不过现在不少服已经直接禁掉了，或者禁它的“媒体库模式”。所以你如果是 iPhone、iPad 或 Apple TV 用户，先从 &lt;code&gt;SenPlayer&lt;/code&gt;、&lt;code&gt;Vidhub&lt;/code&gt; 这类更稳一点的开始，通常更省事。&lt;/p&gt;
 &lt;p&gt;再补一句，有些服还会限制网页播放、官方客户端，或者某些功能。所以你登录成功之后，还是先看一眼群公告最稳。&lt;/p&gt;
-&lt;h1&gt;常见问题&lt;/h1&gt;
+&lt;h1&gt;&lt;code&gt;#&lt;/code&gt;常见问题&lt;/h1&gt;
 &lt;p&gt;&lt;strong&gt;Q：Emby 和网盘在线看有什么区别？&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;A：最大的区别在体验。网盘更像“临时打开一个文件”，而 Emby 更像“在一个整理好的媒体库里消费内容”。前者能看，后者更适合长期看。&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Q：Emby 和 Plex、Jellyfin 是一类东西吗？&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;A：对，本质上是同一赛道的媒体库方案。只不过它们各自的生态、客户端体验、授权方式和社区氛围不太一样。&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Q：第一次接触 Emby，最容易踩什么坑？&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;A：最容易踩的坑就是把所有 Emby 服都当成同一个质量水平。其实不是。不同实例之间的差异，可能比你想象中大得多。&lt;/p&gt;
-&lt;h1&gt;总结&lt;/h1&gt;
+&lt;h1&gt;&lt;code&gt;#&lt;/code&gt;总结&lt;/h1&gt;
 &lt;p&gt;所以说，Emby 这东西本身并不神秘。&lt;/p&gt;
 &lt;p&gt;它本质上就是一个把媒体内容整理得更像现代流媒体的系统，而大家真正讨论得热火朝天的，往往是它背后的资源、线路和维护水平。&lt;/p&gt;
 &lt;p&gt;如果你只是想先搞明白 Emby 是什么，那么看到这里其实就已经够了。&lt;/p&gt;
