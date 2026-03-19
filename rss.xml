@@ -397,7 +397,7 @@ Cyberduck 官方提到，有些第三方 S3 兼容服务只支持 &lt;strong&gt;
 ::github{repo=&quot;TyrEamon/video-tsp&quot;}
 &amp;lt;details&amp;gt;
 &amp;lt;summary&amp;gt;点击展开&amp;lt;/summary&amp;gt;
-&amp;lt;p&amp;gt;https://github.com/TyrEamon/video-ts&amp;lt;/p&amp;gt;
+&amp;lt;p&amp;gt;源站：https://github.com/TyrEamon/video-ts&amp;lt;p&amp;gt;镜像站：https://k.bba.cc.cd/TyrEamon/video-tsp&amp;lt;/p&amp;gt;
 &amp;lt;/details&amp;gt;&lt;/p&gt;
 &lt;h1&gt;&lt;code&gt;#&lt;/code&gt;前言&lt;/h1&gt;
 &lt;p&gt;如果你想把视频放进博客，但又不想自建流媒体服务器，那么你可以考虑用强大的FFmpeg工具和video-ts项目。这种“静态分片 + CDN 分发”的方案会非常实用。
