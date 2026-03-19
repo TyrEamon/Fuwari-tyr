@@ -16,7 +16,7 @@ lang: ""
 ::github{repo="TyrEamon/video-tsp"}
 <details>
   <summary>点击展开</summary>
-  <p>https://github.com/TyrEamon/video-ts</p>
+  <p>源站：https://github.com/TyrEamon/video-ts<p>镜像站：https://k.bba.cc.cd/TyrEamon/video-tsp</p>
 </details>
 
 # `#`前言
