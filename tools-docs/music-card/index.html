@@ -3,54 +3,36 @@ const backgroundMobileSrc = "/random/v";
 const enableFullscreenWallpaper = true;
 
 			(function () {
-				var RANDOM_OVERRIDE_STORAGE_KEY = "__wallpaper_random_override__";
+				// Keep the current random wallpaper stable across swup script reloads
+				// within this tab, but reset it on a full browser refresh.
+				var runtimeRandomOverrides = (function () {
+					try {
+						var existing = window.__wallpaperRuntimeRandomOverrides;
+						if (existing && typeof existing === "object") return existing;
+						var created = Object.create(null);
+						window.__wallpaperRuntimeRandomOverrides = created;
+						return created;
+					} catch (_e) {
+						return Object.create(null);
+					}
+				})();
 				var manifestCache = null;
 				var manifestPromise = null;
 				var wallpaperRefreshReloadTriggered = false;
-				var modeSwitchRandomCarry = (function () {
-					try {
-						var raw = sessionStorage.getItem("__wallpaper_random_carry_once__");
-						if (!raw) return null;
-						sessionStorage.removeItem("__wallpaper_random_carry_once__");
-						var parsed = JSON.parse(raw);
-						return parsed && typeof parsed === "object" ? parsed : null;
-					} catch (_e) {
-						return null;
-					}
-				})();
-
-				function readRandomOverrides() {
-					try {
-						var raw = sessionStorage.getItem(RANDOM_OVERRIDE_STORAGE_KEY);
-						if (!raw) return {};
-						var parsed = JSON.parse(raw);
-						return parsed && typeof parsed === "object" ? parsed : {};
-					} catch (_e) {
-						return {};
-					}
-				}
 
 				function getRandomOverride(type) {
 					if (!type) return "";
-					var overrides = readRandomOverrides();
-					var value = overrides[type];
+					var value = runtimeRandomOverrides[type];
 					return typeof value === "string" ? value : "";
 				}
 
 				function setRandomOverride(type, url) {
 					if (!type) return;
-					try {
-						var overrides = readRandomOverrides();
-						if (url) {
-							overrides[type] = url;
-						} else {
-							delete overrides[type];
-						}
-						sessionStorage.setItem(
-							RANDOM_OVERRIDE_STORAGE_KEY,
-							JSON.stringify(overrides),
-						);
-					} catch (_e) {}
+					if (url) {
+						runtimeRandomOverrides[type] = url;
+						return;
+					}
+					delete runtimeRandomOverrides[type];
 				}
 
 				function resolveConfiguredBg(url) {
@@ -59,9 +41,6 @@ const enableFullscreenWallpaper = true;
 					if (randomType) {
 						var storedOverride = getRandomOverride(randomType);
 						if (storedOverride) return storedOverride;
-						if (modeSwitchRandomCarry && modeSwitchRandomCarry[randomType]) {
-							return modeSwitchRandomCarry[randomType];
-						}
 						var fn = randomType === "v" ? window.getRandomPicV : window.getRandomPicH;
 						if (typeof fn === "function") return fn();
 						return "";
@@ -307,25 +286,7 @@ const enableFullscreenWallpaper = true;
 				}
 
 				window.refreshWallpaperNow = refreshWallpaperNow;
-				window.prepareWallpaperModeSwitchRandomCarry = function () {
-					try {
-						var carry = {};
-						if (typeof window.getRandomPicH === "function") {
-							var h = window.getRandomPicH();
-							if (h) carry.h = h;
-						}
-						if (typeof window.getRandomPicV === "function") {
-							var v = window.getRandomPicV();
-							if (v) carry.v = v;
-						}
-						if (carry.h || carry.v) {
-							sessionStorage.setItem(
-								"__wallpaper_random_carry_once__",
-								JSON.stringify(carry),
-							);
-						}
-					} catch (_e) {}
-				};
+				window.prepareWallpaperModeSwitchRandomCarry = function () {};
 				window.addEventListener("wallpaper:refresh-request", function (event) {
 					var mode =
 						event && event.detail && typeof event.detail.mode === "string"
@@ -644,9 +605,9 @@ Curated, as you see | : )</div> <div class="flex flex-wrap gap-2 justify-center 
 <li>meting 接口无法访问时，卡片可能会显示加载中或错误状态。</li>
 <li>这是文章内容卡片，和后续可能添加的悬浮播放器是独立功能。</li>
 </ul></section>
-<section><h2 id="实际示例">实际示例<a class="anchor" href="#实际示例"><span class="anchor-icon" data-pagefind-ignore="">#</span></a></h2><div class="card-music no-hue-rotate" id="MC9z2q47-card"><div class="music-cover" style=""></div><div class="music-info"><div class="music-header"><div class="music-title">Loading...</div><div class="music-artist">Loading...</div></div><div class="music-lyric" id="MC9z2q47-lyric" style="display:grid;place-items:center;"><div class="lyric-exit" style="grid-area:1/1;opacity:0;pointer-events:none;"></div><div class="lyric-current" style="grid-area:1/1;">Loading lyrics...</div></div><div class="music-controls"><button class="play-btn" id="MC9z2q47-play" aria-label="Play/Pause" type="button"><svg viewBox="0 0 24 24" class="play-icon"><path d="M8 5v14l11-7z"></path></svg><svg viewBox="0 0 24 24" class="pause-icon" style="display:none;"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"></path></svg></button><div class="progress-container" id="MC9z2q47-progress-container"><div class="progress-bar" id="MC9z2q47-progress-bar"></div></div><div class="time-display" id="MC9z2q47-time">0:00 / 0:00</div></div></div><audio id="MC9z2q47-audio" src="" preload="metadata"></audio><script type="text/javascript">
+<section><h2 id="实际示例">实际示例<a class="anchor" href="#实际示例"><span class="anchor-icon" data-pagefind-ignore="">#</span></a></h2><div class="card-music no-hue-rotate" id="MCsx0m2o-card"><div class="music-cover" style=""></div><div class="music-info"><div class="music-header"><div class="music-title">Loading...</div><div class="music-artist">Loading...</div></div><div class="music-lyric" id="MCsx0m2o-lyric" style="display:grid;place-items:center;"><div class="lyric-exit" style="grid-area:1/1;opacity:0;pointer-events:none;"></div><div class="lyric-current" style="grid-area:1/1;">Loading lyrics...</div></div><div class="music-controls"><button class="play-btn" id="MCsx0m2o-play" aria-label="Play/Pause" type="button"><svg viewBox="0 0 24 24" class="play-icon"><path d="M8 5v14l11-7z"></path></svg><svg viewBox="0 0 24 24" class="pause-icon" style="display:none;"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"></path></svg></button><div class="progress-container" id="MCsx0m2o-progress-container"><div class="progress-bar" id="MCsx0m2o-progress-bar"></div></div><div class="time-display" id="MCsx0m2o-time">0:00 / 0:00</div></div></div><audio id="MCsx0m2o-audio" src="" preload="metadata"></audio><script type="text/javascript">
 (async function () {
-	const cardId = "MC9z2q47";
+	const cardId = "MCsx0m2o";
 	const audio = document.getElementById(cardId + '-audio');
 	const playBtn = document.getElementById(cardId + '-play');
 	if (!audio || !playBtn) return;
