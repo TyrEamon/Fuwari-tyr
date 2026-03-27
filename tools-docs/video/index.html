@@ -1,8 +1,9 @@
-<!DOCTYPE html><html lang="zh-CN" class="bg-[var(--page-bg)] transition text-[12px] md:text-[16px] dark" data-overlayscrollbars-initialize data-astro-cid-sckkx6r4 style="--bannerOffset: 18vh;--banner-height-home: 66vh;--banner-height: 30vh;--configHue: 361;--page-width: 75rem;--bg-url: none;--bg-enable: 1;--bg-position: center;--bg-size: cover;--bg-repeat: no-repeat;--bg-attachment: fixed;--bg-opacity: 1;--configHue: 361;"> <!-- 手机端适配 --> <head><title>视频嵌入 - RuneByte Blog</title><meta charset="UTF-8"><meta name="description" content="博客主流流媒体嵌入。"><meta name="author" content="TyrEamon"><meta name="keywords" content="你的关键词"><meta property="og:site_name" content="RuneByte Blog"><meta property="og:url" content="https://i.kyr.us.ci/tools-docs/video/"><meta property="og:title" content="视频嵌入 - RuneByte Blog"><meta property="og:description" content="博客主流流媒体嵌入。"><meta property="og:type" content="website"><meta name="twitter:card" content="summary_large_image"><meta property="twitter:url" content="https://i.kyr.us.ci/tools-docs/video/"><meta name="twitter:title" content="视频嵌入 - RuneByte Blog"><meta name="twitter:description" content="博客主流流媒体嵌入。"><meta name="viewport" content="width=device-width"><meta name="generator" content="Astro v5.7.9"><link rel="preconnect" href="https://umami.kaza.de5.net"><link rel="preconnect" href="https://rapi.0w0.us.ci"><script src="/js/umami-share.js" defer data-swup-ignore-script></script><script defer src="https://umami.kaza.de5.net/script.js" data-website-id="397ea969-92f9-446e-9caa-0a74b1c8b4dd" data-swup-ignore-script></script><script data-swup-ignore-script src="https://rapi.0w0.us.ci/random-img-only.js" defer></script><script>(function(){const backgroundDesktopSrc = "/random/h";
+<!DOCTYPE html><html lang="zh-CN" class="bg-[var(--page-bg)] transition text-[12px] md:text-[16px] dark" data-overlayscrollbars-initialize data-astro-cid-sckkx6r4 style="--bannerOffset: 18vh;--banner-height-home: 66vh;--banner-height: 30vh;--configHue: 361;--page-width: 75rem;--bg-url: none;--bg-enable: 1;--bg-position: center;--bg-size: cover;--bg-repeat: no-repeat;--bg-attachment: fixed;--bg-opacity: 1;--configHue: 361;"> <!-- 手机端适配 --> <head><title>视频嵌入 - RuneByte Blog</title><meta charset="UTF-8"><meta name="description" content="博客主流流媒体嵌入。"><meta name="author" content="TyrEamon"><meta name="keywords" content="你的关键词"><meta property="og:site_name" content="RuneByte Blog"><meta property="og:url" content="https://i.kyr.us.ci/tools-docs/video/"><meta property="og:title" content="视频嵌入 - RuneByte Blog"><meta property="og:description" content="博客主流流媒体嵌入。"><meta property="og:type" content="website"><meta name="twitter:card" content="summary_large_image"><meta property="twitter:url" content="https://i.kyr.us.ci/tools-docs/video/"><meta name="twitter:title" content="视频嵌入 - RuneByte Blog"><meta name="twitter:description" content="博客主流流媒体嵌入。"><meta name="viewport" content="width=device-width"><meta name="generator" content="Astro v5.7.9"><link rel="preconnect" href="https://umami.kaza.de5.net"><link rel="preconnect" href="https://rapi.kyr.us.ci"><script src="/js/umami-share.js" defer data-swup-ignore-script></script><script defer src="https://umami.kaza.de5.net/script.js" data-website-id="397ea969-92f9-446e-9caa-0a74b1c8b4dd" data-swup-ignore-script></script><script data-swup-ignore-script src="https://rapi.kyr.us.ci/random-img-only.js" defer></script><script>(function(){const backgroundDesktopSrc = "/random/h";
 const backgroundMobileSrc = "/random/v";
 const enableFullscreenWallpaper = true;
 
 			(function () {
+				var RANDOM_OVERRIDE_STORAGE_KEY = "__wallpaper_random_override__";
 				var manifestCache = null;
 				var manifestPromise = null;
 				var wallpaperRefreshReloadTriggered = false;
@@ -18,16 +19,51 @@ const enableFullscreenWallpaper = true;
 					}
 				})();
 
+				function readRandomOverrides() {
+					try {
+						var raw = sessionStorage.getItem(RANDOM_OVERRIDE_STORAGE_KEY);
+						if (!raw) return {};
+						var parsed = JSON.parse(raw);
+						return parsed && typeof parsed === "object" ? parsed : {};
+					} catch (_e) {
+						return {};
+					}
+				}
+
+				function getRandomOverride(type) {
+					if (!type) return "";
+					var overrides = readRandomOverrides();
+					var value = overrides[type];
+					return typeof value === "string" ? value : "";
+				}
+
+				function setRandomOverride(type, url) {
+					if (!type) return;
+					try {
+						var overrides = readRandomOverrides();
+						if (url) {
+							overrides[type] = url;
+						} else {
+							delete overrides[type];
+						}
+						sessionStorage.setItem(
+							RANDOM_OVERRIDE_STORAGE_KEY,
+							JSON.stringify(overrides),
+						);
+					} catch (_e) {}
+				}
+
 				function resolveConfiguredBg(url) {
 					if (!url) return "";
-					if (url === "/random/v") {
-						if (modeSwitchRandomCarry && modeSwitchRandomCarry.v) return modeSwitchRandomCarry.v;
-						if (window.getRandomPicV) return window.getRandomPicV();
-						return "";
-					}
-					if (url === "/random/h") {
-						if (modeSwitchRandomCarry && modeSwitchRandomCarry.h) return modeSwitchRandomCarry.h;
-						if (window.getRandomPicH) return window.getRandomPicH();
+					var randomType = getRandomTypeFromConfiguredUrl(url);
+					if (randomType) {
+						var storedOverride = getRandomOverride(randomType);
+						if (storedOverride) return storedOverride;
+						if (modeSwitchRandomCarry && modeSwitchRandomCarry[randomType]) {
+							return modeSwitchRandomCarry[randomType];
+						}
+						var fn = randomType === "v" ? window.getRandomPicV : window.getRandomPicH;
+						if (typeof fn === "function") return fn();
 						return "";
 					}
 					return url;
@@ -128,6 +164,13 @@ const enableFullscreenWallpaper = true;
 					return picked && picked.url ? picked.url : "";
 				}
 
+				function persistRandomOverrideForConfigured(configuredUrl, resolvedUrl) {
+					if (!resolvedUrl) return;
+					var randomType = getRandomTypeFromConfiguredUrl(configuredUrl);
+					if (!randomType) return;
+					setRandomOverride(randomType, resolvedUrl);
+				}
+
 				function resolveConfiguredBgForRefresh(url, currentUrl) {
 					var randomType = getRandomTypeFromConfiguredUrl(url);
 					if (!randomType) {
@@ -177,6 +220,7 @@ const enableFullscreenWallpaper = true;
 						if (!nextUrl) return;
 						var img = new Image();
 						img.onload = function () {
+							persistRandomOverrideForConfigured(configured, nextUrl);
 							bgBox.style.backgroundImage = "url('" + nextUrl + "')";
 							bgBox.classList.add("loaded");
 							emitWallpaperApplied(nextUrl, "fullscreen");
@@ -190,10 +234,11 @@ const enableFullscreenWallpaper = true;
 					applyWithUrl(getBgUrl(!!isMobile));
 				}
 
-				function preloadAndSwapImageEl(imgEl, nextUrl) {
+				function preloadAndSwapImageEl(imgEl, nextUrl, configuredUrl) {
 					if (!imgEl || !nextUrl) return;
 					var preload = new Image();
 					preload.onload = function () {
+						persistRandomOverrideForConfigured(configuredUrl, nextUrl);
 						imgEl.src = nextUrl;
 						emitWallpaperApplied(nextUrl, "banner");
 					};
@@ -213,12 +258,16 @@ const enableFullscreenWallpaper = true;
 
 					if (desktopImg) {
 						resolveConfiguredBgForRefresh(desktopConfigured, desktopCurrent).then(function (desktopNext) {
-							if (desktopNext) preloadAndSwapImageEl(desktopImg, desktopNext);
+							if (desktopNext) preloadAndSwapImageEl(desktopImg, desktopNext, desktopConfigured);
 						});
 					}
 					if (mobileImg) {
 						resolveConfiguredBgForRefresh(mobileConfigured || desktopConfigured, mobileCurrent).then(function (mobileNext) {
-							if (mobileNext) preloadAndSwapImageEl(mobileImg, mobileNext);
+							if (mobileNext) preloadAndSwapImageEl(
+								mobileImg,
+								mobileNext,
+								mobileConfigured || desktopConfigured,
+							);
 						});
 					}
 				}

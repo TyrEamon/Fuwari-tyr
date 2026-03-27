@@ -1,8 +1,9 @@
-<!DOCTYPE html><html lang="zh-CN" class="bg-[var(--page-bg)] transition text-[12px] md:text-[16px] dark" data-overlayscrollbars-initialize data-astro-cid-sckkx6r4 style="--bannerOffset: 18vh;--banner-height-home: 66vh;--banner-height: 30vh;--configHue: 361;--page-width: 75rem;--bg-url: none;--bg-enable: 1;--bg-position: center;--bg-size: cover;--bg-repeat: no-repeat;--bg-attachment: fixed;--bg-opacity: 1;--configHue: 361;"> <!-- 手机端适配 --> <head><title>欢迎来到我的博客！ - RuneByte Blog</title><meta charset="UTF-8"><meta name="description" content="致谢板及简介"><meta name="author" content="TyrEamon"><meta name="keywords" content="你的关键词"><meta property="og:site_name" content="RuneByte Blog"><meta property="og:url" content="https://i.kyr.us.ci/posts/top/"><meta property="og:title" content="欢迎来到我的博客！ - RuneByte Blog"><meta property="og:description" content="致谢板及简介"><meta property="og:type" content="article"><meta name="twitter:card" content="summary_large_image"><meta property="twitter:url" content="https://i.kyr.us.ci/posts/top/"><meta name="twitter:title" content="欢迎来到我的博客！ - RuneByte Blog"><meta name="twitter:description" content="致谢板及简介"><meta name="viewport" content="width=device-width"><meta name="generator" content="Astro v5.7.9"><link rel="preconnect" href="https://umami.kaza.de5.net"><link rel="preconnect" href="https://rapi.0w0.us.ci"><script src="/js/umami-share.js" defer data-swup-ignore-script></script><script defer src="https://umami.kaza.de5.net/script.js" data-website-id="397ea969-92f9-446e-9caa-0a74b1c8b4dd" data-swup-ignore-script></script><script data-swup-ignore-script src="https://rapi.0w0.us.ci/random-img-only.js" defer></script><script>(function(){const backgroundDesktopSrc = "/random/h";
+<!DOCTYPE html><html lang="zh-CN" class="bg-[var(--page-bg)] transition text-[12px] md:text-[16px] dark" data-overlayscrollbars-initialize data-astro-cid-sckkx6r4 style="--bannerOffset: 18vh;--banner-height-home: 66vh;--banner-height: 30vh;--configHue: 361;--page-width: 75rem;--bg-url: none;--bg-enable: 1;--bg-position: center;--bg-size: cover;--bg-repeat: no-repeat;--bg-attachment: fixed;--bg-opacity: 1;--configHue: 361;"> <!-- 手机端适配 --> <head><title>欢迎来到我的博客！ - RuneByte Blog</title><meta charset="UTF-8"><meta name="description" content="致谢板及简介"><meta name="author" content="TyrEamon"><meta name="keywords" content="你的关键词"><meta property="og:site_name" content="RuneByte Blog"><meta property="og:url" content="https://i.kyr.us.ci/posts/top/"><meta property="og:title" content="欢迎来到我的博客！ - RuneByte Blog"><meta property="og:description" content="致谢板及简介"><meta property="og:type" content="article"><meta name="twitter:card" content="summary_large_image"><meta property="twitter:url" content="https://i.kyr.us.ci/posts/top/"><meta name="twitter:title" content="欢迎来到我的博客！ - RuneByte Blog"><meta name="twitter:description" content="致谢板及简介"><meta name="viewport" content="width=device-width"><meta name="generator" content="Astro v5.7.9"><link rel="preconnect" href="https://umami.kaza.de5.net"><link rel="preconnect" href="https://rapi.kyr.us.ci"><script src="/js/umami-share.js" defer data-swup-ignore-script></script><script defer src="https://umami.kaza.de5.net/script.js" data-website-id="397ea969-92f9-446e-9caa-0a74b1c8b4dd" data-swup-ignore-script></script><script data-swup-ignore-script src="https://rapi.kyr.us.ci/random-img-only.js" defer></script><script>(function(){const backgroundDesktopSrc = "/random/h";
 const backgroundMobileSrc = "/random/v";
 const enableFullscreenWallpaper = true;
 
 			(function () {
+				var RANDOM_OVERRIDE_STORAGE_KEY = "__wallpaper_random_override__";
 				var manifestCache = null;
 				var manifestPromise = null;
 				var wallpaperRefreshReloadTriggered = false;
@@ -18,16 +19,51 @@ const enableFullscreenWallpaper = true;
 					}
 				})();
 
+				function readRandomOverrides() {
+					try {
+						var raw = sessionStorage.getItem(RANDOM_OVERRIDE_STORAGE_KEY);
+						if (!raw) return {};
+						var parsed = JSON.parse(raw);
+						return parsed && typeof parsed === "object" ? parsed : {};
+					} catch (_e) {
+						return {};
+					}
+				}
+
+				function getRandomOverride(type) {
+					if (!type) return "";
+					var overrides = readRandomOverrides();
+					var value = overrides[type];
+					return typeof value === "string" ? value : "";
+				}
+
+				function setRandomOverride(type, url) {
+					if (!type) return;
+					try {
+						var overrides = readRandomOverrides();
+						if (url) {
+							overrides[type] = url;
+						} else {
+							delete overrides[type];
+						}
+						sessionStorage.setItem(
+							RANDOM_OVERRIDE_STORAGE_KEY,
+							JSON.stringify(overrides),
+						);
+					} catch (_e) {}
+				}
+
 				function resolveConfiguredBg(url) {
 					if (!url) return "";
-					if (url === "/random/v") {
-						if (modeSwitchRandomCarry && modeSwitchRandomCarry.v) return modeSwitchRandomCarry.v;
-						if (window.getRandomPicV) return window.getRandomPicV();
-						return "";
-					}
-					if (url === "/random/h") {
-						if (modeSwitchRandomCarry && modeSwitchRandomCarry.h) return modeSwitchRandomCarry.h;
-						if (window.getRandomPicH) return window.getRandomPicH();
+					var randomType = getRandomTypeFromConfiguredUrl(url);
+					if (randomType) {
+						var storedOverride = getRandomOverride(randomType);
+						if (storedOverride) return storedOverride;
+						if (modeSwitchRandomCarry && modeSwitchRandomCarry[randomType]) {
+							return modeSwitchRandomCarry[randomType];
+						}
+						var fn = randomType === "v" ? window.getRandomPicV : window.getRandomPicH;
+						if (typeof fn === "function") return fn();
 						return "";
 					}
 					return url;
@@ -128,6 +164,13 @@ const enableFullscreenWallpaper = true;
 					return picked && picked.url ? picked.url : "";
 				}
 
+				function persistRandomOverrideForConfigured(configuredUrl, resolvedUrl) {
+					if (!resolvedUrl) return;
+					var randomType = getRandomTypeFromConfiguredUrl(configuredUrl);
+					if (!randomType) return;
+					setRandomOverride(randomType, resolvedUrl);
+				}
+
 				function resolveConfiguredBgForRefresh(url, currentUrl) {
 					var randomType = getRandomTypeFromConfiguredUrl(url);
 					if (!randomType) {
@@ -177,6 +220,7 @@ const enableFullscreenWallpaper = true;
 						if (!nextUrl) return;
 						var img = new Image();
 						img.onload = function () {
+							persistRandomOverrideForConfigured(configured, nextUrl);
 							bgBox.style.backgroundImage = "url('" + nextUrl + "')";
 							bgBox.classList.add("loaded");
 							emitWallpaperApplied(nextUrl, "fullscreen");
@@ -190,10 +234,11 @@ const enableFullscreenWallpaper = true;
 					applyWithUrl(getBgUrl(!!isMobile));
 				}
 
-				function preloadAndSwapImageEl(imgEl, nextUrl) {
+				function preloadAndSwapImageEl(imgEl, nextUrl, configuredUrl) {
 					if (!imgEl || !nextUrl) return;
 					var preload = new Image();
 					preload.onload = function () {
+						persistRandomOverrideForConfigured(configuredUrl, nextUrl);
 						imgEl.src = nextUrl;
 						emitWallpaperApplied(nextUrl, "banner");
 					};
@@ -213,12 +258,16 @@ const enableFullscreenWallpaper = true;
 
 					if (desktopImg) {
 						resolveConfiguredBgForRefresh(desktopConfigured, desktopCurrent).then(function (desktopNext) {
-							if (desktopNext) preloadAndSwapImageEl(desktopImg, desktopNext);
+							if (desktopNext) preloadAndSwapImageEl(desktopImg, desktopNext, desktopConfigured);
 						});
 					}
 					if (mobileImg) {
 						resolveConfiguredBgForRefresh(mobileConfigured || desktopConfigured, mobileCurrent).then(function (mobileNext) {
-							if (mobileNext) preloadAndSwapImageEl(mobileImg, mobileNext);
+							if (mobileNext) preloadAndSwapImageEl(
+								mobileImg,
+								mobileNext,
+								mobileConfigured || desktopConfigured,
+							);
 						});
 					}
 				}
@@ -666,9 +715,9 @@ const umamiConfig = {"enable":true,"baseUrl":"https://umami.kaza.de5.net","share
 </blockquote>
 <blockquote>
 <p><em>---<code>献上一首nbuna的歌给你</code>---</em></p>
-<div class="card-music no-hue-rotate" id="MCz6yup7-card"><div class="music-cover" style=""></div><div class="music-info"><div class="music-header"><div class="music-title">Loading...</div><div class="music-artist">Loading...</div></div><div class="music-lyric" id="MCz6yup7-lyric" style="display:grid;place-items:center;"><div class="lyric-exit" style="grid-area:1/1;opacity:0;pointer-events:none;"></div><div class="lyric-current" style="grid-area:1/1;">Loading lyrics...</div></div><div class="music-controls"><button class="play-btn" id="MCz6yup7-play" aria-label="Play/Pause" type="button"><svg viewBox="0 0 24 24" class="play-icon"><path d="M8 5v14l11-7z"></path></svg><svg viewBox="0 0 24 24" class="pause-icon" style="display:none;"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"></path></svg></button><div class="progress-container" id="MCz6yup7-progress-container"><div class="progress-bar" id="MCz6yup7-progress-bar"></div></div><div class="time-display" id="MCz6yup7-time">0:00 / 0:00</div></div></div><audio id="MCz6yup7-audio" src="" preload="metadata"></audio><script type="text/javascript">
+<div class="card-music no-hue-rotate" id="MC2clrwx-card"><div class="music-cover" style=""></div><div class="music-info"><div class="music-header"><div class="music-title">Loading...</div><div class="music-artist">Loading...</div></div><div class="music-lyric" id="MC2clrwx-lyric" style="display:grid;place-items:center;"><div class="lyric-exit" style="grid-area:1/1;opacity:0;pointer-events:none;"></div><div class="lyric-current" style="grid-area:1/1;">Loading lyrics...</div></div><div class="music-controls"><button class="play-btn" id="MC2clrwx-play" aria-label="Play/Pause" type="button"><svg viewBox="0 0 24 24" class="play-icon"><path d="M8 5v14l11-7z"></path></svg><svg viewBox="0 0 24 24" class="pause-icon" style="display:none;"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"></path></svg></button><div class="progress-container" id="MC2clrwx-progress-container"><div class="progress-bar" id="MC2clrwx-progress-bar"></div></div><div class="time-display" id="MC2clrwx-time">0:00 / 0:00</div></div></div><audio id="MC2clrwx-audio" src="" preload="metadata"></audio><script type="text/javascript">
 (async function () {
-	const cardId = "MCz6yup7";
+	const cardId = "MC2clrwx";
 	const audio = document.getElementById(cardId + '-audio');
 	const playBtn = document.getElementById(cardId + '-play');
 	if (!audio || !playBtn) return;
@@ -911,9 +960,9 @@ const umamiConfig = {"enable":true,"baseUrl":"https://umami.kaza.de5.net","share
 @media (prefers-reduced-motion: reduce){
   .fv-player-overlay{transition:none}
 }
-</style><div id="VPd8idpml" class="fv-player-root" data-config="{&#x22;host&#x22;:&#x22;https://v.kyr.us.ci&#x22;,&#x22;slug&#x22;:&#x22;e-m&#x22;,&#x22;type&#x22;:&#x22;dash&#x22;,&#x22;streamUrl&#x22;:&#x22;https://v.kyr.us.ci/d/e-m&#x22;,&#x22;routePath&#x22;:&#x22;/d/e-m&#x22;,&#x22;hlsUrl&#x22;:&#x22;https://v.kyr.us.ci/h/e-m&#x22;,&#x22;dashUrl&#x22;:&#x22;https://v.kyr.us.ci/d/e-m&#x22;,&#x22;catalogUrl&#x22;:&#x22;https://v.kyr.us.ci/catalog.json&#x22;,&#x22;preload&#x22;:&#x22;metadata&#x22;,&#x22;autoplay&#x22;:false,&#x22;muted&#x22;:false,&#x22;loop&#x22;:false,&#x22;poster&#x22;:&#x22;&#x22;,&#x22;title&#x22;:&#x22;Video d/e-m&#x22;}" data-init="0" style="border-radius:12px;"><div class="fv-player-badge" data-role="badge" data-state="loading"><span class="dot" aria-hidden="true"></span><span data-role="badge-text">Loading</span></div><div class="fv-player-overlay" data-role="overlay" data-hidden="false"><div class="fv-player-message" data-role="message">Loading player...</div></div><video class="fv-player-video" playsinline webkit-playsinline="true" preload="metadata" crossorigin="anonymous" style="width:100%;height:100%;display:block;background:#000;object-fit:contain;position:relative;z-index:1;"></video></div><script type="text/javascript">
+</style><div id="VPv9nduca" class="fv-player-root" data-config="{&#x22;host&#x22;:&#x22;https://v.kyr.us.ci&#x22;,&#x22;slug&#x22;:&#x22;e-m&#x22;,&#x22;type&#x22;:&#x22;dash&#x22;,&#x22;streamUrl&#x22;:&#x22;https://v.kyr.us.ci/d/e-m&#x22;,&#x22;routePath&#x22;:&#x22;/d/e-m&#x22;,&#x22;hlsUrl&#x22;:&#x22;https://v.kyr.us.ci/h/e-m&#x22;,&#x22;dashUrl&#x22;:&#x22;https://v.kyr.us.ci/d/e-m&#x22;,&#x22;catalogUrl&#x22;:&#x22;https://v.kyr.us.ci/catalog.json&#x22;,&#x22;preload&#x22;:&#x22;metadata&#x22;,&#x22;autoplay&#x22;:false,&#x22;muted&#x22;:false,&#x22;loop&#x22;:false,&#x22;poster&#x22;:&#x22;&#x22;,&#x22;title&#x22;:&#x22;Video d/e-m&#x22;}" data-init="0" style="border-radius:12px;"><div class="fv-player-badge" data-role="badge" data-state="loading"><span class="dot" aria-hidden="true"></span><span data-role="badge-text">Loading</span></div><div class="fv-player-overlay" data-role="overlay" data-hidden="false"><div class="fv-player-message" data-role="message">Loading player...</div></div><video class="fv-player-video" playsinline webkit-playsinline="true" preload="metadata" crossorigin="anonymous" style="width:100%;height:100%;display:block;background:#000;object-fit:contain;position:relative;z-index:1;"></video></div><script type="text/javascript">
 (async function () {
-  const root = document.getElementById("VPd8idpml");
+  const root = document.getElementById("VPv9nduca");
   if (!root || root.dataset.init === "1") return;
   root.dataset.init = "1";
 
@@ -1529,7 +1578,7 @@ const umamiConfig = {"enable":true,"baseUrl":"https://umami.kaza.de5.net","share
                     const container = document.getElementById('giscus-container');
                     if (container) loadGiscus();
                 });
-            </script> <br data-astro-cid-egg7nqdx> <div class="flex flex-col md:flex-row justify-between mb-4 gap-4 overflow-hidden w-full" data-astro-cid-egg7nqdx> <a href="#" class="w-full font-bold overflow-hidden active:scale-95 pointer-events-none" data-astro-cid-egg7nqdx>  </a> <a href="/posts/emby-intro-tyr-bv/" class="w-full font-bold overflow-hidden active:scale-95" data-astro-cid-egg7nqdx> <div class="btn-card rounded-2xl w-full h-[3.75rem] max-w-full px-4 flex items-center !justify-end gap-4" data-astro-cid-egg7nqdx> <div class="overflow-hidden transition overflow-ellipsis whitespace-nowrap max-w-[calc(100%_-_3rem)] text-black/75 dark:text-white/75" data-astro-cid-egg7nqdx> Emby 是什么？一篇给新手看的入门和种草指南 </div> <svg width="1em" height="1em" viewBox="0 0 24 24" class="text-[2rem] text-[var(--primary)]" data-astro-cid-egg7nqdx="true" data-icon="material-symbols:chevron-right-rounded">   <use href="#ai:material-symbols:chevron-right-rounded"></use>  </svg> </div> </a> </div> </div>  <script>(function(){const siteConfig = {"title":"RuneByte Blog","subtitle":"tyreamon的个人博客","description":"素未谋面的你,我是Tyr。欢迎来到我的博客，我将向你分享我的学习之路和日常琐事，如果你也对此感兴趣，不妨留下一的评论吧！v(^_^)v","keywords":["你的关键词"],"lang":"zh_CN","themeColor":{"hue":361,"fixed":false,"forceDarkMode":false},"wallpaper":{"enable":true,"modeDefault":"fullscreen","banner":{"navbar":{"transparentMode":"semifull","scrollThreshold":56}},"fullscreen":{"opacity":1,"blur":4,"navbar":{"transparentMode":"semi","scrollThreshold":20}}},"banner":{"enable":true,"src":{"desktop":"/random/h","mobile":"/random/v"},"position":"center","credit":{"enable":false,"text":"随机图 API","url":"https://rapi.kyr.us.ci"}},"background":{"enable":true,"src":{"desktop":"/random/h","mobile":"/random/v"},"position":"center","size":"cover","repeat":"no-repeat","attachment":"fixed","opacity":1},"splash":{"enable":true,"title":"欢迎来到 RuneByte Blog","subtitle":"TyrEamon 的小站，记录折腾与日常","buttonText":"进入","autoCloseMs":5500},"toc":{"enable":true,"depth":2},"favicon":[{"src":"https://pan.0106010.xyz/file/Logo/Blog/1769235233816_IMG_20260124_141233.jpg"}],"preconnect":["https://umami.kaza.de5.net","https://rapi.0w0.us.ci"],"officialSites":[],"server":[]};
+            </script> <br data-astro-cid-egg7nqdx> <div class="flex flex-col md:flex-row justify-between mb-4 gap-4 overflow-hidden w-full" data-astro-cid-egg7nqdx> <a href="#" class="w-full font-bold overflow-hidden active:scale-95 pointer-events-none" data-astro-cid-egg7nqdx>  </a> <a href="/posts/emby-intro-tyr-bv/" class="w-full font-bold overflow-hidden active:scale-95" data-astro-cid-egg7nqdx> <div class="btn-card rounded-2xl w-full h-[3.75rem] max-w-full px-4 flex items-center !justify-end gap-4" data-astro-cid-egg7nqdx> <div class="overflow-hidden transition overflow-ellipsis whitespace-nowrap max-w-[calc(100%_-_3rem)] text-black/75 dark:text-white/75" data-astro-cid-egg7nqdx> Emby 是什么？一篇给新手看的入门和种草指南 </div> <svg width="1em" height="1em" viewBox="0 0 24 24" class="text-[2rem] text-[var(--primary)]" data-astro-cid-egg7nqdx="true" data-icon="material-symbols:chevron-right-rounded">   <use href="#ai:material-symbols:chevron-right-rounded"></use>  </svg> </div> </a> </div> </div>  <script>(function(){const siteConfig = {"title":"RuneByte Blog","subtitle":"tyreamon的个人博客","description":"素未谋面的你,我是Tyr。欢迎来到我的博客，我将向你分享我的学习之路和日常琐事，如果你也对此感兴趣，不妨留下一的评论吧！v(^_^)v","keywords":["你的关键词"],"lang":"zh_CN","themeColor":{"hue":361,"fixed":false,"forceDarkMode":false},"wallpaper":{"enable":true,"modeDefault":"fullscreen","banner":{"navbar":{"transparentMode":"semifull","scrollThreshold":56}},"fullscreen":{"opacity":1,"blur":4,"navbar":{"transparentMode":"semi","scrollThreshold":20}}},"banner":{"enable":true,"src":{"desktop":"/random/h","mobile":"/random/v"},"position":"center","credit":{"enable":false,"text":"随机图 API","url":"https://rapi.kyr.us.ci"}},"background":{"enable":true,"src":{"desktop":"/random/h","mobile":"/random/v"},"position":"center","size":"cover","repeat":"no-repeat","attachment":"fixed","opacity":1},"splash":{"enable":true,"title":"欢迎来到 RuneByte Blog","subtitle":"TyrEamon 的小站，记录折腾与日常","buttonText":"进入","autoCloseMs":5500},"toc":{"enable":true,"depth":2},"favicon":[{"src":"https://pan.0106010.xyz/file/Logo/Blog/1769235233816_IMG_20260124_141233.jpg"}],"preconnect":["https://umami.kaza.de5.net","https://rapi.kyr.us.ci"],"officialSites":[],"server":[]};
 
     // 图片加载处理 (仅用于图片回退逻辑)
     function setupImageLoading() {
