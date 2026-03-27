@@ -153,9 +153,10 @@ const splashAutoCloseMs = splashConfig?.autoCloseMs ?? 1800;
 			data-swup-ignore-script
 		></script>
 
-		<script data-swup-ignore-script src="https://rapi.0w0.us.ci/random-img-only.js" defer></script>     {/*不用r2的随机图api就注释掉*/}
+		<script data-swup-ignore-script src="https://rapi.kyr.us.ci/random-img-only.js" defer></script>     {/*不用r2的随机图api就注释掉*/}
 		<script is:inline define:vars={{ backgroundDesktopSrc, backgroundMobileSrc, enableFullscreenWallpaper }}>
 			(function () {
+				var RANDOM_OVERRIDE_STORAGE_KEY = "__wallpaper_random_override__";
 				var manifestCache = null;
 				var manifestPromise = null;
 				var wallpaperRefreshReloadTriggered = false;
@@ -171,16 +172,51 @@ const splashAutoCloseMs = splashConfig?.autoCloseMs ?? 1800;
 					}
 				})();
 
+				function readRandomOverrides() {
+					try {
+						var raw = sessionStorage.getItem(RANDOM_OVERRIDE_STORAGE_KEY);
+						if (!raw) return {};
+						var parsed = JSON.parse(raw);
+						return parsed && typeof parsed === "object" ? parsed : {};
+					} catch (_e) {
+						return {};
+					}
+				}
+
+				function getRandomOverride(type) {
+					if (!type) return "";
+					var overrides = readRandomOverrides();
+					var value = overrides[type];
+					return typeof value === "string" ? value : "";
+				}
+
+				function setRandomOverride(type, url) {
+					if (!type) return;
+					try {
+						var overrides = readRandomOverrides();
+						if (url) {
+							overrides[type] = url;
+						} else {
+							delete overrides[type];
+						}
+						sessionStorage.setItem(
+							RANDOM_OVERRIDE_STORAGE_KEY,
+							JSON.stringify(overrides),
+						);
+					} catch (_e) {}
+				}
+
 				function resolveConfiguredBg(url) {
 					if (!url) return "";
-					if (url === "/random/v") {
-						if (modeSwitchRandomCarry && modeSwitchRandomCarry.v) return modeSwitchRandomCarry.v;
-						if (window.getRandomPicV) return window.getRandomPicV();
-						return "";
-					}
-					if (url === "/random/h") {
-						if (modeSwitchRandomCarry && modeSwitchRandomCarry.h) return modeSwitchRandomCarry.h;
-						if (window.getRandomPicH) return window.getRandomPicH();
+					var randomType = getRandomTypeFromConfiguredUrl(url);
+					if (randomType) {
+						var storedOverride = getRandomOverride(randomType);
+						if (storedOverride) return storedOverride;
+						if (modeSwitchRandomCarry && modeSwitchRandomCarry[randomType]) {
+							return modeSwitchRandomCarry[randomType];
+						}
+						var fn = randomType === "v" ? window.getRandomPicV : window.getRandomPicH;
+						if (typeof fn === "function") return fn();
 						return "";
 					}
 					return url;
@@ -281,6 +317,13 @@ const splashAutoCloseMs = splashConfig?.autoCloseMs ?? 1800;
 					return picked && picked.url ? picked.url : "";
 				}
 
+				function persistRandomOverrideForConfigured(configuredUrl, resolvedUrl) {
+					if (!resolvedUrl) return;
+					var randomType = getRandomTypeFromConfiguredUrl(configuredUrl);
+					if (!randomType) return;
+					setRandomOverride(randomType, resolvedUrl);
+				}
+
 				function resolveConfiguredBgForRefresh(url, currentUrl) {
 					var randomType = getRandomTypeFromConfiguredUrl(url);
 					if (!randomType) {
@@ -330,6 +373,7 @@ const splashAutoCloseMs = splashConfig?.autoCloseMs ?? 1800;
 						if (!nextUrl) return;
 						var img = new Image();
 						img.onload = function () {
+							persistRandomOverrideForConfigured(configured, nextUrl);
 							bgBox.style.backgroundImage = "url('" + nextUrl + "')";
 							bgBox.classList.add("loaded");
 							emitWallpaperApplied(nextUrl, "fullscreen");
@@ -343,10 +387,11 @@ const splashAutoCloseMs = splashConfig?.autoCloseMs ?? 1800;
 					applyWithUrl(getBgUrl(!!isMobile));
 				}
 
-				function preloadAndSwapImageEl(imgEl, nextUrl) {
+				function preloadAndSwapImageEl(imgEl, nextUrl, configuredUrl) {
 					if (!imgEl || !nextUrl) return;
 					var preload = new Image();
 					preload.onload = function () {
+						persistRandomOverrideForConfigured(configuredUrl, nextUrl);
 						imgEl.src = nextUrl;
 						emitWallpaperApplied(nextUrl, "banner");
 					};
@@ -366,12 +411,16 @@ const splashAutoCloseMs = splashConfig?.autoCloseMs ?? 1800;
 
 					if (desktopImg) {
 						resolveConfiguredBgForRefresh(desktopConfigured, desktopCurrent).then(function (desktopNext) {
-							if (desktopNext) preloadAndSwapImageEl(desktopImg, desktopNext);
+							if (desktopNext) preloadAndSwapImageEl(desktopImg, desktopNext, desktopConfigured);
 						});
 					}
 					if (mobileImg) {
 						resolveConfiguredBgForRefresh(mobileConfigured || desktopConfigured, mobileCurrent).then(function (mobileNext) {
-							if (mobileNext) preloadAndSwapImageEl(mobileImg, mobileNext);
+							if (mobileNext) preloadAndSwapImageEl(
+								mobileImg,
+								mobileNext,
+								mobileConfigured || desktopConfigured,
+							);
 						});
 					}
 				}

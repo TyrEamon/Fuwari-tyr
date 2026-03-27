@@ -87,7 +87,7 @@ export const siteConfig: SiteConfig = {
 	],
 	preconnect: [
 		"https://umami.kaza.de5.net",
-		"https://rapi.0w0.us.ci", 
+		"https://rapi.kyr.us.ci", 
 	],
 	officialSites: [],
 	server: [],
