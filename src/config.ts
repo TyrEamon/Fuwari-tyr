@@ -87,7 +87,7 @@ export const siteConfig: SiteConfig = {
 	],
 	preconnect: [
 		"https://umami.kaza.de5.net",
-		"https://rapi.kyr.us.ci", 
+		"https://rapi.kyr.us.ci",   // 这个旧的随机图api为：rapi.0w0.us.ci。
 	],
 	officialSites: [],
 	server: [],
