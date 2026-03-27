@@ -156,54 +156,36 @@ const splashAutoCloseMs = splashConfig?.autoCloseMs ?? 1800;
 		<script data-swup-ignore-script src="https://rapi.kyr.us.ci/random-img-only.js" defer></script>     {/*这个旧的随机图api为：rapi.0w0.us.ci，不用r2的随机图api就注释掉*/}
 		<script is:inline define:vars={{ backgroundDesktopSrc, backgroundMobileSrc, enableFullscreenWallpaper }}>
 			(function () {
-				var RANDOM_OVERRIDE_STORAGE_KEY = "__wallpaper_random_override__";
+				// Keep the current random wallpaper stable across swup script reloads
+				// within this tab, but reset it on a full browser refresh.
+				var runtimeRandomOverrides = (function () {
+					try {
+						var existing = window.__wallpaperRuntimeRandomOverrides;
+						if (existing && typeof existing === "object") return existing;
+						var created = Object.create(null);
+						window.__wallpaperRuntimeRandomOverrides = created;
+						return created;
+					} catch (_e) {
+						return Object.create(null);
+					}
+				})();
 				var manifestCache = null;
 				var manifestPromise = null;
 				var wallpaperRefreshReloadTriggered = false;
-				var modeSwitchRandomCarry = (function () {
-					try {
-						var raw = sessionStorage.getItem("__wallpaper_random_carry_once__");
-						if (!raw) return null;
-						sessionStorage.removeItem("__wallpaper_random_carry_once__");
-						var parsed = JSON.parse(raw);
-						return parsed && typeof parsed === "object" ? parsed : null;
-					} catch (_e) {
-						return null;
-					}
-				})();
-
-				function readRandomOverrides() {
-					try {
-						var raw = sessionStorage.getItem(RANDOM_OVERRIDE_STORAGE_KEY);
-						if (!raw) return {};
-						var parsed = JSON.parse(raw);
-						return parsed && typeof parsed === "object" ? parsed : {};
-					} catch (_e) {
-						return {};
-					}
-				}
 
 				function getRandomOverride(type) {
 					if (!type) return "";
-					var overrides = readRandomOverrides();
-					var value = overrides[type];
+					var value = runtimeRandomOverrides[type];
 					return typeof value === "string" ? value : "";
 				}
 
 				function setRandomOverride(type, url) {
 					if (!type) return;
-					try {
-						var overrides = readRandomOverrides();
-						if (url) {
-							overrides[type] = url;
-						} else {
-							delete overrides[type];
-						}
-						sessionStorage.setItem(
-							RANDOM_OVERRIDE_STORAGE_KEY,
-							JSON.stringify(overrides),
-						);
-					} catch (_e) {}
+					if (url) {
+						runtimeRandomOverrides[type] = url;
+						return;
+					}
+					delete runtimeRandomOverrides[type];
 				}
 
 				function resolveConfiguredBg(url) {
@@ -212,9 +194,6 @@ const splashAutoCloseMs = splashConfig?.autoCloseMs ?? 1800;
 					if (randomType) {
 						var storedOverride = getRandomOverride(randomType);
 						if (storedOverride) return storedOverride;
-						if (modeSwitchRandomCarry && modeSwitchRandomCarry[randomType]) {
-							return modeSwitchRandomCarry[randomType];
-						}
 						var fn = randomType === "v" ? window.getRandomPicV : window.getRandomPicH;
 						if (typeof fn === "function") return fn();
 						return "";
@@ -460,25 +439,7 @@ const splashAutoCloseMs = splashConfig?.autoCloseMs ?? 1800;
 				}
 
 				window.refreshWallpaperNow = refreshWallpaperNow;
-				window.prepareWallpaperModeSwitchRandomCarry = function () {
-					try {
-						var carry = {};
-						if (typeof window.getRandomPicH === "function") {
-							var h = window.getRandomPicH();
-							if (h) carry.h = h;
-						}
-						if (typeof window.getRandomPicV === "function") {
-							var v = window.getRandomPicV();
-							if (v) carry.v = v;
-						}
-						if (carry.h || carry.v) {
-							sessionStorage.setItem(
-								"__wallpaper_random_carry_once__",
-								JSON.stringify(carry),
-							);
-						}
-					} catch (_e) {}
-				};
+				window.prepareWallpaperModeSwitchRandomCarry = function () {};
 				window.addEventListener("wallpaper:refresh-request", function (event) {
 					var mode =
 						event && event.detail && typeof event.detail.mode === "string"
