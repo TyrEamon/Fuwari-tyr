@@ -86,7 +86,7 @@ export const siteConfig: SiteConfig = {
 		},
 	],
 	preconnect: [
-		"https://umamii.zeabur.app",
+		"https://umami.kaza.de5.net",
 		"https://rapi.0w0.us.ci", 
 	],
 	officialSites: [],
@@ -121,7 +121,7 @@ export const navBarConfig: NavBarConfig = {
 		},
 		{
 			name: "统计",
-			url: "https://umamii.zeabur.app/share/C8gWpSlbh6hrKEUL",
+			url: "https://umami.kaza.de5.net/share/9iW0kiOoO3KzkIpA",
 			external: true,
 		},
 		{
@@ -242,8 +242,8 @@ export const imageFallbackConfig: ImageFallbackConfig = {
 
 export const umamiConfig: UmamiConfig = {
 	enable: true,
-	baseUrl: "https://umamii.zeabur.app",
-	shareId: "C8gWpSlbh6hrKEUL",
+	baseUrl: "https://umami.kaza.de5.net",
+	shareId: "9iW0kiOoO3KzkIpA",
 	timezone: "Asia/Shanghai",
 };
 
