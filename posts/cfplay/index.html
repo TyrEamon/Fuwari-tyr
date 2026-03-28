@@ -186,69 +186,306 @@ const enableFullscreenWallpaper = true;
 					return matched && matched[2] ? matched[2] : "";
 				}
 
-				function applyResponsiveBg(forceNewRandom) {
-					if (!enableFullscreenWallpaper) return;
-					var bgBox = document.getElementById("bg-box");
-					if (!bgBox) return;
+				function preloadImage(nextUrl, onload) {
+					if (!nextUrl) return Promise.resolve(false);
+					return new Promise(function (resolve) {
+						var preload = new Image();
+						preload.onload = function () {
+							if (typeof onload === "function") onload();
+							resolve(true);
+						};
+						preload.onerror = function () {
+							resolve(false);
+						};
+						preload.src = nextUrl;
+					});
+				}
+
+				function getCurrentConfiguredBg() {
 					var isMobile =
 						window.matchMedia && window.matchMedia("(max-width: 768px)").matches;
 					var configured = isMobile
 						? (backgroundMobileSrc || backgroundDesktopSrc)
 						: (backgroundDesktopSrc || backgroundMobileSrc);
-					var applyWithUrl = function (nextUrl) {
-						if (!nextUrl) return;
-						var img = new Image();
-						img.onload = function () {
-							persistRandomOverrideForConfigured(configured, nextUrl);
-							bgBox.style.backgroundImage = "url('" + nextUrl + "')";
-							bgBox.classList.add("loaded");
-							emitWallpaperApplied(nextUrl, "fullscreen");
-						};
-						img.src = nextUrl;
+					return {
+						isMobile: !!isMobile,
+						configured: configured,
 					};
-					if (forceNewRandom === true) {
-						resolveConfiguredBgForRefresh(configured, getCurrentBgBoxUrl(bgBox)).then(applyWithUrl);
-						return;
-					}
-					applyWithUrl(getBgUrl(!!isMobile));
 				}
 
-				function preloadAndSwapImageEl(imgEl, nextUrl, configuredUrl) {
-					if (!imgEl || !nextUrl) return;
-					var preload = new Image();
-					preload.onload = function () {
-						persistRandomOverrideForConfigured(configuredUrl, nextUrl);
-						imgEl.src = nextUrl;
-						emitWallpaperApplied(nextUrl, "banner");
+				function getBannerImageState() {
+					var wrapper = document.getElementById("banner-wrapper");
+					if (!wrapper) return null;
+					var desktopConfigured = wrapper.getAttribute("data-banner-src-desktop") || "";
+					var mobileConfigured = wrapper.getAttribute("data-banner-src-mobile") || desktopConfigured;
+					return {
+						wrapper: wrapper,
+						desktopConfigured: desktopConfigured,
+						mobileConfigured: mobileConfigured,
+						desktopImg: document.querySelector("#banner img"),
+						mobileImg: document.querySelector("#banner-mobile img"),
 					};
-					preload.src = nextUrl;
+				}
+
+				function setBgBoxUrl(bgBox, nextUrl, configuredUrl, emitTarget) {
+					if (!bgBox || !nextUrl) return false;
+					persistRandomOverrideForConfigured(configuredUrl, nextUrl);
+					bgBox.style.backgroundImage = "url('" + nextUrl + "')";
+					bgBox.classList.add("loaded");
+					if (emitTarget) emitWallpaperApplied(nextUrl, emitTarget);
+					return true;
+				}
+
+				function setBannerImageUrl(imgEl, nextUrl, configuredUrl, emitTarget) {
+					if (!imgEl || !nextUrl) return false;
+					persistRandomOverrideForConfigured(configuredUrl, nextUrl);
+					imgEl.setAttribute("src", nextUrl);
+					imgEl.src = nextUrl;
+					if (emitTarget) emitWallpaperApplied(nextUrl, emitTarget);
+					return true;
+				}
+
+				function applyBgBoxUrl(bgBox, nextUrl, configuredUrl, emitTarget) {
+					if (!bgBox || !nextUrl) return Promise.resolve(false);
+					return preloadImage(nextUrl, function () {
+						setBgBoxUrl(bgBox, nextUrl, configuredUrl, emitTarget);
+					});
+				}
+
+				function applyBannerImageUrl(imgEl, nextUrl, configuredUrl, emitTarget) {
+					if (!imgEl || !nextUrl) return Promise.resolve(false);
+					return preloadImage(nextUrl, function () {
+						setBannerImageUrl(imgEl, nextUrl, configuredUrl, emitTarget);
+					});
+				}
+
+				function syncFullscreenBgFromCurrentState(emitTarget, immediate) {
+					if (!enableFullscreenWallpaper) return Promise.resolve(false);
+					var bgBox = document.getElementById("bg-box");
+					if (!bgBox) return Promise.resolve(false);
+					var currentBg = getCurrentConfiguredBg();
+					var nextUrl = resolveConfiguredBg(currentBg.configured);
+					if (!nextUrl) return Promise.resolve(false);
+					if (immediate === true) {
+						setBgBoxUrl(
+							bgBox,
+							nextUrl,
+							currentBg.configured,
+							emitTarget ? "fullscreen" : "",
+						);
+						return Promise.resolve(true);
+					}
+					return applyBgBoxUrl(
+						bgBox,
+						nextUrl,
+						currentBg.configured,
+						emitTarget ? "fullscreen" : "",
+					);
+				}
+
+				function syncBannerImagesFromCurrentState(emitTarget, immediate) {
+					var bannerState = getBannerImageState();
+					if (!bannerState) return Promise.resolve(false);
+					var currentBg = getCurrentConfiguredBg();
+					var tasks = [];
+					if (bannerState.desktopImg) {
+						var desktopNext = resolveConfiguredBg(bannerState.desktopConfigured);
+						if (desktopNext) {
+							tasks.push(
+								immediate === true
+									? Promise.resolve(
+										setBannerImageUrl(
+											bannerState.desktopImg,
+											desktopNext,
+											bannerState.desktopConfigured,
+											emitTarget && !currentBg.isMobile ? "banner" : "",
+										),
+									)
+									: applyBannerImageUrl(
+										bannerState.desktopImg,
+										desktopNext,
+										bannerState.desktopConfigured,
+										emitTarget && !currentBg.isMobile ? "banner" : "",
+									),
+							);
+						}
+					}
+					if (bannerState.mobileImg) {
+						var mobileNext = resolveConfiguredBg(
+							bannerState.mobileConfigured || bannerState.desktopConfigured,
+						);
+						if (mobileNext) {
+							tasks.push(
+								immediate === true
+									? Promise.resolve(
+										setBannerImageUrl(
+											bannerState.mobileImg,
+											mobileNext,
+											bannerState.mobileConfigured || bannerState.desktopConfigured,
+											emitTarget && currentBg.isMobile ? "banner" : "",
+										),
+									)
+									: applyBannerImageUrl(
+										bannerState.mobileImg,
+										mobileNext,
+										bannerState.mobileConfigured || bannerState.desktopConfigured,
+										emitTarget && currentBg.isMobile ? "banner" : "",
+									),
+							);
+						}
+					}
+					if (!tasks.length) return Promise.resolve(false);
+					return Promise.all(tasks).then(function () {
+						return true;
+					});
+				}
+
+				function syncWallpaperContainersFromCurrentState(mode, emitVisibleTarget, immediate) {
+					var activeMode =
+						mode ||
+						document.documentElement.getAttribute("data-wallpaper-mode") ||
+						"fullscreen";
+					if (activeMode === "banner") {
+						return syncBannerImagesFromCurrentState(
+							!!emitVisibleTarget,
+							immediate,
+						).then(function () {
+							return syncFullscreenBgFromCurrentState(false, immediate);
+						});
+					}
+					return syncFullscreenBgFromCurrentState(
+						!!emitVisibleTarget && activeMode === "fullscreen",
+						immediate,
+					).then(function () {
+						return syncBannerImagesFromCurrentState(false, immediate);
+					});
+				}
+
+				function getRandomConfiguredSourceMap() {
+					var sources = Object.create(null);
+					var bannerState = getBannerImageState();
+					[
+						backgroundDesktopSrc,
+						backgroundMobileSrc,
+						bannerState && bannerState.desktopConfigured,
+						bannerState && bannerState.mobileConfigured,
+					].forEach(function (configuredUrl) {
+						var randomType = getRandomTypeFromConfiguredUrl(configuredUrl);
+						if (!randomType || sources[randomType]) return;
+						sources[randomType] = configuredUrl;
+					});
+					return sources;
+				}
+
+				function refreshWallpaperSet(mode) {
+					var activeMode =
+						mode && mode !== "current"
+							? mode
+							: document.documentElement.getAttribute("data-wallpaper-mode") || "fullscreen";
+					var sourceMap = getRandomConfiguredSourceMap();
+					var randomTypes = Object.keys(sourceMap);
+					if (!randomTypes.length) return Promise.resolve(false);
+					return Promise.all(
+						randomTypes.map(function (randomType) {
+							var configuredUrl = sourceMap[randomType];
+							var currentUrl = resolveConfiguredBg(configuredUrl);
+							return resolveConfiguredBgForRefresh(configuredUrl, currentUrl).then(
+								function (nextUrl) {
+									if (!nextUrl) return null;
+									return preloadImage(nextUrl).then(function (loaded) {
+										if (!loaded) return null;
+										return {
+											configuredUrl: configuredUrl,
+											nextUrl: nextUrl,
+										};
+									});
+								},
+							);
+						}),
+					).then(function (results) {
+						var hasUpdate = false;
+						results.forEach(function (item) {
+							if (!item || !item.nextUrl) return;
+							hasUpdate = true;
+							persistRandomOverrideForConfigured(item.configuredUrl, item.nextUrl);
+						});
+						if (!hasUpdate) return false;
+						return syncWallpaperContainersFromCurrentState(
+							activeMode === "none" ? null : activeMode,
+							activeMode !== "none",
+							true,
+						);
+					});
+				}
+
+				function applyResponsiveBg(forceNewRandom) {
+					if (!enableFullscreenWallpaper) return;
+					var bgBox = document.getElementById("bg-box");
+					if (!bgBox) return;
+					var currentBg = getCurrentConfiguredBg();
+					var configured = currentBg.configured;
+					if (forceNewRandom === true) {
+						resolveConfiguredBgForRefresh(configured, getCurrentBgBoxUrl(bgBox)).then(
+							function (nextUrl) {
+								if (!nextUrl) return false;
+								return applyBgBoxUrl(bgBox, nextUrl, configured, "fullscreen").then(
+									function () {
+										return syncBannerImagesFromCurrentState(false);
+									},
+								);
+							},
+						);
+						return;
+					}
+					syncWallpaperContainersFromCurrentState(null, true);
 				}
 
 				function refreshBannerImages() {
-					var wrapper = document.getElementById("banner-wrapper");
-					if (!wrapper) return;
-					var desktopConfigured = wrapper.getAttribute("data-banner-src-desktop") || "";
-					var mobileConfigured = wrapper.getAttribute("data-banner-src-mobile") || desktopConfigured;
+					var bannerState = getBannerImageState();
+					if (!bannerState) return;
+					var currentBg = getCurrentConfiguredBg();
+					var tasks = [];
+					var desktopCurrent =
+						bannerState.desktopImg && bannerState.desktopImg.getAttribute("src");
+					var mobileCurrent =
+						bannerState.mobileImg && bannerState.mobileImg.getAttribute("src");
 
-					var desktopImg = document.querySelector("#banner img");
-					var mobileImg = document.querySelector("#banner-mobile img");
-					var desktopCurrent = desktopImg && desktopImg.getAttribute("src");
-					var mobileCurrent = mobileImg && mobileImg.getAttribute("src");
-
-					if (desktopImg) {
-						resolveConfiguredBgForRefresh(desktopConfigured, desktopCurrent).then(function (desktopNext) {
-							if (desktopNext) preloadAndSwapImageEl(desktopImg, desktopNext, desktopConfigured);
-						});
+					if (bannerState.desktopImg) {
+						tasks.push(
+							resolveConfiguredBgForRefresh(
+								bannerState.desktopConfigured,
+								desktopCurrent,
+							).then(function (desktopNext) {
+								if (!desktopNext) return false;
+								return applyBannerImageUrl(
+									bannerState.desktopImg,
+									desktopNext,
+									bannerState.desktopConfigured,
+									!currentBg.isMobile ? "banner" : "",
+								);
+							}),
+						);
 					}
-					if (mobileImg) {
-						resolveConfiguredBgForRefresh(mobileConfigured || desktopConfigured, mobileCurrent).then(function (mobileNext) {
-							if (mobileNext) preloadAndSwapImageEl(
-								mobileImg,
-								mobileNext,
-								mobileConfigured || desktopConfigured,
-							);
-						});
+					if (bannerState.mobileImg) {
+						tasks.push(
+							resolveConfiguredBgForRefresh(
+								bannerState.mobileConfigured || bannerState.desktopConfigured,
+								mobileCurrent,
+							).then(function (mobileNext) {
+								if (!mobileNext) return false;
+								return applyBannerImageUrl(
+									bannerState.mobileImg,
+									mobileNext,
+									bannerState.mobileConfigured || bannerState.desktopConfigured,
+									currentBg.isMobile ? "banner" : "",
+								);
+							}),
+						);
 					}
+					if (!tasks.length) return;
+					Promise.all(tasks).then(function () {
+						return syncFullscreenBgFromCurrentState(false);
+					});
 				}
 
 				function refreshWallpaperNow(mode) {
@@ -256,16 +493,8 @@ const enableFullscreenWallpaper = true;
 					if (!targetMode || targetMode === "current") {
 						targetMode = document.documentElement.getAttribute("data-wallpaper-mode") || "fullscreen";
 					}
-
-					if (targetMode === "fullscreen") {
-						applyResponsiveBg(true);
-						return true;
-					}
-					if (targetMode === "banner") {
-						refreshBannerImages();
-						return true;
-					}
-					return false;
+					refreshWallpaperSet(targetMode);
+					return true;
 				}
 
 				function debounce(fn, delay) {
@@ -672,22 +901,22 @@ const umamiConfig = {"enable":true,"baseUrl":"https://umami.kaza.de5.net","share
         fetchPageViews();
     }
 })();</script>  </div> <!-- always show cover as long as it has one --> <div id="post-cover" class="mb-8 rounded-xl banner-container onload-animation overflow-hidden relative image-wrapper" style="--theme-hue: 361" data-astro-cid-i2xmscho> <img src="/_astro/tittle.q_jNOAf8.webp" alt style="object-position: center" data-astro-cid-i2xmscho="true" width="1600" height="900" loading="lazy" decoding="async" class="w-full h-full object-cover image-content">  </div>  <div data-pagefind-body class="prose dark:prose-invert prose-base !max-w-none custom-md mb-6 markdown-content onload-animation"> <!--<div class="prose dark:prose-invert max-w-none custom-md">--> <!--<div class="max-w-none custom-md">-->  <p><code>项目仓库地址:</code></p>
-<a id="GCk05ghb-card" class="card-github fetch-waiting no-styling" href="https://github.com/TyrEamon/video-tsp" target="_blank" repo="TyrEamon/video-tsp" rel="nofollow"><div class="gc-titlebar"><div class="gc-titlebar-left"><div class="gc-owner"><div id="GCk05ghb-avatar" class="gc-avatar"></div><div class="gc-user">TyrEamon</div></div><div class="gc-divider">/</div><div class="gc-repo">video-tsp</div></div><div class="github-logo"></div></div><div id="GCk05ghb-description" class="gc-description">Waiting for api.github.com...</div><div class="gc-infobar"><div id="GCk05ghb-stars" class="gc-stars">00K</div><div id="GCk05ghb-forks" class="gc-forks">0K</div><div id="GCk05ghb-license" class="gc-license">0K</div><span id="GCk05ghb-language" class="gc-language">Waiting...</span></div><script id="GCk05ghb-script" type="text/javascript" defer>
+<a id="GCoot0qf-card" class="card-github fetch-waiting no-styling" href="https://github.com/TyrEamon/video-tsp" target="_blank" repo="TyrEamon/video-tsp" rel="nofollow"><div class="gc-titlebar"><div class="gc-titlebar-left"><div class="gc-owner"><div id="GCoot0qf-avatar" class="gc-avatar"></div><div class="gc-user">TyrEamon</div></div><div class="gc-divider">/</div><div class="gc-repo">video-tsp</div></div><div class="github-logo"></div></div><div id="GCoot0qf-description" class="gc-description">Waiting for api.github.com...</div><div class="gc-infobar"><div id="GCoot0qf-stars" class="gc-stars">00K</div><div id="GCoot0qf-forks" class="gc-forks">0K</div><div id="GCoot0qf-license" class="gc-license">0K</div><span id="GCoot0qf-language" class="gc-language">Waiting...</span></div><script id="GCoot0qf-script" type="text/javascript" defer>
       fetch('https://api.github.com/repos/TyrEamon/video-tsp', { referrerPolicy: "no-referrer" }).then(response => response.json()).then(data => {
-        document.getElementById('GCk05ghb-description').innerText = data.description?.replace(/:[a-zA-Z0-9_]+:/g, '') || "Description not set";
-        document.getElementById('GCk05ghb-language').innerText = data.language;
-        document.getElementById('GCk05ghb-forks').innerText = Intl.NumberFormat('en-us', { notation: "compact", maximumFractionDigits: 1 }).format(data.forks).replaceAll(" ", '');
-        document.getElementById('GCk05ghb-stars').innerText = Intl.NumberFormat('en-us', { notation: "compact", maximumFractionDigits: 1 }).format(data.stargazers_count).replaceAll(" ", '');
-        const avatarEl = document.getElementById('GCk05ghb-avatar');
+        document.getElementById('GCoot0qf-description').innerText = data.description?.replace(/:[a-zA-Z0-9_]+:/g, '') || "Description not set";
+        document.getElementById('GCoot0qf-language').innerText = data.language;
+        document.getElementById('GCoot0qf-forks').innerText = Intl.NumberFormat('en-us', { notation: "compact", maximumFractionDigits: 1 }).format(data.forks).replaceAll(" ", '');
+        document.getElementById('GCoot0qf-stars').innerText = Intl.NumberFormat('en-us', { notation: "compact", maximumFractionDigits: 1 }).format(data.stargazers_count).replaceAll(" ", '');
+        const avatarEl = document.getElementById('GCoot0qf-avatar');
         avatarEl.style.backgroundImage = 'url(' + data.owner.avatar_url + ')';
         avatarEl.style.backgroundColor = 'transparent';
-        document.getElementById('GCk05ghb-license').innerText = data.license?.spdx_id || "no-license";
-        document.getElementById('GCk05ghb-card').classList.remove("fetch-waiting");
-        console.log("[GITHUB-CARD] Loaded card for TyrEamon/video-tsp | GCk05ghb.")
+        document.getElementById('GCoot0qf-license').innerText = data.license?.spdx_id || "no-license";
+        document.getElementById('GCoot0qf-card').classList.remove("fetch-waiting");
+        console.log("[GITHUB-CARD] Loaded card for TyrEamon/video-tsp | GCoot0qf.")
       }).catch(err => {
-        const c = document.getElementById('GCk05ghb-card');
+        const c = document.getElementById('GCoot0qf-card');
         c?.classList.add("fetch-error");
-        console.warn("[GITHUB-CARD] (Error) Loading card for TyrEamon/video-tsp | GCk05ghb.")
+        console.warn("[GITHUB-CARD] (Error) Loading card for TyrEamon/video-tsp | GCoot0qf.")
       })
     </script></a>
 <details>

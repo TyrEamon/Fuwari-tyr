@@ -186,69 +186,306 @@ const enableFullscreenWallpaper = true;
 					return matched && matched[2] ? matched[2] : "";
 				}
 
-				function applyResponsiveBg(forceNewRandom) {
-					if (!enableFullscreenWallpaper) return;
-					var bgBox = document.getElementById("bg-box");
-					if (!bgBox) return;
+				function preloadImage(nextUrl, onload) {
+					if (!nextUrl) return Promise.resolve(false);
+					return new Promise(function (resolve) {
+						var preload = new Image();
+						preload.onload = function () {
+							if (typeof onload === "function") onload();
+							resolve(true);
+						};
+						preload.onerror = function () {
+							resolve(false);
+						};
+						preload.src = nextUrl;
+					});
+				}
+
+				function getCurrentConfiguredBg() {
 					var isMobile =
 						window.matchMedia && window.matchMedia("(max-width: 768px)").matches;
 					var configured = isMobile
 						? (backgroundMobileSrc || backgroundDesktopSrc)
 						: (backgroundDesktopSrc || backgroundMobileSrc);
-					var applyWithUrl = function (nextUrl) {
-						if (!nextUrl) return;
-						var img = new Image();
-						img.onload = function () {
-							persistRandomOverrideForConfigured(configured, nextUrl);
-							bgBox.style.backgroundImage = "url('" + nextUrl + "')";
-							bgBox.classList.add("loaded");
-							emitWallpaperApplied(nextUrl, "fullscreen");
-						};
-						img.src = nextUrl;
+					return {
+						isMobile: !!isMobile,
+						configured: configured,
 					};
-					if (forceNewRandom === true) {
-						resolveConfiguredBgForRefresh(configured, getCurrentBgBoxUrl(bgBox)).then(applyWithUrl);
-						return;
-					}
-					applyWithUrl(getBgUrl(!!isMobile));
 				}
 
-				function preloadAndSwapImageEl(imgEl, nextUrl, configuredUrl) {
-					if (!imgEl || !nextUrl) return;
-					var preload = new Image();
-					preload.onload = function () {
-						persistRandomOverrideForConfigured(configuredUrl, nextUrl);
-						imgEl.src = nextUrl;
-						emitWallpaperApplied(nextUrl, "banner");
+				function getBannerImageState() {
+					var wrapper = document.getElementById("banner-wrapper");
+					if (!wrapper) return null;
+					var desktopConfigured = wrapper.getAttribute("data-banner-src-desktop") || "";
+					var mobileConfigured = wrapper.getAttribute("data-banner-src-mobile") || desktopConfigured;
+					return {
+						wrapper: wrapper,
+						desktopConfigured: desktopConfigured,
+						mobileConfigured: mobileConfigured,
+						desktopImg: document.querySelector("#banner img"),
+						mobileImg: document.querySelector("#banner-mobile img"),
 					};
-					preload.src = nextUrl;
+				}
+
+				function setBgBoxUrl(bgBox, nextUrl, configuredUrl, emitTarget) {
+					if (!bgBox || !nextUrl) return false;
+					persistRandomOverrideForConfigured(configuredUrl, nextUrl);
+					bgBox.style.backgroundImage = "url('" + nextUrl + "')";
+					bgBox.classList.add("loaded");
+					if (emitTarget) emitWallpaperApplied(nextUrl, emitTarget);
+					return true;
+				}
+
+				function setBannerImageUrl(imgEl, nextUrl, configuredUrl, emitTarget) {
+					if (!imgEl || !nextUrl) return false;
+					persistRandomOverrideForConfigured(configuredUrl, nextUrl);
+					imgEl.setAttribute("src", nextUrl);
+					imgEl.src = nextUrl;
+					if (emitTarget) emitWallpaperApplied(nextUrl, emitTarget);
+					return true;
+				}
+
+				function applyBgBoxUrl(bgBox, nextUrl, configuredUrl, emitTarget) {
+					if (!bgBox || !nextUrl) return Promise.resolve(false);
+					return preloadImage(nextUrl, function () {
+						setBgBoxUrl(bgBox, nextUrl, configuredUrl, emitTarget);
+					});
+				}
+
+				function applyBannerImageUrl(imgEl, nextUrl, configuredUrl, emitTarget) {
+					if (!imgEl || !nextUrl) return Promise.resolve(false);
+					return preloadImage(nextUrl, function () {
+						setBannerImageUrl(imgEl, nextUrl, configuredUrl, emitTarget);
+					});
+				}
+
+				function syncFullscreenBgFromCurrentState(emitTarget, immediate) {
+					if (!enableFullscreenWallpaper) return Promise.resolve(false);
+					var bgBox = document.getElementById("bg-box");
+					if (!bgBox) return Promise.resolve(false);
+					var currentBg = getCurrentConfiguredBg();
+					var nextUrl = resolveConfiguredBg(currentBg.configured);
+					if (!nextUrl) return Promise.resolve(false);
+					if (immediate === true) {
+						setBgBoxUrl(
+							bgBox,
+							nextUrl,
+							currentBg.configured,
+							emitTarget ? "fullscreen" : "",
+						);
+						return Promise.resolve(true);
+					}
+					return applyBgBoxUrl(
+						bgBox,
+						nextUrl,
+						currentBg.configured,
+						emitTarget ? "fullscreen" : "",
+					);
+				}
+
+				function syncBannerImagesFromCurrentState(emitTarget, immediate) {
+					var bannerState = getBannerImageState();
+					if (!bannerState) return Promise.resolve(false);
+					var currentBg = getCurrentConfiguredBg();
+					var tasks = [];
+					if (bannerState.desktopImg) {
+						var desktopNext = resolveConfiguredBg(bannerState.desktopConfigured);
+						if (desktopNext) {
+							tasks.push(
+								immediate === true
+									? Promise.resolve(
+										setBannerImageUrl(
+											bannerState.desktopImg,
+											desktopNext,
+											bannerState.desktopConfigured,
+											emitTarget && !currentBg.isMobile ? "banner" : "",
+										),
+									)
+									: applyBannerImageUrl(
+										bannerState.desktopImg,
+										desktopNext,
+										bannerState.desktopConfigured,
+										emitTarget && !currentBg.isMobile ? "banner" : "",
+									),
+							);
+						}
+					}
+					if (bannerState.mobileImg) {
+						var mobileNext = resolveConfiguredBg(
+							bannerState.mobileConfigured || bannerState.desktopConfigured,
+						);
+						if (mobileNext) {
+							tasks.push(
+								immediate === true
+									? Promise.resolve(
+										setBannerImageUrl(
+											bannerState.mobileImg,
+											mobileNext,
+											bannerState.mobileConfigured || bannerState.desktopConfigured,
+											emitTarget && currentBg.isMobile ? "banner" : "",
+										),
+									)
+									: applyBannerImageUrl(
+										bannerState.mobileImg,
+										mobileNext,
+										bannerState.mobileConfigured || bannerState.desktopConfigured,
+										emitTarget && currentBg.isMobile ? "banner" : "",
+									),
+							);
+						}
+					}
+					if (!tasks.length) return Promise.resolve(false);
+					return Promise.all(tasks).then(function () {
+						return true;
+					});
+				}
+
+				function syncWallpaperContainersFromCurrentState(mode, emitVisibleTarget, immediate) {
+					var activeMode =
+						mode ||
+						document.documentElement.getAttribute("data-wallpaper-mode") ||
+						"fullscreen";
+					if (activeMode === "banner") {
+						return syncBannerImagesFromCurrentState(
+							!!emitVisibleTarget,
+							immediate,
+						).then(function () {
+							return syncFullscreenBgFromCurrentState(false, immediate);
+						});
+					}
+					return syncFullscreenBgFromCurrentState(
+						!!emitVisibleTarget && activeMode === "fullscreen",
+						immediate,
+					).then(function () {
+						return syncBannerImagesFromCurrentState(false, immediate);
+					});
+				}
+
+				function getRandomConfiguredSourceMap() {
+					var sources = Object.create(null);
+					var bannerState = getBannerImageState();
+					[
+						backgroundDesktopSrc,
+						backgroundMobileSrc,
+						bannerState && bannerState.desktopConfigured,
+						bannerState && bannerState.mobileConfigured,
+					].forEach(function (configuredUrl) {
+						var randomType = getRandomTypeFromConfiguredUrl(configuredUrl);
+						if (!randomType || sources[randomType]) return;
+						sources[randomType] = configuredUrl;
+					});
+					return sources;
+				}
+
+				function refreshWallpaperSet(mode) {
+					var activeMode =
+						mode && mode !== "current"
+							? mode
+							: document.documentElement.getAttribute("data-wallpaper-mode") || "fullscreen";
+					var sourceMap = getRandomConfiguredSourceMap();
+					var randomTypes = Object.keys(sourceMap);
+					if (!randomTypes.length) return Promise.resolve(false);
+					return Promise.all(
+						randomTypes.map(function (randomType) {
+							var configuredUrl = sourceMap[randomType];
+							var currentUrl = resolveConfiguredBg(configuredUrl);
+							return resolveConfiguredBgForRefresh(configuredUrl, currentUrl).then(
+								function (nextUrl) {
+									if (!nextUrl) return null;
+									return preloadImage(nextUrl).then(function (loaded) {
+										if (!loaded) return null;
+										return {
+											configuredUrl: configuredUrl,
+											nextUrl: nextUrl,
+										};
+									});
+								},
+							);
+						}),
+					).then(function (results) {
+						var hasUpdate = false;
+						results.forEach(function (item) {
+							if (!item || !item.nextUrl) return;
+							hasUpdate = true;
+							persistRandomOverrideForConfigured(item.configuredUrl, item.nextUrl);
+						});
+						if (!hasUpdate) return false;
+						return syncWallpaperContainersFromCurrentState(
+							activeMode === "none" ? null : activeMode,
+							activeMode !== "none",
+							true,
+						);
+					});
+				}
+
+				function applyResponsiveBg(forceNewRandom) {
+					if (!enableFullscreenWallpaper) return;
+					var bgBox = document.getElementById("bg-box");
+					if (!bgBox) return;
+					var currentBg = getCurrentConfiguredBg();
+					var configured = currentBg.configured;
+					if (forceNewRandom === true) {
+						resolveConfiguredBgForRefresh(configured, getCurrentBgBoxUrl(bgBox)).then(
+							function (nextUrl) {
+								if (!nextUrl) return false;
+								return applyBgBoxUrl(bgBox, nextUrl, configured, "fullscreen").then(
+									function () {
+										return syncBannerImagesFromCurrentState(false);
+									},
+								);
+							},
+						);
+						return;
+					}
+					syncWallpaperContainersFromCurrentState(null, true);
 				}
 
 				function refreshBannerImages() {
-					var wrapper = document.getElementById("banner-wrapper");
-					if (!wrapper) return;
-					var desktopConfigured = wrapper.getAttribute("data-banner-src-desktop") || "";
-					var mobileConfigured = wrapper.getAttribute("data-banner-src-mobile") || desktopConfigured;
+					var bannerState = getBannerImageState();
+					if (!bannerState) return;
+					var currentBg = getCurrentConfiguredBg();
+					var tasks = [];
+					var desktopCurrent =
+						bannerState.desktopImg && bannerState.desktopImg.getAttribute("src");
+					var mobileCurrent =
+						bannerState.mobileImg && bannerState.mobileImg.getAttribute("src");
 
-					var desktopImg = document.querySelector("#banner img");
-					var mobileImg = document.querySelector("#banner-mobile img");
-					var desktopCurrent = desktopImg && desktopImg.getAttribute("src");
-					var mobileCurrent = mobileImg && mobileImg.getAttribute("src");
-
-					if (desktopImg) {
-						resolveConfiguredBgForRefresh(desktopConfigured, desktopCurrent).then(function (desktopNext) {
-							if (desktopNext) preloadAndSwapImageEl(desktopImg, desktopNext, desktopConfigured);
-						});
+					if (bannerState.desktopImg) {
+						tasks.push(
+							resolveConfiguredBgForRefresh(
+								bannerState.desktopConfigured,
+								desktopCurrent,
+							).then(function (desktopNext) {
+								if (!desktopNext) return false;
+								return applyBannerImageUrl(
+									bannerState.desktopImg,
+									desktopNext,
+									bannerState.desktopConfigured,
+									!currentBg.isMobile ? "banner" : "",
+								);
+							}),
+						);
 					}
-					if (mobileImg) {
-						resolveConfiguredBgForRefresh(mobileConfigured || desktopConfigured, mobileCurrent).then(function (mobileNext) {
-							if (mobileNext) preloadAndSwapImageEl(
-								mobileImg,
-								mobileNext,
-								mobileConfigured || desktopConfigured,
-							);
-						});
+					if (bannerState.mobileImg) {
+						tasks.push(
+							resolveConfiguredBgForRefresh(
+								bannerState.mobileConfigured || bannerState.desktopConfigured,
+								mobileCurrent,
+							).then(function (mobileNext) {
+								if (!mobileNext) return false;
+								return applyBannerImageUrl(
+									bannerState.mobileImg,
+									mobileNext,
+									bannerState.mobileConfigured || bannerState.desktopConfigured,
+									currentBg.isMobile ? "banner" : "",
+								);
+							}),
+						);
 					}
+					if (!tasks.length) return;
+					Promise.all(tasks).then(function () {
+						return syncFullscreenBgFromCurrentState(false);
+					});
 				}
 
 				function refreshWallpaperNow(mode) {
@@ -256,16 +493,8 @@ const enableFullscreenWallpaper = true;
 					if (!targetMode || targetMode === "current") {
 						targetMode = document.documentElement.getAttribute("data-wallpaper-mode") || "fullscreen";
 					}
-
-					if (targetMode === "fullscreen") {
-						applyResponsiveBg(true);
-						return true;
-					}
-					if (targetMode === "banner") {
-						refreshBannerImages();
-						return true;
-					}
-					return false;
+					refreshWallpaperSet(targetMode);
+					return true;
 				}
 
 				function debounce(fn, delay) {
@@ -676,26 +905,26 @@ Curated, as you see | : )</div> <div class="flex flex-wrap gap-2 justify-center 
 
 <table><thead><tr><th>名称</th><th>类型</th><th>说明</th></tr></thead><tbody><tr><td>展览馆</td><td>页面</td><td>聚合展示入口</td></tr><tr><td>工具箱</td><td>页面</td><td>功能页与文档入口</td></tr><tr><td>画廊</td><td>页面</td><td>图片瀑布流展示</td></tr></tbody></table><hr></section><section><h2 id="8代码块语法高亮--复制按钮">8）代码块（语法高亮 / 复制按钮）<a class="anchor" href="#8代码块语法高亮--复制按钮"><span class="anchor-icon" data-pagefind-ignore="">#</span></a></h2><p>这个博客的代码块由 Expressive Code 渲染，通常会带复制按钮。</p><section><h3 id="81-javascript-示例">8.1 JavaScript 示例<a class="anchor" href="#81-javascript-示例"><span class="anchor-icon" data-pagefind-ignore="">#</span></a></h3><p><strong>代码（可复制）</strong></p><div class="expressive-code"><figure class="frame"><figcaption class="header"></figcaption><pre data-language="md" class="wrap" style="--ecMaxLine:30ch"><code><div class="ec-line"><div class="gutter"><div class="ln" aria-hidden="true">1</div></div><div class="code"><span style="--0:#E1E4E8;--1:#E1E4E8">```js</span></div></div><div class="ec-line"><div class="gutter"><div class="ln" aria-hidden="true">2</div></div><div class="code"><span style="--0:#F97583;--1:#F97583">const</span><span style="--0:#E1E4E8;--1:#E1E4E8"> </span><span style="--0:#79B8FF;--1:#79B8FF">msg</span><span style="--0:#E1E4E8;--1:#E1E4E8"> </span><span style="--0:#F97583;--1:#F97583">=</span><span style="--0:#E1E4E8;--1:#E1E4E8"> </span><span style="--0:#9ECBFF;--1:#9ECBFF">"Hello, Markdown"</span><span style="--0:#E1E4E8;--1:#E1E4E8">;</span></div></div><div class="ec-line"><div class="gutter"><div class="ln" aria-hidden="true">3</div></div><div class="code"><span style="--0:#E1E4E8;--1:#E1E4E8">console.</span><span style="--0:#B392F0;--1:#B392F0">log</span><span style="--0:#E1E4E8;--1:#E1E4E8">(msg);</span></div></div><div class="ec-line"><div class="gutter"><div class="ln" aria-hidden="true">4</div></div><div class="code"><span style="--0:#E1E4E8;--1:#E1E4E8">```</span></div></div></code><button class="copy-btn" aria-label="Copy code"><div class="copy-btn-icon"><svg viewBox="0 -960 960 960" xmlns="http://www.w3.org/2000/svg" class="copy-btn-icon copy-icon"><path d="M368.37-237.37q-34.48 0-58.74-24.26-24.26-24.26-24.26-58.74v-474.26q0-34.48 24.26-58.74 24.26-24.26 58.74-24.26h378.26q34.48 0 58.74 24.26 24.26 24.26 24.26 58.74v474.26q0 34.48-24.26 58.74-24.26 24.26-58.74 24.26H368.37Zm0-83h378.26v-474.26H368.37v474.26Zm-155 238q-34.48 0-58.74-24.26-24.26-24.26-24.26-58.74v-515.76q0-17.45 11.96-29.48 11.97-12.02 29.33-12.02t29.54 12.02q12.17 12.03 12.17 29.48v515.76h419.76q17.45 0 29.48 11.96 12.02 11.97 12.02 29.33t-12.02 29.54q-12.03 12.17-29.48 12.17H213.37Zm155-238v-474.26 474.26Z"></path></svg><svg viewBox="0 -960 960 960" xmlns="http://www.w3.org/2000/svg" class="copy-btn-icon success-icon"><path d="m389-377.13 294.7-294.7q12.58-12.67 29.52-12.67 16.93 0 29.61 12.67 12.67 12.68 12.67 29.53 0 16.86-12.28 29.14L419.07-288.41q-12.59 12.67-29.52 12.67-16.94 0-29.62-12.67L217.41-430.93q-12.67-12.68-12.79-29.45-.12-16.77 12.55-29.45 12.68-12.67 29.62-12.67 16.93 0 29.28 12.67L389-377.13Z"></path></svg></div></button></pre></figure></div><p><strong>预览</strong></p><div class="expressive-code"><figure class="frame"><figcaption class="header"></figcaption><pre data-language="js" class="wrap" style="--ecMaxLine:30ch"><code><div class="ec-line"><div class="gutter"><div class="ln" aria-hidden="true">1</div></div><div class="code"><span style="--0:#F97583;--1:#F97583">const</span><span style="--0:#E1E4E8;--1:#E1E4E8"> </span><span style="--0:#79B8FF;--1:#79B8FF">msg</span><span style="--0:#E1E4E8;--1:#E1E4E8"> </span><span style="--0:#F97583;--1:#F97583">=</span><span style="--0:#E1E4E8;--1:#E1E4E8"> </span><span style="--0:#9ECBFF;--1:#9ECBFF">"Hello, Markdown"</span><span style="--0:#E1E4E8;--1:#E1E4E8">;</span></div></div><div class="ec-line"><div class="gutter"><div class="ln" aria-hidden="true">2</div></div><div class="code"><span style="--0:#E1E4E8;--1:#E1E4E8">console.</span><span style="--0:#B392F0;--1:#B392F0">log</span><span style="--0:#E1E4E8;--1:#E1E4E8">(msg);</span></div></div></code><button class="copy-btn" aria-label="Copy code"><div class="copy-btn-icon"><svg viewBox="0 -960 960 960" xmlns="http://www.w3.org/2000/svg" class="copy-btn-icon copy-icon"><path d="M368.37-237.37q-34.48 0-58.74-24.26-24.26-24.26-24.26-58.74v-474.26q0-34.48 24.26-58.74 24.26-24.26 58.74-24.26h378.26q34.48 0 58.74 24.26 24.26 24.26 24.26 58.74v474.26q0 34.48-24.26 58.74-24.26 24.26-58.74 24.26H368.37Zm0-83h378.26v-474.26H368.37v474.26Zm-155 238q-34.48 0-58.74-24.26-24.26-24.26-24.26-58.74v-515.76q0-17.45 11.96-29.48 11.97-12.02 29.33-12.02t29.54 12.02q12.17 12.03 12.17 29.48v515.76h419.76q17.45 0 29.48 11.96 12.02 11.97 12.02 29.33t-12.02 29.54q-12.03 12.17-29.48 12.17H213.37Zm155-238v-474.26 474.26Z"></path></svg><svg viewBox="0 -960 960 960" xmlns="http://www.w3.org/2000/svg" class="copy-btn-icon success-icon"><path d="m389-377.13 294.7-294.7q12.58-12.67 29.52-12.67 16.93 0 29.61 12.67 12.67 12.68 12.67 29.53 0 16.86-12.28 29.14L419.07-288.41q-12.59 12.67-29.52 12.67-16.94 0-29.62-12.67L217.41-430.93q-12.67-12.68-12.79-29.45-.12-16.77 12.55-29.45 12.68-12.67 29.62-12.67 16.93 0 29.28 12.67L389-377.13Z"></path></svg></div></button></pre></figure></div></section><section><h3 id="82-bash--shell-示例">8.2 Bash / Shell 示例<a class="anchor" href="#82-bash--shell-示例"><span class="anchor-icon" data-pagefind-ignore="">#</span></a></h3><p><strong>代码（可复制）</strong></p><div class="expressive-code"><figure class="frame"><figcaption class="header"></figcaption><pre data-language="md" class="wrap" style="--ecMaxLine:12ch"><code><div class="ec-line"><div class="gutter"><div class="ln" aria-hidden="true">1</div></div><div class="code"><span style="--0:#E1E4E8;--1:#E1E4E8">```bash</span></div></div><div class="ec-line"><div class="gutter"><div class="ln" aria-hidden="true">2</div></div><div class="code"><span style="--0:#B392F0;--1:#B392F0">pnpm</span><span style="--0:#E1E4E8;--1:#E1E4E8"> </span><span style="--0:#9ECBFF;--1:#9ECBFF">install</span></div></div><div class="ec-line"><div class="gutter"><div class="ln" aria-hidden="true">3</div></div><div class="code"><span style="--0:#B392F0;--1:#B392F0">pnpm</span><span style="--0:#E1E4E8;--1:#E1E4E8"> </span><span style="--0:#9ECBFF;--1:#9ECBFF">dev</span></div></div><div class="ec-line"><div class="gutter"><div class="ln" aria-hidden="true">4</div></div><div class="code"><span style="--0:#E1E4E8;--1:#E1E4E8">```</span></div></div></code><button class="copy-btn" aria-label="Copy code"><div class="copy-btn-icon"><svg viewBox="0 -960 960 960" xmlns="http://www.w3.org/2000/svg" class="copy-btn-icon copy-icon"><path d="M368.37-237.37q-34.48 0-58.74-24.26-24.26-24.26-24.26-58.74v-474.26q0-34.48 24.26-58.74 24.26-24.26 58.74-24.26h378.26q34.48 0 58.74 24.26 24.26 24.26 24.26 58.74v474.26q0 34.48-24.26 58.74-24.26 24.26-58.74 24.26H368.37Zm0-83h378.26v-474.26H368.37v474.26Zm-155 238q-34.48 0-58.74-24.26-24.26-24.26-24.26-58.74v-515.76q0-17.45 11.96-29.48 11.97-12.02 29.33-12.02t29.54 12.02q12.17 12.03 12.17 29.48v515.76h419.76q17.45 0 29.48 11.96 12.02 11.97 12.02 29.33t-12.02 29.54q-12.03 12.17-29.48 12.17H213.37Zm155-238v-474.26 474.26Z"></path></svg><svg viewBox="0 -960 960 960" xmlns="http://www.w3.org/2000/svg" class="copy-btn-icon success-icon"><path d="m389-377.13 294.7-294.7q12.58-12.67 29.52-12.67 16.93 0 29.61 12.67 12.67 12.68 12.67 29.53 0 16.86-12.28 29.14L419.07-288.41q-12.59 12.67-29.52 12.67-16.94 0-29.62-12.67L217.41-430.93q-12.67-12.68-12.79-29.45-.12-16.77 12.55-29.45 12.68-12.67 29.62-12.67 16.93 0 29.28 12.67L389-377.13Z"></path></svg></div></button></pre></figure></div><p><strong>预览</strong></p><div class="expressive-code"><figure class="frame is-terminal"><figcaption class="header"><span class="title"></span><span class="sr-only">Terminal window</span></figcaption><pre data-language="bash" class="wrap" style="--ecMaxLine:12ch"><code><div class="ec-line"><div class="gutter"><div class="ln" aria-hidden="true">1</div></div><div class="code"><span style="--0:#B392F0;--1:#B392F0">pnpm</span><span style="--0:#E1E4E8;--1:#E1E4E8"> </span><span style="--0:#9ECBFF;--1:#9ECBFF">install</span></div></div><div class="ec-line"><div class="gutter"><div class="ln" aria-hidden="true">2</div></div><div class="code"><span style="--0:#B392F0;--1:#B392F0">pnpm</span><span style="--0:#E1E4E8;--1:#E1E4E8"> </span><span style="--0:#9ECBFF;--1:#9ECBFF">dev</span></div></div></code><button class="copy-btn" aria-label="Copy code"><div class="copy-btn-icon"><svg viewBox="0 -960 960 960" xmlns="http://www.w3.org/2000/svg" class="copy-btn-icon copy-icon"><path d="M368.37-237.37q-34.48 0-58.74-24.26-24.26-24.26-24.26-58.74v-474.26q0-34.48 24.26-58.74 24.26-24.26 58.74-24.26h378.26q34.48 0 58.74 24.26 24.26 24.26 24.26 58.74v474.26q0 34.48-24.26 58.74-24.26 24.26-58.74 24.26H368.37Zm0-83h378.26v-474.26H368.37v474.26Zm-155 238q-34.48 0-58.74-24.26-24.26-24.26-24.26-58.74v-515.76q0-17.45 11.96-29.48 11.97-12.02 29.33-12.02t29.54 12.02q12.17 12.03 12.17 29.48v515.76h419.76q17.45 0 29.48 11.96 12.02 11.97 12.02 29.33t-12.02 29.54q-12.03 12.17-29.48 12.17H213.37Zm155-238v-474.26 474.26Z"></path></svg><svg viewBox="0 -960 960 960" xmlns="http://www.w3.org/2000/svg" class="copy-btn-icon success-icon"><path d="m389-377.13 294.7-294.7q12.58-12.67 29.52-12.67 16.93 0 29.61 12.67 12.67 12.68 12.67 29.53 0 16.86-12.28 29.14L419.07-288.41q-12.59 12.67-29.52 12.67-16.94 0-29.62-12.67L217.41-430.93q-12.67-12.68-12.79-29.45-.12-16.77 12.55-29.45 12.68-12.67 29.62-12.67 16.93 0 29.28 12.67L389-377.13Z"></path></svg></div></button></pre></figure></div><blockquote>
 <p>提示：如果某些语言名不被高亮器识别，会降级成普通文本显示（例如你之前遇到过 <code>env</code>）。</p>
-</blockquote><hr></section></section><section><h2 id="9数学公式katex">9）数学公式（KaTeX）<a class="anchor" href="#9数学公式katex"><span class="anchor-icon" data-pagefind-ignore="">#</span></a></h2><p>你这个博客启用了 <code>remark-math + rehype-katex</code>。</p><section><h3 id="91-行内公式">9.1 行内公式<a class="anchor" href="#91-行内公式"><span class="anchor-icon" data-pagefind-ignore="">#</span></a></h3><p><strong>代码（可复制）</strong></p><div class="expressive-code"><figure class="frame"><figcaption class="header"></figcaption><pre data-language="md" class="wrap" style="--ecMaxLine:20ch"><code><div class="ec-line"><div class="gutter"><div class="ln" aria-hidden="true">1</div></div><div class="code"><span style="--0:#E1E4E8;--1:#E1E4E8">这是一个行内公式：$E = mc^2$。</span></div></div></code><button class="copy-btn" aria-label="Copy code"><div class="copy-btn-icon"><svg viewBox="0 -960 960 960" xmlns="http://www.w3.org/2000/svg" class="copy-btn-icon copy-icon"><path d="M368.37-237.37q-34.48 0-58.74-24.26-24.26-24.26-24.26-58.74v-474.26q0-34.48 24.26-58.74 24.26-24.26 58.74-24.26h378.26q34.48 0 58.74 24.26 24.26 24.26 24.26 58.74v474.26q0 34.48-24.26 58.74-24.26 24.26-58.74 24.26H368.37Zm0-83h378.26v-474.26H368.37v474.26Zm-155 238q-34.48 0-58.74-24.26-24.26-24.26-24.26-58.74v-515.76q0-17.45 11.96-29.48 11.97-12.02 29.33-12.02t29.54 12.02q12.17 12.03 12.17 29.48v515.76h419.76q17.45 0 29.48 11.96 12.02 11.97 12.02 29.33t-12.02 29.54q-12.03 12.17-29.48 12.17H213.37Zm155-238v-474.26 474.26Z"></path></svg><svg viewBox="0 -960 960 960" xmlns="http://www.w3.org/2000/svg" class="copy-btn-icon success-icon"><path d="m389-377.13 294.7-294.7q12.58-12.67 29.52-12.67 16.93 0 29.61 12.67 12.67 12.68 12.67 29.53 0 16.86-12.28 29.14L419.07-288.41q-12.59 12.67-29.52 12.67-16.94 0-29.62-12.67L217.41-430.93q-12.67-12.68-12.79-29.45-.12-16.77 12.55-29.45 12.68-12.67 29.62-12.67 16.93 0 29.28 12.67L389-377.13Z"></path></svg></div></button></pre></figure></div><p><strong>预览</strong></p><p>这是一个行内公式：<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>E</mi><mo>=</mo><mi>m</mi><msup><mi>c</mi><mn>2</mn></msup></mrow><annotation encoding="application/x-tex">E = mc^2</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.05764em;">E</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.8141em;"></span><span class="mord mathnormal">m</span><span class="mord"><span class="mord mathnormal">c</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span></span></span></span>。</p></section><section><h3 id="92-块级公式">9.2 块级公式<a class="anchor" href="#92-块级公式"><span class="anchor-icon" data-pagefind-ignore="">#</span></a></h3><p><strong>代码（可复制）</strong></p><div class="expressive-code"><figure class="frame"><figcaption class="header"></figcaption><pre data-language="md" class="wrap" style="--ecMaxLine:32ch"><code><div class="ec-line"><div class="gutter"><div class="ln" aria-hidden="true">1</div></div><div class="code"><span style="--0:#E1E4E8;--1:#E1E4E8">$$</span></div></div><div class="ec-line"><div class="gutter"><div class="ln" aria-hidden="true">2</div></div><div class="code"><span style="--0:#E1E4E8;--1:#E1E4E8">\int_0^1 x^2 \, dx = \frac{1}{3}</span></div></div><div class="ec-line"><div class="gutter"><div class="ln" aria-hidden="true">3</div></div><div class="code"><span style="--0:#E1E4E8;--1:#E1E4E8">$$</span></div></div></code><button class="copy-btn" aria-label="Copy code"><div class="copy-btn-icon"><svg viewBox="0 -960 960 960" xmlns="http://www.w3.org/2000/svg" class="copy-btn-icon copy-icon"><path d="M368.37-237.37q-34.48 0-58.74-24.26-24.26-24.26-24.26-58.74v-474.26q0-34.48 24.26-58.74 24.26-24.26 58.74-24.26h378.26q34.48 0 58.74 24.26 24.26 24.26 24.26 58.74v474.26q0 34.48-24.26 58.74-24.26 24.26-58.74 24.26H368.37Zm0-83h378.26v-474.26H368.37v474.26Zm-155 238q-34.48 0-58.74-24.26-24.26-24.26-24.26-58.74v-515.76q0-17.45 11.96-29.48 11.97-12.02 29.33-12.02t29.54 12.02q12.17 12.03 12.17 29.48v515.76h419.76q17.45 0 29.48 11.96 12.02 11.97 12.02 29.33t-12.02 29.54q-12.03 12.17-29.48 12.17H213.37Zm155-238v-474.26 474.26Z"></path></svg><svg viewBox="0 -960 960 960" xmlns="http://www.w3.org/2000/svg" class="copy-btn-icon success-icon"><path d="m389-377.13 294.7-294.7q12.58-12.67 29.52-12.67 16.93 0 29.61 12.67 12.67 12.68 12.67 29.53 0 16.86-12.28 29.14L419.07-288.41q-12.59 12.67-29.52 12.67-16.94 0-29.62-12.67L217.41-430.93q-12.67-12.68-12.79-29.45-.12-16.77 12.55-29.45 12.68-12.67 29.62-12.67 16.93 0 29.28 12.67L389-377.13Z"></path></svg></div></button></pre></figure></div><p><strong>预览</strong></p><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><msubsup><mo>∫</mo><mn>0</mn><mn>1</mn></msubsup><msup><mi>x</mi><mn>2</mn></msup><mtext> </mtext><mi>d</mi><mi>x</mi><mo>=</mo><mfrac><mn>1</mn><mn>3</mn></mfrac></mrow><annotation encoding="application/x-tex">\int_0^1 x^2 \, dx = \frac{1}{3}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:2.476em;vertical-align:-0.9119em;"></span><span class="mop"><span class="mop op-symbol large-op" style="margin-right:0.44445em;position:relative;top:-0.0011em;">∫</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.564em;"><span style="top:-1.7881em;margin-left:-0.4445em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">0</span></span></span><span style="top:-3.8129em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.9119em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal">x</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8641em;"><span style="top:-3.113em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal">d</span><span class="mord mathnormal">x</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:2.0074em;vertical-align:-0.686em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.3214em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">3</span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.686em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span></span><hr></section></section><section><h2 id="10自定义卡片指令本博客已支持">10）自定义卡片指令（本博客已支持）<a class="anchor" href="#10自定义卡片指令本博客已支持"><span class="anchor-icon" data-pagefind-ignore="">#</span></a></h2><section><h3 id="101-github-仓库卡片-github">10.1 GitHub 仓库卡片 <code>::github</code><a class="anchor" href="#101-github-仓库卡片-github"><span class="anchor-icon" data-pagefind-ignore="">#</span></a></h3><p><strong>代码（可复制）</strong></p><div class="expressive-code"><figure class="frame"><figcaption class="header"></figcaption><pre data-language="md" class="wrap" style="--ecMaxLine:36ch"><code><div class="ec-line"><div class="gutter"><div class="ln" aria-hidden="true">1</div></div><div class="code"><span style="--0:#E1E4E8;--1:#E1E4E8">::github{repo="Spr-Aachen/Twilight"}</span></div></div></code><button class="copy-btn" aria-label="Copy code"><div class="copy-btn-icon"><svg viewBox="0 -960 960 960" xmlns="http://www.w3.org/2000/svg" class="copy-btn-icon copy-icon"><path d="M368.37-237.37q-34.48 0-58.74-24.26-24.26-24.26-24.26-58.74v-474.26q0-34.48 24.26-58.74 24.26-24.26 58.74-24.26h378.26q34.48 0 58.74 24.26 24.26 24.26 24.26 58.74v474.26q0 34.48-24.26 58.74-24.26 24.26-58.74 24.26H368.37Zm0-83h378.26v-474.26H368.37v474.26Zm-155 238q-34.48 0-58.74-24.26-24.26-24.26-24.26-58.74v-515.76q0-17.45 11.96-29.48 11.97-12.02 29.33-12.02t29.54 12.02q12.17 12.03 12.17 29.48v515.76h419.76q17.45 0 29.48 11.96 12.02 11.97 12.02 29.33t-12.02 29.54q-12.03 12.17-29.48 12.17H213.37Zm155-238v-474.26 474.26Z"></path></svg><svg viewBox="0 -960 960 960" xmlns="http://www.w3.org/2000/svg" class="copy-btn-icon success-icon"><path d="m389-377.13 294.7-294.7q12.58-12.67 29.52-12.67 16.93 0 29.61 12.67 12.67 12.68 12.67 29.53 0 16.86-12.28 29.14L419.07-288.41q-12.59 12.67-29.52 12.67-16.94 0-29.62-12.67L217.41-430.93q-12.67-12.68-12.79-29.45-.12-16.77 12.55-29.45 12.68-12.67 29.62-12.67 16.93 0 29.28 12.67L389-377.13Z"></path></svg></div></button></pre></figure></div><p><strong>预览</strong></p><a id="GCcyngfp-card" class="card-github fetch-waiting no-styling" href="https://github.com/Spr-Aachen/Twilight" target="_blank" repo="Spr-Aachen/Twilight" rel="nofollow"><div class="gc-titlebar"><div class="gc-titlebar-left"><div class="gc-owner"><div id="GCcyngfp-avatar" class="gc-avatar"></div><div class="gc-user">Spr-Aachen</div></div><div class="gc-divider">/</div><div class="gc-repo">Twilight</div></div><div class="github-logo"></div></div><div id="GCcyngfp-description" class="gc-description">Waiting for api.github.com...</div><div class="gc-infobar"><div id="GCcyngfp-stars" class="gc-stars">00K</div><div id="GCcyngfp-forks" class="gc-forks">0K</div><div id="GCcyngfp-license" class="gc-license">0K</div><span id="GCcyngfp-language" class="gc-language">Waiting...</span></div><script id="GCcyngfp-script" type="text/javascript" defer>
+</blockquote><hr></section></section><section><h2 id="9数学公式katex">9）数学公式（KaTeX）<a class="anchor" href="#9数学公式katex"><span class="anchor-icon" data-pagefind-ignore="">#</span></a></h2><p>你这个博客启用了 <code>remark-math + rehype-katex</code>。</p><section><h3 id="91-行内公式">9.1 行内公式<a class="anchor" href="#91-行内公式"><span class="anchor-icon" data-pagefind-ignore="">#</span></a></h3><p><strong>代码（可复制）</strong></p><div class="expressive-code"><figure class="frame"><figcaption class="header"></figcaption><pre data-language="md" class="wrap" style="--ecMaxLine:20ch"><code><div class="ec-line"><div class="gutter"><div class="ln" aria-hidden="true">1</div></div><div class="code"><span style="--0:#E1E4E8;--1:#E1E4E8">这是一个行内公式：$E = mc^2$。</span></div></div></code><button class="copy-btn" aria-label="Copy code"><div class="copy-btn-icon"><svg viewBox="0 -960 960 960" xmlns="http://www.w3.org/2000/svg" class="copy-btn-icon copy-icon"><path d="M368.37-237.37q-34.48 0-58.74-24.26-24.26-24.26-24.26-58.74v-474.26q0-34.48 24.26-58.74 24.26-24.26 58.74-24.26h378.26q34.48 0 58.74 24.26 24.26 24.26 24.26 58.74v474.26q0 34.48-24.26 58.74-24.26 24.26-58.74 24.26H368.37Zm0-83h378.26v-474.26H368.37v474.26Zm-155 238q-34.48 0-58.74-24.26-24.26-24.26-24.26-58.74v-515.76q0-17.45 11.96-29.48 11.97-12.02 29.33-12.02t29.54 12.02q12.17 12.03 12.17 29.48v515.76h419.76q17.45 0 29.48 11.96 12.02 11.97 12.02 29.33t-12.02 29.54q-12.03 12.17-29.48 12.17H213.37Zm155-238v-474.26 474.26Z"></path></svg><svg viewBox="0 -960 960 960" xmlns="http://www.w3.org/2000/svg" class="copy-btn-icon success-icon"><path d="m389-377.13 294.7-294.7q12.58-12.67 29.52-12.67 16.93 0 29.61 12.67 12.67 12.68 12.67 29.53 0 16.86-12.28 29.14L419.07-288.41q-12.59 12.67-29.52 12.67-16.94 0-29.62-12.67L217.41-430.93q-12.67-12.68-12.79-29.45-.12-16.77 12.55-29.45 12.68-12.67 29.62-12.67 16.93 0 29.28 12.67L389-377.13Z"></path></svg></div></button></pre></figure></div><p><strong>预览</strong></p><p>这是一个行内公式：<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>E</mi><mo>=</mo><mi>m</mi><msup><mi>c</mi><mn>2</mn></msup></mrow><annotation encoding="application/x-tex">E = mc^2</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.05764em;">E</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.8141em;"></span><span class="mord mathnormal">m</span><span class="mord"><span class="mord mathnormal">c</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span></span></span></span>。</p></section><section><h3 id="92-块级公式">9.2 块级公式<a class="anchor" href="#92-块级公式"><span class="anchor-icon" data-pagefind-ignore="">#</span></a></h3><p><strong>代码（可复制）</strong></p><div class="expressive-code"><figure class="frame"><figcaption class="header"></figcaption><pre data-language="md" class="wrap" style="--ecMaxLine:32ch"><code><div class="ec-line"><div class="gutter"><div class="ln" aria-hidden="true">1</div></div><div class="code"><span style="--0:#E1E4E8;--1:#E1E4E8">$$</span></div></div><div class="ec-line"><div class="gutter"><div class="ln" aria-hidden="true">2</div></div><div class="code"><span style="--0:#E1E4E8;--1:#E1E4E8">\int_0^1 x^2 \, dx = \frac{1}{3}</span></div></div><div class="ec-line"><div class="gutter"><div class="ln" aria-hidden="true">3</div></div><div class="code"><span style="--0:#E1E4E8;--1:#E1E4E8">$$</span></div></div></code><button class="copy-btn" aria-label="Copy code"><div class="copy-btn-icon"><svg viewBox="0 -960 960 960" xmlns="http://www.w3.org/2000/svg" class="copy-btn-icon copy-icon"><path d="M368.37-237.37q-34.48 0-58.74-24.26-24.26-24.26-24.26-58.74v-474.26q0-34.48 24.26-58.74 24.26-24.26 58.74-24.26h378.26q34.48 0 58.74 24.26 24.26 24.26 24.26 58.74v474.26q0 34.48-24.26 58.74-24.26 24.26-58.74 24.26H368.37Zm0-83h378.26v-474.26H368.37v474.26Zm-155 238q-34.48 0-58.74-24.26-24.26-24.26-24.26-58.74v-515.76q0-17.45 11.96-29.48 11.97-12.02 29.33-12.02t29.54 12.02q12.17 12.03 12.17 29.48v515.76h419.76q17.45 0 29.48 11.96 12.02 11.97 12.02 29.33t-12.02 29.54q-12.03 12.17-29.48 12.17H213.37Zm155-238v-474.26 474.26Z"></path></svg><svg viewBox="0 -960 960 960" xmlns="http://www.w3.org/2000/svg" class="copy-btn-icon success-icon"><path d="m389-377.13 294.7-294.7q12.58-12.67 29.52-12.67 16.93 0 29.61 12.67 12.67 12.68 12.67 29.53 0 16.86-12.28 29.14L419.07-288.41q-12.59 12.67-29.52 12.67-16.94 0-29.62-12.67L217.41-430.93q-12.67-12.68-12.79-29.45-.12-16.77 12.55-29.45 12.68-12.67 29.62-12.67 16.93 0 29.28 12.67L389-377.13Z"></path></svg></div></button></pre></figure></div><p><strong>预览</strong></p><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><msubsup><mo>∫</mo><mn>0</mn><mn>1</mn></msubsup><msup><mi>x</mi><mn>2</mn></msup><mtext> </mtext><mi>d</mi><mi>x</mi><mo>=</mo><mfrac><mn>1</mn><mn>3</mn></mfrac></mrow><annotation encoding="application/x-tex">\int_0^1 x^2 \, dx = \frac{1}{3}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:2.476em;vertical-align:-0.9119em;"></span><span class="mop"><span class="mop op-symbol large-op" style="margin-right:0.44445em;position:relative;top:-0.0011em;">∫</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.564em;"><span style="top:-1.7881em;margin-left:-0.4445em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">0</span></span></span><span style="top:-3.8129em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.9119em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal">x</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8641em;"><span style="top:-3.113em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal">d</span><span class="mord mathnormal">x</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:2.0074em;vertical-align:-0.686em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.3214em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">3</span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.686em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span></span><hr></section></section><section><h2 id="10自定义卡片指令本博客已支持">10）自定义卡片指令（本博客已支持）<a class="anchor" href="#10自定义卡片指令本博客已支持"><span class="anchor-icon" data-pagefind-ignore="">#</span></a></h2><section><h3 id="101-github-仓库卡片-github">10.1 GitHub 仓库卡片 <code>::github</code><a class="anchor" href="#101-github-仓库卡片-github"><span class="anchor-icon" data-pagefind-ignore="">#</span></a></h3><p><strong>代码（可复制）</strong></p><div class="expressive-code"><figure class="frame"><figcaption class="header"></figcaption><pre data-language="md" class="wrap" style="--ecMaxLine:36ch"><code><div class="ec-line"><div class="gutter"><div class="ln" aria-hidden="true">1</div></div><div class="code"><span style="--0:#E1E4E8;--1:#E1E4E8">::github{repo="Spr-Aachen/Twilight"}</span></div></div></code><button class="copy-btn" aria-label="Copy code"><div class="copy-btn-icon"><svg viewBox="0 -960 960 960" xmlns="http://www.w3.org/2000/svg" class="copy-btn-icon copy-icon"><path d="M368.37-237.37q-34.48 0-58.74-24.26-24.26-24.26-24.26-58.74v-474.26q0-34.48 24.26-58.74 24.26-24.26 58.74-24.26h378.26q34.48 0 58.74 24.26 24.26 24.26 24.26 58.74v474.26q0 34.48-24.26 58.74-24.26 24.26-58.74 24.26H368.37Zm0-83h378.26v-474.26H368.37v474.26Zm-155 238q-34.48 0-58.74-24.26-24.26-24.26-24.26-58.74v-515.76q0-17.45 11.96-29.48 11.97-12.02 29.33-12.02t29.54 12.02q12.17 12.03 12.17 29.48v515.76h419.76q17.45 0 29.48 11.96 12.02 11.97 12.02 29.33t-12.02 29.54q-12.03 12.17-29.48 12.17H213.37Zm155-238v-474.26 474.26Z"></path></svg><svg viewBox="0 -960 960 960" xmlns="http://www.w3.org/2000/svg" class="copy-btn-icon success-icon"><path d="m389-377.13 294.7-294.7q12.58-12.67 29.52-12.67 16.93 0 29.61 12.67 12.67 12.68 12.67 29.53 0 16.86-12.28 29.14L419.07-288.41q-12.59 12.67-29.52 12.67-16.94 0-29.62-12.67L217.41-430.93q-12.67-12.68-12.79-29.45-.12-16.77 12.55-29.45 12.68-12.67 29.62-12.67 16.93 0 29.28 12.67L389-377.13Z"></path></svg></div></button></pre></figure></div><p><strong>预览</strong></p><a id="GCaf591x-card" class="card-github fetch-waiting no-styling" href="https://github.com/Spr-Aachen/Twilight" target="_blank" repo="Spr-Aachen/Twilight" rel="nofollow"><div class="gc-titlebar"><div class="gc-titlebar-left"><div class="gc-owner"><div id="GCaf591x-avatar" class="gc-avatar"></div><div class="gc-user">Spr-Aachen</div></div><div class="gc-divider">/</div><div class="gc-repo">Twilight</div></div><div class="github-logo"></div></div><div id="GCaf591x-description" class="gc-description">Waiting for api.github.com...</div><div class="gc-infobar"><div id="GCaf591x-stars" class="gc-stars">00K</div><div id="GCaf591x-forks" class="gc-forks">0K</div><div id="GCaf591x-license" class="gc-license">0K</div><span id="GCaf591x-language" class="gc-language">Waiting...</span></div><script id="GCaf591x-script" type="text/javascript" defer>
       fetch('https://api.github.com/repos/Spr-Aachen/Twilight', { referrerPolicy: "no-referrer" }).then(response => response.json()).then(data => {
-        document.getElementById('GCcyngfp-description').innerText = data.description?.replace(/:[a-zA-Z0-9_]+:/g, '') || "Description not set";
-        document.getElementById('GCcyngfp-language').innerText = data.language;
-        document.getElementById('GCcyngfp-forks').innerText = Intl.NumberFormat('en-us', { notation: "compact", maximumFractionDigits: 1 }).format(data.forks).replaceAll(" ", '');
-        document.getElementById('GCcyngfp-stars').innerText = Intl.NumberFormat('en-us', { notation: "compact", maximumFractionDigits: 1 }).format(data.stargazers_count).replaceAll(" ", '');
-        const avatarEl = document.getElementById('GCcyngfp-avatar');
+        document.getElementById('GCaf591x-description').innerText = data.description?.replace(/:[a-zA-Z0-9_]+:/g, '') || "Description not set";
+        document.getElementById('GCaf591x-language').innerText = data.language;
+        document.getElementById('GCaf591x-forks').innerText = Intl.NumberFormat('en-us', { notation: "compact", maximumFractionDigits: 1 }).format(data.forks).replaceAll(" ", '');
+        document.getElementById('GCaf591x-stars').innerText = Intl.NumberFormat('en-us', { notation: "compact", maximumFractionDigits: 1 }).format(data.stargazers_count).replaceAll(" ", '');
+        const avatarEl = document.getElementById('GCaf591x-avatar');
         avatarEl.style.backgroundImage = 'url(' + data.owner.avatar_url + ')';
         avatarEl.style.backgroundColor = 'transparent';
-        document.getElementById('GCcyngfp-license').innerText = data.license?.spdx_id || "no-license";
-        document.getElementById('GCcyngfp-card').classList.remove("fetch-waiting");
-        console.log("[GITHUB-CARD] Loaded card for Spr-Aachen/Twilight | GCcyngfp.")
+        document.getElementById('GCaf591x-license').innerText = data.license?.spdx_id || "no-license";
+        document.getElementById('GCaf591x-card').classList.remove("fetch-waiting");
+        console.log("[GITHUB-CARD] Loaded card for Spr-Aachen/Twilight | GCaf591x.")
       }).catch(err => {
-        const c = document.getElementById('GCcyngfp-card');
+        const c = document.getElementById('GCaf591x-card');
         c?.classList.add("fetch-error");
-        console.warn("[GITHUB-CARD] (Error) Loading card for Spr-Aachen/Twilight | GCcyngfp.")
+        console.warn("[GITHUB-CARD] (Error) Loading card for Spr-Aachen/Twilight | GCaf591x.")
       })
-    </script></a></section><section><h3 id="102-音乐卡片-music">10.2 音乐卡片 <code>::music</code><a class="anchor" href="#102-音乐卡片-music"><span class="anchor-icon" data-pagefind-ignore="">#</span></a></h3><section><h4 id="简写推荐">简写（推荐）<a class="anchor" href="#简写推荐"><span class="anchor-icon" data-pagefind-ignore="">#</span></a></h4><p><strong>代码（可复制）</strong></p><div class="expressive-code"><figure class="frame"><figcaption class="header"></figcaption><pre data-language="md" class="wrap" style="--ecMaxLine:29ch"><code><div class="ec-line"><div class="gutter"><div class="ln" aria-hidden="true">1</div></div><div class="code"><span style="--0:#E1E4E8;--1:#E1E4E8">::music{netease="1390882521"}</span></div></div></code><button class="copy-btn" aria-label="Copy code"><div class="copy-btn-icon"><svg viewBox="0 -960 960 960" xmlns="http://www.w3.org/2000/svg" class="copy-btn-icon copy-icon"><path d="M368.37-237.37q-34.48 0-58.74-24.26-24.26-24.26-24.26-58.74v-474.26q0-34.48 24.26-58.74 24.26-24.26 58.74-24.26h378.26q34.48 0 58.74 24.26 24.26 24.26 24.26 58.74v474.26q0 34.48-24.26 58.74-24.26 24.26-58.74 24.26H368.37Zm0-83h378.26v-474.26H368.37v474.26Zm-155 238q-34.48 0-58.74-24.26-24.26-24.26-24.26-58.74v-515.76q0-17.45 11.96-29.48 11.97-12.02 29.33-12.02t29.54 12.02q12.17 12.03 12.17 29.48v515.76h419.76q17.45 0 29.48 11.96 12.02 11.97 12.02 29.33t-12.02 29.54q-12.03 12.17-29.48 12.17H213.37Zm155-238v-474.26 474.26Z"></path></svg><svg viewBox="0 -960 960 960" xmlns="http://www.w3.org/2000/svg" class="copy-btn-icon success-icon"><path d="m389-377.13 294.7-294.7q12.58-12.67 29.52-12.67 16.93 0 29.61 12.67 12.67 12.68 12.67 29.53 0 16.86-12.28 29.14L419.07-288.41q-12.59 12.67-29.52 12.67-16.94 0-29.62-12.67L217.41-430.93q-12.67-12.68-12.79-29.45-.12-16.77 12.55-29.45 12.68-12.67 29.62-12.67 16.93 0 29.28 12.67L389-377.13Z"></path></svg></div></button></pre></figure></div><p><strong>预览</strong></p><div class="card-music no-hue-rotate" id="MCcgq7gt-card"><div class="music-cover" style=""></div><div class="music-info"><div class="music-header"><div class="music-title">Loading...</div><div class="music-artist">Loading...</div></div><div class="music-lyric" id="MCcgq7gt-lyric" style="display:grid;place-items:center;"><div class="lyric-exit" style="grid-area:1/1;opacity:0;pointer-events:none;"></div><div class="lyric-current" style="grid-area:1/1;">Loading lyrics...</div></div><div class="music-controls"><button class="play-btn" id="MCcgq7gt-play" aria-label="Play/Pause" type="button"><svg viewBox="0 0 24 24" class="play-icon"><path d="M8 5v14l11-7z"></path></svg><svg viewBox="0 0 24 24" class="pause-icon" style="display:none;"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"></path></svg></button><div class="progress-container" id="MCcgq7gt-progress-container"><div class="progress-bar" id="MCcgq7gt-progress-bar"></div></div><div class="time-display" id="MCcgq7gt-time">0:00 / 0:00</div></div></div><audio id="MCcgq7gt-audio" src="" preload="metadata"></audio><script type="text/javascript">
+    </script></a></section><section><h3 id="102-音乐卡片-music">10.2 音乐卡片 <code>::music</code><a class="anchor" href="#102-音乐卡片-music"><span class="anchor-icon" data-pagefind-ignore="">#</span></a></h3><section><h4 id="简写推荐">简写（推荐）<a class="anchor" href="#简写推荐"><span class="anchor-icon" data-pagefind-ignore="">#</span></a></h4><p><strong>代码（可复制）</strong></p><div class="expressive-code"><figure class="frame"><figcaption class="header"></figcaption><pre data-language="md" class="wrap" style="--ecMaxLine:29ch"><code><div class="ec-line"><div class="gutter"><div class="ln" aria-hidden="true">1</div></div><div class="code"><span style="--0:#E1E4E8;--1:#E1E4E8">::music{netease="1390882521"}</span></div></div></code><button class="copy-btn" aria-label="Copy code"><div class="copy-btn-icon"><svg viewBox="0 -960 960 960" xmlns="http://www.w3.org/2000/svg" class="copy-btn-icon copy-icon"><path d="M368.37-237.37q-34.48 0-58.74-24.26-24.26-24.26-24.26-58.74v-474.26q0-34.48 24.26-58.74 24.26-24.26 58.74-24.26h378.26q34.48 0 58.74 24.26 24.26 24.26 24.26 58.74v474.26q0 34.48-24.26 58.74-24.26 24.26-58.74 24.26H368.37Zm0-83h378.26v-474.26H368.37v474.26Zm-155 238q-34.48 0-58.74-24.26-24.26-24.26-24.26-58.74v-515.76q0-17.45 11.96-29.48 11.97-12.02 29.33-12.02t29.54 12.02q12.17 12.03 12.17 29.48v515.76h419.76q17.45 0 29.48 11.96 12.02 11.97 12.02 29.33t-12.02 29.54q-12.03 12.17-29.48 12.17H213.37Zm155-238v-474.26 474.26Z"></path></svg><svg viewBox="0 -960 960 960" xmlns="http://www.w3.org/2000/svg" class="copy-btn-icon success-icon"><path d="m389-377.13 294.7-294.7q12.58-12.67 29.52-12.67 16.93 0 29.61 12.67 12.67 12.68 12.67 29.53 0 16.86-12.28 29.14L419.07-288.41q-12.59 12.67-29.52 12.67-16.94 0-29.62-12.67L217.41-430.93q-12.67-12.68-12.79-29.45-.12-16.77 12.55-29.45 12.68-12.67 29.62-12.67 16.93 0 29.28 12.67L389-377.13Z"></path></svg></div></button></pre></figure></div><p><strong>预览</strong></p><div class="card-music no-hue-rotate" id="MCspcxbr-card"><div class="music-cover" style=""></div><div class="music-info"><div class="music-header"><div class="music-title">Loading...</div><div class="music-artist">Loading...</div></div><div class="music-lyric" id="MCspcxbr-lyric" style="display:grid;place-items:center;"><div class="lyric-exit" style="grid-area:1/1;opacity:0;pointer-events:none;"></div><div class="lyric-current" style="grid-area:1/1;">Loading lyrics...</div></div><div class="music-controls"><button class="play-btn" id="MCspcxbr-play" aria-label="Play/Pause" type="button"><svg viewBox="0 0 24 24" class="play-icon"><path d="M8 5v14l11-7z"></path></svg><svg viewBox="0 0 24 24" class="pause-icon" style="display:none;"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"></path></svg></button><div class="progress-container" id="MCspcxbr-progress-container"><div class="progress-bar" id="MCspcxbr-progress-bar"></div></div><div class="time-display" id="MCspcxbr-time">0:00 / 0:00</div></div></div><audio id="MCspcxbr-audio" src="" preload="metadata"></audio><script type="text/javascript">
 (async function () {
-	const cardId = "MCcgq7gt";
+	const cardId = "MCspcxbr";
 	const audio = document.getElementById(cardId + '-audio');
 	const playBtn = document.getElementById(cardId + '-play');
 	if (!audio || !playBtn) return;
@@ -920,14 +1149,14 @@ Curated, as you see | : )</div> <div class="flex flex-wrap gap-2 justify-center 
 		});
 	}
 })();
-</script></div></section><section><h4 id="原始-meting-链接兼容">原始 meting 链接（兼容）<a class="anchor" href="#原始-meting-链接兼容"><span class="anchor-icon" data-pagefind-ignore="">#</span></a></h4><p><strong>代码（可复制）</strong></p><div class="expressive-code"><figure class="frame"><figcaption class="header"></figcaption><pre data-language="md" class="wrap" style="--ecMaxLine:90ch"><code><div class="ec-line"><div class="gutter"><div class="ln" aria-hidden="true">1</div></div><div class="code"><span style="--0:#E1E4E8;--1:#E1E4E8">::music{meting="https://api.i-meto.com/meting/api?server=netease&#x26;type=song&#x26;id=1390882521"}</span></div></div></code><button class="copy-btn" aria-label="Copy code"><div class="copy-btn-icon"><svg viewBox="0 -960 960 960" xmlns="http://www.w3.org/2000/svg" class="copy-btn-icon copy-icon"><path d="M368.37-237.37q-34.48 0-58.74-24.26-24.26-24.26-24.26-58.74v-474.26q0-34.48 24.26-58.74 24.26-24.26 58.74-24.26h378.26q34.48 0 58.74 24.26 24.26 24.26 24.26 58.74v474.26q0 34.48-24.26 58.74-24.26 24.26-58.74 24.26H368.37Zm0-83h378.26v-474.26H368.37v474.26Zm-155 238q-34.48 0-58.74-24.26-24.26-24.26-24.26-58.74v-515.76q0-17.45 11.96-29.48 11.97-12.02 29.33-12.02t29.54 12.02q12.17 12.03 12.17 29.48v515.76h419.76q17.45 0 29.48 11.96 12.02 11.97 12.02 29.33t-12.02 29.54q-12.03 12.17-29.48 12.17H213.37Zm155-238v-474.26 474.26Z"></path></svg><svg viewBox="0 -960 960 960" xmlns="http://www.w3.org/2000/svg" class="copy-btn-icon success-icon"><path d="m389-377.13 294.7-294.7q12.58-12.67 29.52-12.67 16.93 0 29.61 12.67 12.67 12.68 12.67 29.53 0 16.86-12.28 29.14L419.07-288.41q-12.59 12.67-29.52 12.67-16.94 0-29.62-12.67L217.41-430.93q-12.67-12.68-12.79-29.45-.12-16.77 12.55-29.45 12.68-12.67 29.62-12.67 16.93 0 29.28 12.67L389-377.13Z"></path></svg></div></button></pre></figure></div></section></section><section><h3 id="103-url-卡片-url">10.3 URL 卡片 <code>::url</code><a class="anchor" href="#103-url-卡片-url"><span class="anchor-icon" data-pagefind-ignore="">#</span></a></h3><p><strong>代码（可复制）</strong></p><div class="expressive-code"><figure class="frame"><figcaption class="header"></figcaption><pre data-language="md" class="wrap" style="--ecMaxLine:49ch"><code><div class="ec-line"><div class="gutter"><div class="ln" aria-hidden="true">1</div></div><div class="code"><span style="--0:#E1E4E8;--1:#E1E4E8">::url{href="https://rapi.kyr.us.ci/gallery.html"}</span></div></div></code><button class="copy-btn" aria-label="Copy code"><div class="copy-btn-icon"><svg viewBox="0 -960 960 960" xmlns="http://www.w3.org/2000/svg" class="copy-btn-icon copy-icon"><path d="M368.37-237.37q-34.48 0-58.74-24.26-24.26-24.26-24.26-58.74v-474.26q0-34.48 24.26-58.74 24.26-24.26 58.74-24.26h378.26q34.48 0 58.74 24.26 24.26 24.26 24.26 58.74v474.26q0 34.48-24.26 58.74-24.26 24.26-58.74 24.26H368.37Zm0-83h378.26v-474.26H368.37v474.26Zm-155 238q-34.48 0-58.74-24.26-24.26-24.26-24.26-58.74v-515.76q0-17.45 11.96-29.48 11.97-12.02 29.33-12.02t29.54 12.02q12.17 12.03 12.17 29.48v515.76h419.76q17.45 0 29.48 11.96 12.02 11.97 12.02 29.33t-12.02 29.54q-12.03 12.17-29.48 12.17H213.37Zm155-238v-474.26 474.26Z"></path></svg><svg viewBox="0 -960 960 960" xmlns="http://www.w3.org/2000/svg" class="copy-btn-icon success-icon"><path d="m389-377.13 294.7-294.7q12.58-12.67 29.52-12.67 16.93 0 29.61 12.67 12.67 12.68 12.67 29.53 0 16.86-12.28 29.14L419.07-288.41q-12.59 12.67-29.52 12.67-16.94 0-29.62-12.67L217.41-430.93q-12.67-12.68-12.79-29.45-.12-16.77 12.55-29.45 12.68-12.67 29.62-12.67 16.93 0 29.28 12.67L389-377.13Z"></path></svg></div></button></pre></figure></div><p><strong>预览</strong></p><a id="UCl6unrv-card" class="card-url fetch-waiting no-styling" href="https://rapi.kyr.us.ci/gallery.html" target="_blank" url="https://rapi.kyr.us.ci/gallery.html" rel="nofollow"><div id="UCl6unrv-container" class="uc-container"><div class="uc-content"><div class="uc-titlebar"><div class="uc-titlebar-left"><div id="UCl6unrv-favicon" class="uc-favicon"></div><div class="uc-domain">rapi.kyr.us.ci</div></div></div><div id="UCl6unrv-title" class="uc-title-text">Loading...</div><div id="UCl6unrv-description" class="uc-description">Waiting for api.microlink.io...</div></div><div id="UCl6unrv-image" class="uc-image"></div></div><script id="UCl6unrv-script" type="text/javascript" defer>
+</script></div></section><section><h4 id="原始-meting-链接兼容">原始 meting 链接（兼容）<a class="anchor" href="#原始-meting-链接兼容"><span class="anchor-icon" data-pagefind-ignore="">#</span></a></h4><p><strong>代码（可复制）</strong></p><div class="expressive-code"><figure class="frame"><figcaption class="header"></figcaption><pre data-language="md" class="wrap" style="--ecMaxLine:90ch"><code><div class="ec-line"><div class="gutter"><div class="ln" aria-hidden="true">1</div></div><div class="code"><span style="--0:#E1E4E8;--1:#E1E4E8">::music{meting="https://api.i-meto.com/meting/api?server=netease&#x26;type=song&#x26;id=1390882521"}</span></div></div></code><button class="copy-btn" aria-label="Copy code"><div class="copy-btn-icon"><svg viewBox="0 -960 960 960" xmlns="http://www.w3.org/2000/svg" class="copy-btn-icon copy-icon"><path d="M368.37-237.37q-34.48 0-58.74-24.26-24.26-24.26-24.26-58.74v-474.26q0-34.48 24.26-58.74 24.26-24.26 58.74-24.26h378.26q34.48 0 58.74 24.26 24.26 24.26 24.26 58.74v474.26q0 34.48-24.26 58.74-24.26 24.26-58.74 24.26H368.37Zm0-83h378.26v-474.26H368.37v474.26Zm-155 238q-34.48 0-58.74-24.26-24.26-24.26-24.26-58.74v-515.76q0-17.45 11.96-29.48 11.97-12.02 29.33-12.02t29.54 12.02q12.17 12.03 12.17 29.48v515.76h419.76q17.45 0 29.48 11.96 12.02 11.97 12.02 29.33t-12.02 29.54q-12.03 12.17-29.48 12.17H213.37Zm155-238v-474.26 474.26Z"></path></svg><svg viewBox="0 -960 960 960" xmlns="http://www.w3.org/2000/svg" class="copy-btn-icon success-icon"><path d="m389-377.13 294.7-294.7q12.58-12.67 29.52-12.67 16.93 0 29.61 12.67 12.67 12.68 12.67 29.53 0 16.86-12.28 29.14L419.07-288.41q-12.59 12.67-29.52 12.67-16.94 0-29.62-12.67L217.41-430.93q-12.67-12.68-12.79-29.45-.12-16.77 12.55-29.45 12.68-12.67 29.62-12.67 16.93 0 29.28 12.67L389-377.13Z"></path></svg></div></button></pre></figure></div></section></section><section><h3 id="103-url-卡片-url">10.3 URL 卡片 <code>::url</code><a class="anchor" href="#103-url-卡片-url"><span class="anchor-icon" data-pagefind-ignore="">#</span></a></h3><p><strong>代码（可复制）</strong></p><div class="expressive-code"><figure class="frame"><figcaption class="header"></figcaption><pre data-language="md" class="wrap" style="--ecMaxLine:49ch"><code><div class="ec-line"><div class="gutter"><div class="ln" aria-hidden="true">1</div></div><div class="code"><span style="--0:#E1E4E8;--1:#E1E4E8">::url{href="https://rapi.kyr.us.ci/gallery.html"}</span></div></div></code><button class="copy-btn" aria-label="Copy code"><div class="copy-btn-icon"><svg viewBox="0 -960 960 960" xmlns="http://www.w3.org/2000/svg" class="copy-btn-icon copy-icon"><path d="M368.37-237.37q-34.48 0-58.74-24.26-24.26-24.26-24.26-58.74v-474.26q0-34.48 24.26-58.74 24.26-24.26 58.74-24.26h378.26q34.48 0 58.74 24.26 24.26 24.26 24.26 58.74v474.26q0 34.48-24.26 58.74-24.26 24.26-58.74 24.26H368.37Zm0-83h378.26v-474.26H368.37v474.26Zm-155 238q-34.48 0-58.74-24.26-24.26-24.26-24.26-58.74v-515.76q0-17.45 11.96-29.48 11.97-12.02 29.33-12.02t29.54 12.02q12.17 12.03 12.17 29.48v515.76h419.76q17.45 0 29.48 11.96 12.02 11.97 12.02 29.33t-12.02 29.54q-12.03 12.17-29.48 12.17H213.37Zm155-238v-474.26 474.26Z"></path></svg><svg viewBox="0 -960 960 960" xmlns="http://www.w3.org/2000/svg" class="copy-btn-icon success-icon"><path d="m389-377.13 294.7-294.7q12.58-12.67 29.52-12.67 16.93 0 29.61 12.67 12.67 12.68 12.67 29.53 0 16.86-12.28 29.14L419.07-288.41q-12.59 12.67-29.52 12.67-16.94 0-29.62-12.67L217.41-430.93q-12.67-12.68-12.79-29.45-.12-16.77 12.55-29.45 12.68-12.67 29.62-12.67 16.93 0 29.28 12.67L389-377.13Z"></path></svg></div></button></pre></figure></div><p><strong>预览</strong></p><a id="UCzve15s-card" class="card-url fetch-waiting no-styling" href="https://rapi.kyr.us.ci/gallery.html" target="_blank" url="https://rapi.kyr.us.ci/gallery.html" rel="nofollow"><div id="UCzve15s-container" class="uc-container"><div class="uc-content"><div class="uc-titlebar"><div class="uc-titlebar-left"><div id="UCzve15s-favicon" class="uc-favicon"></div><div class="uc-domain">rapi.kyr.us.ci</div></div></div><div id="UCzve15s-title" class="uc-title-text">Loading...</div><div id="UCzve15s-description" class="uc-description">Waiting for api.microlink.io...</div></div><div id="UCzve15s-image" class="uc-image"></div></div><script id="UCzve15s-script" type="text/javascript" defer>
       fetch('https://api.microlink.io?url=https%3A%2F%2Frapi.kyr.us.ci%2Fgallery.html').then(response => response.json()).then(data => {
         if (data.status === 'success') {
             const meta = data.data;
-            document.getElementById('UCl6unrv-title').innerText = meta.title || "https://rapi.kyr.us.ci/gallery.html";
-            document.getElementById('UCl6unrv-description').innerText = meta.description || "No description available";
+            document.getElementById('UCzve15s-title').innerText = meta.title || "https://rapi.kyr.us.ci/gallery.html";
+            document.getElementById('UCzve15s-description').innerText = meta.description || "No description available";
             
-            const faviconEl = document.getElementById('UCl6unrv-favicon');
+            const faviconEl = document.getElementById('UCzve15s-favicon');
             if (meta.logo?.url) {
                 faviconEl.style.backgroundImage = 'url(' + meta.logo.url + ')';
                 faviconEl.style.backgroundColor = 'transparent';
@@ -935,25 +1164,25 @@ Curated, as you see | : )</div> <div class="flex flex-wrap gap-2 justify-center 
                  faviconEl.style.display = 'none';
             }
 
-            const imageEl = document.getElementById('UCl6unrv-image');
+            const imageEl = document.getElementById('UCzve15s-image');
             if (meta.image?.url) {
                 imageEl.style.backgroundImage = 'url(' + meta.image.url + ')';
             } else {
                 imageEl.style.display = 'none';
-                document.getElementById('UCl6unrv-container').classList.add('no-image');
+                document.getElementById('UCzve15s-container').classList.add('no-image');
             }
 
-            document.getElementById('UCl6unrv-card').classList.remove("fetch-waiting");
-            console.log("[URL-CARD] Loaded card for https://rapi.kyr.us.ci/gallery.html | UCl6unrv.")
+            document.getElementById('UCzve15s-card').classList.remove("fetch-waiting");
+            console.log("[URL-CARD] Loaded card for https://rapi.kyr.us.ci/gallery.html | UCzve15s.")
         } else {
             throw new Error('Microlink API failed');
         }
       }).catch(err => {
-        const c = document.getElementById('UCl6unrv-card');
+        const c = document.getElementById('UCzve15s-card');
         c?.classList.add("fetch-error");
-        document.getElementById('UCl6unrv-title').innerText = "Error loading preview";
-        document.getElementById('UCl6unrv-description').innerText = "Failed to fetch metadata for https://rapi.kyr.us.ci/gallery.html";
-        console.warn("[URL-CARD] (Error) Loading card for https://rapi.kyr.us.ci/gallery.html | UCl6unrv.", err)
+        document.getElementById('UCzve15s-title').innerText = "Error loading preview";
+        document.getElementById('UCzve15s-description').innerText = "Failed to fetch metadata for https://rapi.kyr.us.ci/gallery.html";
+        console.warn("[URL-CARD] (Error) Loading card for https://rapi.kyr.us.ci/gallery.html | UCzve15s.", err)
       })
     </script></a><hr></section></section><section><h2 id="11html-嵌入可直接写">11）HTML 嵌入（可直接写）<a class="anchor" href="#11html-嵌入可直接写"><span class="anchor-icon" data-pagefind-ignore="">#</span></a></h2><blockquote>
 <p>一般 Astro Markdown 页面支持写原生 HTML。适合做折叠块、嵌入视频、iframe 等。</p>
