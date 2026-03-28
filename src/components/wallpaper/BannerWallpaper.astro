@@ -26,6 +26,7 @@ const { desktopSrc, mobileSrc, position, topOffsetVh, heroTitle, heroSubtitle } 
 		class:list={["hidden md:block object-cover h-full transition duration-700 opacity-0 scale-105"]}
 		src={desktopSrc}
 		position={position}
+		useExternalRandomScript={false}
 	/>
 	<ImageWrapper
 		id="banner-mobile"
@@ -33,6 +34,7 @@ const { desktopSrc, mobileSrc, position, topOffsetVh, heroTitle, heroSubtitle } 
 		class:list={["block md:hidden object-cover h-full transition duration-700"]}
 		src={mobileSrc}
 		position={position}
+		useExternalRandomScript={false}
 	/>
 
 	{(heroTitle || heroSubtitle) && (

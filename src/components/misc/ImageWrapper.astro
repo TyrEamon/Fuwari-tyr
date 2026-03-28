@@ -7,12 +7,20 @@ interface Props {
 	alt?: string;
 	position?: string;
 	basePath?: string;
+	useExternalRandomScript?: boolean;
 }
 import { Image } from "astro:assets";
 import { imageFallbackConfig, siteConfig } from "../../config";
 import { url } from "../../utils/url-utils";
 
-const { id, src, alt, position = "center", basePath = "/" } = Astro.props;
+const {
+	id,
+	src,
+	alt,
+	position = "center",
+	basePath = "/",
+	useExternalRandomScript = true,
+} = Astro.props;
 const className = Astro.props.class;
 
 const isLocal = !(
@@ -25,6 +33,8 @@ const isPublic = src.startsWith("/");
 const isRandom =
 	!isLocal && (src.includes("/random/h") || src.includes("/random/v"));
 const randomAlt = src.includes("/random/v") ? "random:v" : "random:h";
+const resolvedAlt =
+	isRandom && useExternalRandomScript ? randomAlt : (alt || "");
 const transparentGif =
 	"data:image/gif;base64,R0lGODlhAQABAAAAACwAAAAAAQABAAA=";
 
@@ -55,8 +65,8 @@ const imageStyle = `object-position: ${position}`;
     {isLocal && img && <Image src={img} alt={alt || ""} class={`${imageClass} image-content`} style={imageStyle}/>}
     {!isLocal && (
         imageFallbackConfig.enable && src.includes(imageFallbackConfig.originalDomain) ? 
-            <img src={isRandom ? transparentGif : (isPublic ? url(src) : src)} alt={isRandom ? randomAlt : (alt || "")} class={`${imageClass} image-content`} style={imageStyle} onerror={`this.onerror=null; this.src='${(isPublic ? url(src) : src).replace(imageFallbackConfig.originalDomain, imageFallbackConfig.fallbackDomain)}';`}/> :
-            <img src={isRandom ? transparentGif : (isPublic ? url(src) : src)} alt={isRandom ? randomAlt : (alt || "")} class={`${imageClass} image-content`} style={imageStyle}/>
+            <img src={isRandom ? transparentGif : (isPublic ? url(src) : src)} alt={resolvedAlt} class={`${imageClass} image-content`} style={imageStyle} onerror={`this.onerror=null; this.src='${(isPublic ? url(src) : src).replace(imageFallbackConfig.originalDomain, imageFallbackConfig.fallbackDomain)}';`}/> :
+            <img src={isRandom ? transparentGif : (isPublic ? url(src) : src)} alt={resolvedAlt} class={`${imageClass} image-content`} style={imageStyle}/>
     )}
 </div>
 
