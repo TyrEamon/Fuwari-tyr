@@ -86,7 +86,9 @@ export const siteConfig: SiteConfig = {
 		},
 	],
 	preconnect: [
-		"https://umami.kaza.de5.net",
+		"https://u.kyr.us.ci",
+		// 新版 umami 备用：
+		// "https://umami.kaza.de5.net",
 		"https://rapi.kyr.us.ci",   // 这个旧的随机图api为：rapi.0w0.us.ci。
 	],
 	officialSites: [],
@@ -121,7 +123,9 @@ export const navBarConfig: NavBarConfig = {
 		},
 		{
 			name: "统计",
-			url: "https://umami.kaza.de5.net/share/9iW0kiOoO3KzkIpA",
+			url: "https://u.kyr.us.ci/share/C8gWpSlbh6hrKEUL",
+			// 新版 umami 备用：
+			// url: "https://umami.kaza.de5.net/share/9iW0kiOoO3KzkIpA",
 			external: true,
 		},
 		{
@@ -242,8 +246,12 @@ export const imageFallbackConfig: ImageFallbackConfig = {
 
 export const umamiConfig: UmamiConfig = {
 	enable: true,
-	baseUrl: "https://umami.kaza.de5.net",
-	shareId: "9iW0kiOoO3KzkIpA",
+	baseUrl: "https://u.kyr.us.ci",
+	// 新版 umami 备用：
+	// baseUrl: "https://umami.kaza.de5.net",
+	shareId: "C8gWpSlbh6hrKEUL",
+	// 新版 umami 备用：
+	// shareId: "9iW0kiOoO3KzkIpA",
 	timezone: "Asia/Shanghai",
 };
 
