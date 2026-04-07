@@ -1,7 +1,7 @@
 /// <reference types="mdast" />
 import { h } from "hastscript";
 
-const DEFAULT_VIDEO_HOST = "https://v.kyr.us.ci";
+const DEFAULT_VIDEO_HOST = "https://v.kaza.de5.net";
 const DEFAULT_PLAYER_PATH = "/player.html";
 const DEFAULT_ASPECT_RATIO = "16 / 9";
 
@@ -899,7 +899,7 @@ function renderInternalPlayerFigure({ attrs, title, streamConfig, remainingChild
  *
  * Default behavior uses a built-in player (video + hls.js + dash.js + Plyr UI shell).
  * Optional legacy iframe/page mode:
- * ::vplayer{iframe="https://v.kyr.us.ci/player.html?v=001"}
+ * ::vplayer{iframe="https://v.kaza.de5.net/player.html?v=001"}
  * ::vplayer{mode="iframe" v="001"}
  *
  * Supported examples:
@@ -909,7 +909,7 @@ function renderInternalPlayerFigure({ attrs, title, streamConfig, remainingChild
  * ::v[001]{type="hls"}
  * ::v[e-m]{t="d"}
  * ::vplayer{v="e-m" type="dash"}
- * ::vplayer{manifest="https://v.kyr.us.ci/e-m.mpd" type="dash"}
+ * ::vplayer{manifest="https://v.kaza.de5.net/e-m.mpd" type="dash"}
  * ::vplayer{path="/d/e-m"}
  */
 export function VideoEmbedComponent(properties, children) {

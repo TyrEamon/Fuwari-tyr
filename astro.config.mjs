@@ -46,7 +46,7 @@ export default defineConfig({
 		},
 		"/v": {
 			status: 302,
-			destination: "https://v.kyr.us.ci",
+			destination: "https://v.kaza.de5.net",
 		},
 		"/eo": {
 			status: 302,

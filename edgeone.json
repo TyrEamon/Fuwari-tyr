@@ -2,7 +2,7 @@
 	"redirects": [
 		{
 			"source": "/v",
-			"destination": "https://v.kyr.us.ci",
+			"destination": "https://v.kaza.de5.net",
 			"statusCode": 302
 		},
 		{
