@@ -16,9 +16,25 @@
         animation-duration: var(--rainbow-duration, 5s);
     }
 
+    html.is-rainbow-mode .card-base.onload-animation {
+        animation-name: fade-in-up, rainbow-rotate;
+        animation-duration: 300ms, var(--rainbow-duration, 5s);
+        animation-timing-function: ease, linear;
+        animation-iteration-count: 1, infinite;
+        animation-fill-mode: forwards, none;
+    }
+
     html.is-rainbow-mode .card-base.no-hue-rotate {
         animation: none !important;
         filter: none !important;
+    }
+
+    html.is-rainbow-mode .card-base.no-hue-rotate.onload-animation {
+        animation-name: fade-in-up !important;
+        animation-duration: 300ms !important;
+        animation-timing-function: ease !important;
+        animation-iteration-count: 1 !important;
+        animation-fill-mode: forwards !important;
     }
 
     /* Reverse filter for images to keep original colors */
