@@ -35,7 +35,7 @@ export default defineConfig({
 	image: {
 		service: passthroughImageService(),
 	},
-	site: "https://i.kyr.us.ci",
+	site: "https://blog.mtcacg.top",
 	base: "/",
 	trailingSlash: "always",
 	output: "static",
