@@ -1,4 +1,4 @@
 User-agent: *
 Disallow: /_astro/
 
-Sitemap: https://i.kyr.us.ci/sitemap-index.xml
+Sitemap: https://blog.mtcacg.top/sitemap-index.xml
