@@ -161,7 +161,7 @@ const splashAutoCloseMs = splashConfig?.autoCloseMs ?? 1800;
 			data-swup-ignore-script
 		></script>
 
-		<script data-swup-ignore-script src="https://rapi.mtcacg.top/random-img-only.js" defer></script>     {/*旧随机图 API：https://rapi.kyr.us.ci / https://rapi.0w0.us.ci；不用 r2 的随机图 API 就注释掉*/}
+		<script data-swup-ignore-script src="https://rapi.mtcacg.top/random-img-only.js?v=20260407-1" defer></script>     {/*旧随机图 API：https://rapi.kyr.us.ci / https://rapi.0w0.us.ci；加版本参数避免浏览器命中旧缓存；不用 r2 的随机图 API 就注释掉*/}
 		<script is:inline define:vars={{ backgroundDesktopSrc, backgroundMobileSrc, enableFullscreenWallpaper }}>
 			(function () {
 				// Keep the current random wallpaper stable across swup script reloads
