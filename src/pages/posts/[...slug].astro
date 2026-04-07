@@ -25,8 +25,9 @@ const { entry } = Astro.props;
 const { Content, headings } = await entry.render();
 
 const { remarkPluginFrontmatter } = await entry.render();
-const isTopPost = entry.slug === "top";
-const postCoverElementId = isTopPost ? "post-cover-top-sync" : "post-cover";
+const WALLPAPER_SYNC_PLACEHOLDER = "/wallpaper-sync-placeholder.svg";
+const wallpaperSyncCoverEnabled = entry.data.image === WALLPAPER_SYNC_PLACEHOLDER;
+const postCoverElementId = wallpaperSyncCoverEnabled ? "post-cover-wallpaper-sync" : "post-cover";
 
 const jsonLd = {
 	"@context": "https://schema.org",
@@ -330,10 +331,10 @@ const jsonLd = {
     document.addEventListener('swup:contentReplaced', loadPageViews);
 </script>
 
-{isTopPost && entry.data.image && (
+{wallpaperSyncCoverEnabled && entry.data.image && (
 	<script is:inline>
 		(() => {
-			const COVER_SELECTOR = "#post-cover-top-sync img";
+			const COVER_SELECTOR = "#post-cover-wallpaper-sync img";
 			const TRANSPARENT_GIF =
 				"data:image/gif;base64,R0lGODlhAQABAAAAACwAAAAAAQABAAA=";
 
@@ -382,7 +383,7 @@ const jsonLd = {
 				return getBannerUrl() || extractBgUrl(document.getElementById("bg-box"));
 			}
 
-			function syncTopPostCover(explicitUrl) {
+			function syncWallpaperPostCover(explicitUrl) {
 				const img = document.querySelector(COVER_SELECTOR);
 				if (!(img instanceof HTMLImageElement)) return;
 				const nextUrl = getCurrentWallpaperUrl(explicitUrl);
@@ -401,12 +402,12 @@ const jsonLd = {
 
 			function scheduleSync() {
 				[0, 120, 500, 1200, 2500].forEach((delay) =>
-					setTimeout(() => syncTopPostCover(), delay),
+					setTimeout(() => syncWallpaperPostCover(), delay),
 				);
 			}
 
 			function onWallpaperApplied(event) {
-				syncTopPostCover(event?.detail?.url);
+				syncWallpaperPostCover(event?.detail?.url);
 			}
 
 			function run() {
@@ -415,8 +416,8 @@ const jsonLd = {
 			}
 
 			run();
-			if (window.__topPostWallpaperSyncBound) return;
-			window.__topPostWallpaperSyncBound = true;
+			if (window.__wallpaperPostCoverSyncBound) return;
+			window.__wallpaperPostCoverSyncBound = true;
 			document.addEventListener("swup:contentReplaced", run);
 			document.addEventListener("astro:page-load", run);
 			document.addEventListener("wallpaper:mode-change", scheduleSync);

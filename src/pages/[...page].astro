@@ -94,7 +94,7 @@ const len = page.data.length;
 	{page.currentPage === 1 && (
 		<script is:inline>
 			(() => {
-				const CARD_SELECTOR = "[data-top-wallpaper-card-cover] img";
+				const CARD_SELECTOR = "[data-wallpaper-card-cover] img";
 				const TRANSPARENT_GIF =
 					"data:image/gif;base64,R0lGODlhAQABAAAAACwAAAAAAQABAAA=";
 
@@ -145,32 +145,36 @@ const len = page.data.length;
 					return getUrlFromBanner() || getUrlFromBgBox();
 				}
 
-				function syncTopCardCover(explicitUrl) {
-					const img = document.querySelector(CARD_SELECTOR);
-					if (!(img instanceof HTMLImageElement)) return;
+				function syncWallpaperCardCovers(explicitUrl) {
+					const images = Array.from(document.querySelectorAll(CARD_SELECTOR)).filter(
+						(img) => img instanceof HTMLImageElement,
+					);
+					if (!images.length) return;
 					const nextUrl = getCurrentWallpaperUrl(explicitUrl);
 					if (!nextUrl) return;
-					const current = img.currentSrc || img.src || img.getAttribute("src") || "";
-					if (current === nextUrl) return;
 
 					const preload = new Image();
 					preload.onload = () => {
-						img.src = nextUrl;
-						img.alt = "Cover Image of the Post";
-						img.dataset.wallpaperSynced = "1";
+						images.forEach((img) => {
+							const current = img.currentSrc || img.src || img.getAttribute("src") || "";
+							if (current === nextUrl) return;
+							img.src = nextUrl;
+							img.alt = "Cover Image of the Post";
+							img.dataset.wallpaperSynced = "1";
+						});
 					};
 					preload.src = nextUrl;
 				}
 
 				function scheduleSync() {
 					[0, 120, 500, 1200, 2500].forEach((delay) =>
-						setTimeout(() => syncTopCardCover(), delay),
+						setTimeout(() => syncWallpaperCardCovers(), delay),
 					);
 				}
 
 				function onWallpaperApplied(event) {
 					const url = event?.detail?.url;
-					syncTopCardCover(url);
+					syncWallpaperCardCovers(url);
 				}
 
 				function run() {
@@ -180,8 +184,8 @@ const len = page.data.length;
 
 				run();
 
-				if (window.__topCardWallpaperSyncBound) return;
-				window.__topCardWallpaperSyncBound = true;
+				if (window.__wallpaperCardCoverSyncBound) return;
+				window.__wallpaperCardCoverSyncBound = true;
 				document.addEventListener("swup:contentReplaced", run);
 				document.addEventListener("astro:page-load", run);
 				document.addEventListener("wallpaper:mode-change", scheduleSync);
