@@ -532,28 +532,41 @@ function renderInternalPlayerFigure({ attrs, title, streamConfig, remainingChild
     });
   }
 
+  function findStylesheetLink(href) {
+    return Array.from(document.querySelectorAll('link[rel="stylesheet"]')).find(function (link) {
+      return link.href === href;
+    }) || null;
+  }
+
   function loadCssOnce(href) {
     const key = "__fv_css__" + href;
-    if (window[key]) return window[key];
+    const cached = window[key];
+    if (cached && cached.link instanceof HTMLLinkElement && document.head.contains(cached.link)) {
+      return cached.promise;
+    }
 
-    window[key] = new Promise(function (resolve, reject) {
-      const existing = Array.from(document.querySelectorAll('link[rel="stylesheet"]')).find(function (link) {
-        return link.href === href;
-      });
-      if (existing) {
-        resolve();
-        return;
-      }
+    const existing = findStylesheetLink(href);
+    if (existing) {
+      const resolved = Promise.resolve();
+      window[key] = { link: existing, promise: resolved };
+      return resolved;
+    }
 
-      const link = document.createElement("link");
-      link.rel = "stylesheet";
-      link.href = href;
+    const link = document.createElement("link");
+    link.rel = "stylesheet";
+    link.href = href;
+
+    const promise = new Promise(function (resolve, reject) {
       link.onload = function () { resolve(); };
-      link.onerror = function () { reject(new Error("Failed to load CSS: " + href)); };
-      document.head.appendChild(link);
+      link.onerror = function () {
+        if (window[key] && window[key].link === link) delete window[key];
+        reject(new Error("Failed to load CSS: " + href));
+      };
     });
 
-    return window[key];
+    window[key] = { link: link, promise: promise };
+    document.head.appendChild(link);
+    return promise;
   }
 
   function loadScriptOnce(src, globalCheck) {
@@ -589,9 +602,9 @@ function renderInternalPlayerFigure({ attrs, title, streamConfig, remainingChild
   }
 
   async function ensurePlayerAssets() {
+    await loadCssOnce("https://cdn.jsdelivr.net/npm/plyr@3/dist/plyr.css");
     if (!window.__fvPlayerAssetsPromise) {
       window.__fvPlayerAssetsPromise = (async function () {
-        await loadCssOnce("https://cdn.jsdelivr.net/npm/plyr@3/dist/plyr.css");
         await Promise.all([
           loadScriptOnce("https://cdn.jsdelivr.net/npm/plyr@3/dist/plyr.polyfilled.min.js", function () { return !!window.Plyr; }),
           loadScriptOnce("https://cdn.jsdelivr.net/npm/hls.js@1/dist/hls.min.js", function () { return !!window.Hls; }),
