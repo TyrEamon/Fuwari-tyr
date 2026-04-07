@@ -1,0 +1,85 @@
+name: Friend Link Request
+description: Apply to be added to the blogroll / friends page.
+title: "[友链申请]: "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        感谢申请友链。
+
+        提交方式很灵活，下面三种任选一种即可：
+        - 直接写：网站名称 / 网站地址 / 头像地址 / 网站简介
+        - 粘贴 JSON 模板
+        - 自由描述，但请确保至少包含上面这四项信息
+
+        另外还有两点：
+        - 提交前请先将本站添加到您的友链页，方便我核对互链
+        - 标注为“必填”的项目请尽量完整填写
+
+  - type: dropdown
+    id: submit-style
+    attributes:
+      label: 提交方式（必填）
+      description: 三种方式任选一种即可
+      options:
+        - 直接填写站点信息（推荐）
+        - 粘贴 JSON 模板
+        - 自由描述
+    validations:
+      required: true
+
+  - type: textarea
+    id: friend-link-content
+    attributes:
+      label: 友链申请内容（必填）
+      description: 支持直接填写、粘贴 JSON，或自由描述
+      placeholder: |
+        方式一：直接填写
+        网站名称：你的站点名称
+        网站地址：https://example.com
+        头像地址：https://example.com/avatar.png
+        网站简介：一句简短介绍
+
+        方式二：粘贴 JSON
+        {
+          "name": "你的站点名称",
+          "avatar": "https://example.com/avatar.png",
+          "description": "一句简短介绍",
+          "url": "https://example.com"
+        }
+
+        方式三：自由描述
+        只要能清楚看出网站名称、网址、简介和图片链接也可以。
+    validations:
+      required: true
+
+  - type: input
+    id: reciprocal-link
+    attributes:
+      label: 已添加本站友链的页面地址（必填）
+      description: 我会根据这个链接确认是否已经互链
+      placeholder: https://example.com/friends
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: confirmation
+    attributes:
+      label: 提交确认（必填）
+      options:
+        - label: 我已添加本站友链，并确认以上申请信息基本准确
+          required: true
+
+  - type: input
+    id: contact
+    attributes:
+      label: 联系方式（选填）
+      description: 例如邮箱、Telegram、QQ 等，方便有问题时联系
+      placeholder: Telegram / Email / QQ
+
+  - type: textarea
+    id: notes
+    attributes:
+      label: 备注（选填）
+      description: 例如头像裁切说明、站点状态补充等
+      placeholder: 这里可以写任何补充信息

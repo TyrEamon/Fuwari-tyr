@@ -1,73 +1,687 @@
-﻿---
+---
 import { Icon } from "astro-icon/components";
 import MainGridLayout from "@layouts/MainGridLayout.astro";
 import { siteConfig } from "@/config";
 import type { Friend } from "@/types/data";
+
+const repoBaseUrl = "https://github.com/TyrEamon/Fuwari-tyr";
+const issueApplyUrl = `${repoBaseUrl}/issues/new?template=04-friend-link.yml`;
+const prCreateUrl = `${repoBaseUrl}/compare`;
+const friendsDataDirUrl = `${repoBaseUrl}/tree/main/src/data/friends`;
+
+const requirementItems = [
+	"站点可以稳定访问，内容正常可浏览",
+	"申请前请先添加本站友链，方便我核对互链",
+	"头像请提供可直接访问的图片链接",
+	"简介尽量控制在一两句话，方便卡片展示",
+];
+
+const issueSteps = [
+	"打开友链申请 Issue 表单，直接写信息、贴 JSON，或自由描述都可以",
+	"提交后等待我核对站点、头像和互链状态",
+	"通过后我会手动补充友链数据并发布",
+];
+
+const prSteps = [
+	"Fork 仓库后，在 src/data/friends/ 下新增一个 JSON 文件",
+	"按模板填入 name、avatar、description、url 四个字段",
+	"提交 PR 到 main，我确认无误后合并自动发布",
+];
+
+function isNonEmptyString(value: unknown): value is string {
+	return typeof value === "string" && value.trim().length > 0;
+}
+
+function isValidFriend(value: unknown): value is Friend {
+	if (!value || typeof value !== "object") return false;
+	const candidate = value as Record<string, unknown>;
+	return (
+		isNonEmptyString(candidate.name) &&
+		isNonEmptyString(candidate.avatar) &&
+		isNonEmptyString(candidate.description) &&
+		isNonEmptyString(candidate.url)
+	);
+}
 
 const friendFiles = import.meta.glob<{ default: Friend }>(
 	"/src/data/friends/*.json",
 	{ eager: true },
 );
 
-const friends = Object.values(friendFiles).map(
-	(mod) => (mod as { default: Friend }).default ?? (mod as Friend),
-) as Friend[];
-
-friends.sort((a, b) => a.name.localeCompare(b.name, "zh-Hans-CN"));
+const friends = Object.entries(friendFiles)
+	.flatMap(([filePath, mod]) => {
+		const candidate = (mod as { default: Friend }).default ?? (mod as Friend);
+		if (!isValidFriend(candidate)) {
+			console.warn(`[friends] Ignored invalid friend entry: ${filePath}`);
+			return [];
+		}
+		return [
+			{
+				name: candidate.name.trim(),
+				avatar: candidate.avatar.trim(),
+				description: candidate.description.trim(),
+				url: candidate.url.trim(),
+			},
+		];
+	})
+	.sort((a, b) => a.name.localeCompare(b.name, "zh-Hans-CN"));
 ---
 
-<MainGridLayout title="友链">
-	<div class="card-base p-6 md:p-8 mb-4">
-		<div class="flex items-center gap-2 mb-6">
-			<div class="h-8 w-8 rounded-lg bg-[var(--primary)] flex items-center justify-center text-white dark:text-black/70">
-				<Icon name="material-symbols:diversity-3" class="text-[1.5rem]" />
+<MainGridLayout title="友链" description="友链展示、申请方式与审核说明">
+	<section class="card-base friend-hero">
+		<div class="friend-hero__badge">
+			<Icon name="material-symbols:diversity-3" class="text-[1.3rem]" />
+			<span>Friend Links</span>
+		</div>
+		<div class="friend-hero__header">
+			<div>
+				<h1 class="friend-hero__title">友链</h1>
+				<p class="friend-hero__desc">
+					欢迎交换友链。这一页同时放了申请入口、填写说明、PR 方式和当前收录列表，尽量让流程清楚一点。
+				</p>
 			</div>
-			<h1 class="text-2xl font-bold text-90">友链</h1>
+			<div class="friend-hero__count">
+				<span>当前已收录</span>
+				<strong>{friends.length}</strong>
+			</div>
 		</div>
 
-		<p class="text-sm text-50">
-			如果您也想加入友链名单，
-			<a target="_blank" href="https://友链提交" class="transition link text-[var(--primary)] font-medium underline">请点击这里提交</a>
-		</p>
-	</div>
-
-	{friends.length === 0 ? (
-		<div class="card-base p-6 text-sm text-50">
-			暂无友链，欢迎成为第一个。
+		<div class="friend-hero__actions">
+			<a class="friend-action" href={issueApplyUrl} target="_blank" rel="noopener noreferrer">
+				<Icon name="material-symbols:note-add-outline-rounded" class="text-[1.1rem]" />
+				<span>Issue 申请</span>
+				<small>推荐，门槛最低</small>
+			</a>
+			<a class="friend-action" href={prCreateUrl} target="_blank" rel="noopener noreferrer">
+				<Icon name="fa6-solid:code-pull-request" class="text-[0.95rem]" />
+				<span>PR 方式</span>
+				<small>适合熟悉 GitHub 的朋友</small>
+			</a>
+			<a class="friend-action" href={friendsDataDirUrl} target="_blank" rel="noopener noreferrer">
+				<Icon name="material-symbols:folder-code-outline-rounded" class="text-[1.05rem]" />
+				<span>友链目录</span>
+				<small>直接打开友链数据目录</small>
+			</a>
 		</div>
-	) : (
-		<div class="grid grid-cols-2 gap-4">
-			{friends.map((friend) => (
-				<a href={friend.url} target="_blank" rel="noopener" class="friend-card">
-					<div class="flex items-center gap-2">
-						<div class="relative w-5 h-5 rounded overflow-hidden" style={`--theme-hue: ${siteConfig.themeColor.hue}`}>
-							<img src={friend.avatar} loading="lazy" class="w-full h-full object-cover transition-opacity duration-500" alt={`${friend.name}的头像`} />
-						</div>
-						<div class="font-bold text-90">{friend.name}</div>
+	</section>
+
+	<section class="friend-grid">
+		<details class="card-base friend-panel friend-panel--collapsible">
+			<summary class="friend-panel__summary">
+				<div class="friend-panel__header">
+					<div class="friend-panel__icon">
+						<Icon name="material-symbols:rule-rounded" class="text-[1.2rem]" />
 					</div>
-					<div class="text-sm text-50">{friend.description}</div>
+					<div>
+						<h2>申请要求</h2>
+						<p>尽量控制在最基本的几条，避免大家填太多内容。</p>
+					</div>
+				</div>
+				<span class="friend-panel__toggle" aria-hidden="true">
+					<Icon name="material-symbols:keyboard-arrow-down-rounded" class="text-[1.35rem]" />
+				</span>
+			</summary>
+			<div class="friend-panel__body">
+				<ul class="friend-checklist">
+					{requirementItems.map((item) => (
+						<li>
+							<Icon name="material-symbols:check-circle-rounded" class="text-[1rem]" />
+							<span>{item}</span>
+						</li>
+					))}
+				</ul>
+			</div>
+		</details>
+
+		<details class="card-base friend-panel friend-panel--collapsible">
+			<summary class="friend-panel__summary">
+				<div class="friend-panel__header">
+					<div class="friend-panel__icon">
+						<Icon name="material-symbols:approval-delegation-outline-rounded" class="text-[1.2rem]" />
+					</div>
+					<div>
+						<h2>我这边怎么处理</h2>
+						<p>提交后，我会按下面这个流程处理。</p>
+					</div>
+				</div>
+				<span class="friend-panel__toggle" aria-hidden="true">
+					<Icon name="material-symbols:keyboard-arrow-down-rounded" class="text-[1.35rem]" />
+				</span>
+			</summary>
+			<div class="friend-panel__body">
+				<ul class="friend-checklist">
+					<li>
+						<Icon name="material-symbols:travel-explore-rounded" class="text-[1rem]" />
+						<span>先检查站点、头像链接和互链页面是否正常。</span>
+					</li>
+					<li>
+						<Icon name="material-symbols:edit-note-rounded" class="text-[1rem]" />
+						<span>Issue 申请通过后，我会手动添加友链 JSON。</span>
+					</li>
+					<li>
+						<Icon name="fa6-solid:code-merge" class="text-[0.95rem]" />
+						<span>PR 申请通过后，我会直接合并 PR，仓库会自动构建并部署。</span>
+					</li>
+				</ul>
+			</div>
+		</details>
+	</section>
+
+	<section class="friend-grid">
+		<details class="card-base friend-panel friend-panel--collapsible">
+			<summary class="friend-panel__summary">
+				<div class="friend-panel__header">
+					<div class="friend-panel__icon">
+						<Icon name="material-symbols:contact-support-outline-rounded" class="text-[1.2rem]" />
+					</div>
+					<div>
+						<h2>Issue 申请</h2>
+						<p>推荐使用，字段已经区分“必填 / 选填”。</p>
+					</div>
+				</div>
+				<span class="friend-panel__toggle" aria-hidden="true">
+					<Icon name="material-symbols:keyboard-arrow-down-rounded" class="text-[1.35rem]" />
+				</span>
+			</summary>
+			<div class="friend-panel__body">
+				<ol class="friend-steps">
+					{issueSteps.map((item) => (
+						<li>{item}</li>
+					))}
+				</ol>
+				<a class="friend-inline-link" href={issueApplyUrl} target="_blank" rel="noopener noreferrer">
+					打开友链申请表单
+					<Icon name="fa6-solid:arrow-up-right-from-square" class="text-[0.75rem]" />
 				</a>
-			))}
+			</div>
+		</details>
+
+		<details class="card-base friend-panel friend-panel--collapsible">
+			<summary class="friend-panel__summary">
+				<div class="friend-panel__header">
+					<div class="friend-panel__icon">
+						<Icon name="fa6-solid:code-pull-request" class="text-[1rem]" />
+					</div>
+					<div>
+						<h2>PR 申请</h2>
+						<p>适合愿意直接改仓库数据的朋友，合并后会自动上线。</p>
+					</div>
+				</div>
+				<span class="friend-panel__toggle" aria-hidden="true">
+					<Icon name="material-symbols:keyboard-arrow-down-rounded" class="text-[1.35rem]" />
+				</span>
+			</summary>
+			<div class="friend-panel__body">
+				<ol class="friend-steps">
+					{prSteps.map((item) => (
+						<li>{item}</li>
+					))}
+				</ol>
+				<div class="friend-inline-links">
+					<a class="friend-inline-link" href={prCreateUrl} target="_blank" rel="noopener noreferrer">
+						打开 GitHub PR 创建页
+						<Icon name="fa6-solid:arrow-up-right-from-square" class="text-[0.75rem]" />
+					</a>
+					<a class="friend-inline-link" href={friendsDataDirUrl} target="_blank" rel="noopener noreferrer">
+						打开友链数据目录
+						<Icon name="fa6-solid:arrow-up-right-from-square" class="text-[0.75rem]" />
+					</a>
+				</div>
+			</div>
+		</details>
+	</section>
+
+	<section class="card-base friend-panel friend-panel--code">
+		<div class="friend-panel__header">
+			<div class="friend-panel__icon">
+				<Icon name="fa6-solid:file-code" class="text-[0.95rem]" />
+			</div>
+			<div>
+				<h2>友链 JSON 模板</h2>
+				<p>如果走 PR，复制这份结构改成你自己的信息就行。</p>
+			</div>
 		</div>
-	)}
+		<pre class="friend-code"><code>{`{
+  "name": "你的站点名称",
+  "avatar": "https://头像&博客LOGO.png",
+  "description": "一句简短介绍",
+  "url": "https://example.com"
+}`}</code></pre>
+	</section>
+
+	<section class="friend-list">
+		<div class="friend-list__header">
+			<div>
+				<p class="friend-list__eyebrow">Directory</p>
+				<h2>已收录友链</h2>
+			</div>
+			<span class="friend-list__count">{friends.length} 个站点</span>
+		</div>
+
+		{friends.length === 0 ? (
+			<div class="card-base p-6 text-sm text-50">
+				暂无友链，欢迎成为第一个。
+			</div>
+		) : (
+			<div class="friend-cards">
+				{friends.map((friend) => (
+					<a href={friend.url} target="_blank" rel="noopener noreferrer" class="friend-card">
+						<div class="friend-card__head">
+							<div class="friend-card__avatar" style={`--theme-hue: ${siteConfig.themeColor.hue}`}>
+								<img
+									src={friend.avatar}
+									loading="lazy"
+									class="w-full h-full object-cover transition-opacity duration-500"
+									alt={`${friend.name}的头像`}
+								/>
+							</div>
+							<div>
+								<div class="friend-card__name">{friend.name}</div>
+								<div class="friend-card__url">{friend.url}</div>
+							</div>
+						</div>
+						<div class="friend-card__desc">{friend.description}</div>
+					</a>
+				))}
+			</div>
+		)}
+	</section>
 </MainGridLayout>
 
 <style>
-	.friend-card {
+	:root {
+		--friend-text-90: rgba(0, 0, 0, 0.9);
+		--friend-text-80: rgba(0, 0, 0, 0.8);
+		--friend-text-72: rgba(0, 0, 0, 0.72);
+		--friend-text-62: rgba(0, 0, 0, 0.62);
+		--friend-text-56: rgba(0, 0, 0, 0.56);
+		--friend-text-55: rgba(0, 0, 0, 0.55);
+		--friend-text-52: rgba(0, 0, 0, 0.52);
+		--friend-text-48: rgba(0, 0, 0, 0.48);
+		--friend-text-45: rgba(0, 0, 0, 0.45);
+	}
+
+	:root.dark {
+		--friend-text-90: rgba(255, 255, 255, 0.9);
+		--friend-text-80: rgba(255, 255, 255, 0.8);
+		--friend-text-72: rgba(255, 255, 255, 0.72);
+		--friend-text-62: rgba(255, 255, 255, 0.62);
+		--friend-text-56: rgba(255, 255, 255, 0.56);
+		--friend-text-55: rgba(255, 255, 255, 0.55);
+		--friend-text-52: rgba(255, 255, 255, 0.52);
+		--friend-text-48: rgba(255, 255, 255, 0.48);
+		--friend-text-45: rgba(255, 255, 255, 0.45);
+	}
+
+	.friend-hero {
+		padding: 1.5rem;
+		margin-bottom: 1rem;
 		display: flex;
 		flex-direction: column;
+		gap: 1.25rem;
+	}
+
+	.friend-hero__badge {
+		display: inline-flex;
+		align-items: center;
 		gap: 0.5rem;
+		width: fit-content;
+		padding: 0.45rem 0.8rem;
+		border-radius: 999px;
+		background: color-mix(in oklch, var(--primary), transparent 88%);
+		color: var(--primary);
+		font-size: 0.85rem;
+		font-weight: 700;
+	}
+
+	.friend-hero__header {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 1rem;
+		justify-content: space-between;
+		align-items: end;
+	}
+
+	.friend-hero__title {
+		font-size: 1.9rem;
+		font-weight: 800;
+		color: var(--friend-text-90);
+	}
+
+	.friend-hero__desc {
+		margin-top: 0.6rem;
+		max-width: 42rem;
+		color: var(--friend-text-62);
+		line-height: 1.8;
+	}
+
+	.friend-hero__count {
+		display: flex;
+		flex-direction: column;
+		align-items: flex-end;
+		gap: 0.15rem;
+		min-width: 7rem;
+		color: var(--friend-text-55);
+		font-size: 0.85rem;
+	}
+
+	.friend-hero__count strong {
+		font-size: 1.8rem;
+		line-height: 1;
+		color: var(--primary);
+	}
+
+	.friend-hero__actions {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+		gap: 0.85rem;
+	}
+
+	.friend-action {
+		display: flex;
+		flex-direction: column;
+		gap: 0.2rem;
 		padding: 1rem;
 		border-radius: 1rem;
 		border: 1px solid var(--line-divider);
 		background: var(--card-bg);
-		transition: transform 0.2s ease, box-shadow 0.2s ease;
+		color: var(--friend-text-90);
+		text-decoration: none;
+		transition:
+			transform 0.2s ease,
+			border-color 0.2s ease,
+			box-shadow 0.2s ease;
+	}
+
+	.friend-action :global(svg) {
+		color: var(--primary);
+	}
+
+	.friend-action span {
+		font-weight: 700;
+		color: var(--friend-text-90);
+	}
+
+	.friend-action small {
+		color: var(--friend-text-52);
+		font-size: 0.78rem;
+	}
+
+	.friend-action:hover {
+		transform: translateY(-2px);
+		border-color: color-mix(in oklch, var(--primary), transparent 45%);
+		box-shadow: var(--card-shadow);
+	}
+
+	.friend-grid {
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 1rem;
+		margin-bottom: 1rem;
+	}
+
+	.friend-panel {
+		padding: 1.35rem;
+	}
+
+	.friend-panel--code {
+		margin-bottom: 1rem;
+	}
+
+	.friend-panel--collapsible {
+		padding: 0;
+		overflow: hidden;
+	}
+
+	.friend-panel__summary {
+		display: flex;
+		align-items: flex-start;
+		justify-content: space-between;
+		gap: 0.9rem;
+		padding: 1.35rem;
+		cursor: pointer;
+		list-style: none;
+	}
+
+	.friend-panel__summary::-webkit-details-marker {
+		display: none;
+	}
+
+	.friend-panel__summary:hover .friend-panel__toggle {
+		color: var(--primary);
+	}
+
+	.friend-panel__body {
+		padding: 0 1.35rem 1.35rem;
+	}
+
+	.friend-panel__header {
+		display: flex;
+		gap: 0.85rem;
+		margin-bottom: 1rem;
+	}
+
+	.friend-panel__summary .friend-panel__header {
+		margin-bottom: 0;
+	}
+
+	.friend-panel__icon {
+		flex-shrink: 0;
+		width: 2.35rem;
+		height: 2.35rem;
+		border-radius: 0.8rem;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		background: color-mix(in oklch, var(--primary), transparent 88%);
+		color: var(--primary);
+	}
+
+	.friend-panel__header h2 {
+		font-size: 1.05rem;
+		font-weight: 700;
+		color: var(--friend-text-90);
+	}
+
+	.friend-panel__header p {
+		margin-top: 0.2rem;
+		font-size: 0.9rem;
+		line-height: 1.7;
+		color: var(--friend-text-56);
+	}
+
+	.friend-panel__toggle {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		flex-shrink: 0;
+		width: 2rem;
+		height: 2rem;
+		margin-top: 0.15rem;
+		border-radius: 999px;
+		color: color-mix(in oklch, var(--primary), white 18%);
+		background: color-mix(in oklch, var(--primary), transparent 92%);
+		transition:
+			transform 0.2s ease,
+			color 0.2s ease,
+			background 0.2s ease;
+	}
+
+	.friend-panel--collapsible[open] .friend-panel__toggle {
+		transform: rotate(180deg);
+		color: var(--primary);
+		background: color-mix(in oklch, var(--primary), transparent 88%);
+	}
+
+	.friend-checklist,
+	.friend-steps {
+		display: flex;
+		flex-direction: column;
+		gap: 0.8rem;
+		color: var(--friend-text-72);
+		font-size: 0.95rem;
+	}
+
+	.friend-checklist li {
+		display: flex;
+		align-items: flex-start;
+		gap: 0.55rem;
+		line-height: 1.75;
+	}
+
+	.friend-checklist li :global(svg) {
+		flex-shrink: 0;
+		color: var(--primary);
+		margin-top: 0.2rem;
+	}
+
+	.friend-steps {
+		padding-left: 1.1rem;
+		line-height: 1.8;
+	}
+
+	.friend-inline-links {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.75rem;
+		margin-top: 1rem;
+	}
+
+	.friend-inline-link {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.45rem;
+		margin-top: 1rem;
+		font-size: 0.92rem;
+		font-weight: 600;
+		color: var(--primary);
+		text-decoration: none;
+	}
+
+	.friend-inline-link:hover {
+		text-decoration: underline;
+	}
+
+	.friend-code {
+		overflow-x: auto;
+		border-radius: 1rem;
+		padding: 1rem 1.1rem;
+		background: color-mix(in oklch, var(--primary), transparent 94%);
+		font-size: 0.9rem;
+		line-height: 1.75;
+		color: var(--friend-text-80);
+	}
+
+	:root.dark .friend-code {
+		background: color-mix(in oklch, var(--primary), transparent 90%);
+	}
+
+	.friend-list {
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
+	}
+
+	.friend-list__header {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 1rem;
+		align-items: end;
+		justify-content: space-between;
+	}
+
+	.friend-list__eyebrow {
+		font-size: 0.75rem;
+		font-weight: 700;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		color: var(--friend-text-45);
+	}
+
+	.friend-list__header h2 {
+		margin-top: 0.25rem;
+		font-size: 1.2rem;
+		font-weight: 800;
+		color: var(--friend-text-90);
+	}
+
+	.friend-list__count {
+		font-size: 0.88rem;
+		color: var(--friend-text-55);
+	}
+
+	.friend-cards {
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 1rem;
+	}
+
+	.friend-card {
+		display: flex;
+		flex-direction: column;
+		gap: 0.85rem;
+		padding: 1rem;
+		border-radius: 1rem;
+		border: 1px solid var(--line-divider);
+		background: var(--card-bg);
+		text-decoration: none;
+		transition:
+			transform 0.2s ease,
+			box-shadow 0.2s ease,
+			border-color 0.2s ease;
 	}
 
 	.friend-card:hover {
 		transform: translateY(-2px);
+		border-color: color-mix(in oklch, var(--primary), transparent 45%);
 		box-shadow: var(--card-shadow);
 	}
+
+	.friend-card__head {
+		display: flex;
+		align-items: center;
+		gap: 0.75rem;
+	}
+
+	.friend-card__avatar {
+		flex-shrink: 0;
+		width: 2.75rem;
+		height: 2.75rem;
+		border-radius: 0.9rem;
+		overflow: hidden;
+		border: 1px solid color-mix(in oklch, var(--primary), transparent 80%);
+	}
+
+	.friend-card__name {
+		font-weight: 700;
+		color: var(--friend-text-90);
+	}
+
+	.friend-card__url {
+		margin-top: 0.15rem;
+		font-size: 0.8rem;
+		color: var(--friend-text-48);
+		word-break: break-all;
+	}
+
+	.friend-card__desc {
+		font-size: 0.92rem;
+		line-height: 1.75;
+		color: var(--friend-text-62);
+	}
+
+	@media (max-width: 900px) {
+		.friend-grid,
+		.friend-cards {
+			grid-template-columns: 1fr;
+		}
+
+		.friend-hero__header {
+			align-items: flex-start;
+		}
+
+		.friend-hero__count {
+			align-items: flex-start;
+		}
+	}
 </style>
-
-
