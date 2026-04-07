@@ -132,14 +132,14 @@ badgeIcon: "fa6-solid:book"
 ```md
 [打开首页](/)
 [打开展览馆](/exhibition/)
-[外部链接（图站）](https://rapi.kyr.us.ci/gallery.html)
+[外部链接（图站）](https://rapi.mtcacg.top)
 ```
 
 **预览**
 
 [打开首页](/)  
 [打开展览馆](/exhibition/)  
-[外部链接（图站）](https://rapi.kyr.us.ci/gallery.html)
+[外部链接（图站）](https://rapi.mtcacg.top)
 
 ### 4.2 图片（Markdown 语法）
 
@@ -401,12 +401,12 @@ $$
 **代码（可复制）**
 
 ```md
-::url{href="https://rapi.kyr.us.ci/gallery.html"}
+::url{href="https://rapi.mtcacg.top"}
 ```
 
 **预览**
 
-::url{href="https://rapi.kyr.us.ci/gallery.html"}
+::url{href="https://rapi.mtcacg.top"}
 
 ---
 

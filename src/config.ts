@@ -54,7 +54,7 @@ export const siteConfig: SiteConfig = {
 			enable:false, // Random banner has no stable per-image credit; disable default credit display
 			text: "随机图 API", // Credit text to be displayed
 
-			url: "https://rapi.kyr.us.ci", // 备用随机图api：rapi.kyr.us.ci   // (Optional) URL link to the original artwork or artist's page
+			url: "https://rapi.mtcacg.top", // 旧随机图 API：https://rapi.kyr.us.ci / https://rapi.0w0.us.ci   // (Optional) URL link to the original artwork or artist's page
 		},
 	},
 	background: {
@@ -86,10 +86,10 @@ export const siteConfig: SiteConfig = {
 		},
 	],
 	preconnect: [
-		"https://u.kyr.us.ci",
+		"https://u.mtcacg.top",
 		// 新版 umami 备用：
 		// "https://umami.kaza.de5.net",
-		"https://rapi.kyr.us.ci",   // 这个旧的随机图api为：rapi.0w0.us.ci。
+		"https://rapi.mtcacg.top",   // 旧随机图 API：https://rapi.kyr.us.ci / https://rapi.0w0.us.ci
 	],
 	officialSites: [],
 	server: [],
@@ -123,7 +123,7 @@ export const navBarConfig: NavBarConfig = {
 		},
 		{
 			name: "统计",
-			url: "https://u.kyr.us.ci/share/C8gWpSlbh6hrKEUL",
+			url: "https://u.mtcacg.top/share/C8gWpSlbh6hrKEUL",
 			// 新版 umami 备用：
 			// url: "https://umami.kaza.de5.net/share/9iW0kiOoO3KzkIpA",
 			external: true,
@@ -246,7 +246,7 @@ export const imageFallbackConfig: ImageFallbackConfig = {
 
 export const umamiConfig: UmamiConfig = {
 	enable: true,
-	baseUrl: "https://u.kyr.us.ci",
+	baseUrl: "https://u.mtcacg.top",
 	// 新版 umami 备用：
 	// baseUrl: "https://umami.kaza.de5.net",
 	shareId: "C8gWpSlbh6hrKEUL",
