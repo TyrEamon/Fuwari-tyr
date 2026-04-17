@@ -15,6 +15,8 @@ description: 致谢板及简介
 > ::music{meting="https://api.i-meto.com/meting/api?server=netease&type=song&id=2666842841"}
 
 ::v[d/e-m]
+> ### 你怎么知道我双红的？
+> ::v[d/2-red]
 
 ##  [如何联系？ ](#mycontact)
 ---
