@@ -144,6 +144,22 @@ export function MusicCardComponent(properties, children) {
 	let lrcSrc = ${JSON.stringify(lrcSrc)};
 	const metingUrl = ${JSON.stringify(metingUrl)};
 
+	function getMetingParam(name) {
+		if (!metingUrl) return "";
+		try {
+			return new URL(metingUrl, window.location.href).searchParams.get(name) || "";
+		} catch {
+			return "";
+		}
+	}
+
+	function fallbackAudioUrl(music) {
+		const server = String(music?.source || getMetingParam("server") || "").toLowerCase();
+		const id = String(music?.id || getMetingParam("id") || "").trim();
+		if (server !== "netease" || !id) return "";
+		return "https://music.163.com/song/media/outer/url?id=" + encodeURIComponent(id) + ".mp3";
+	}
+
 	function formatTime(seconds) {
 		if (!Number.isFinite(seconds) || seconds <= 0) return "0:00";
 		const mins = Math.floor(seconds / 60);
@@ -275,7 +291,8 @@ export function MusicCardComponent(properties, children) {
 				if (titleEl) titleEl.innerText = music.title || ${JSON.stringify(title)};
 				if (artistEl) artistEl.innerText = music.author || ${JSON.stringify(artist)};
 				if (coverEl && music.pic) coverEl.style.backgroundImage = 'url("' + music.pic + '")';
-				if (music.url) audio.src = music.url;
+				const nextAudioSrc = music.url || fallbackAudioUrl(music);
+				if (nextAudioSrc) audio.src = nextAudioSrc;
 				if (music.lrc) {
 					lrcSrc = music.lrc;
 					inlineLyrics = "";
