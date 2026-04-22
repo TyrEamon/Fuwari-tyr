@@ -12,7 +12,7 @@ description: 致谢板及简介
 >  *---你好陌生人，这里是Tyreamon的博客---* 
 
 > *---`献上一首nbuna的歌给你`---*
-> ::music{meting="https://api.i-meto.com/meting/api?server=netease&type=song&id=2666842841"}
+> ::music{meting="https://meting.mtcacg.top/meting/api?server=netease&type=song&id=2666842841"}
 
 ::v[d/e-m]
 > ### 你怎么知道我双红的？
