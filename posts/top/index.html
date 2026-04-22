@@ -913,9 +913,9 @@ const umamiConfig = {"enable":true,"baseUrl":"https://u.mtcacg.top","shareId":"C
 </blockquote>
 <blockquote>
 <p><em>---<code>献上一首nbuna的歌给你</code>---</em></p>
-<div class="card-music no-hue-rotate" id="MCi3kh7r-card"><div class="music-cover" style=""></div><div class="music-info"><div class="music-header"><div class="music-title">Loading...</div><div class="music-artist">Loading...</div></div><div class="music-lyric" id="MCi3kh7r-lyric" style="display:grid;place-items:center;"><div class="lyric-exit" style="grid-area:1/1;opacity:0;pointer-events:none;"></div><div class="lyric-current" style="grid-area:1/1;">Loading lyrics...</div></div><div class="music-controls"><button class="play-btn" id="MCi3kh7r-play" aria-label="Play/Pause" type="button"><svg viewBox="0 0 24 24" class="play-icon"><path d="M8 5v14l11-7z"></path></svg><svg viewBox="0 0 24 24" class="pause-icon" style="display:none;"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"></path></svg></button><div class="progress-container" id="MCi3kh7r-progress-container"><div class="progress-bar" id="MCi3kh7r-progress-bar"></div></div><div class="time-display" id="MCi3kh7r-time">0:00 / 0:00</div></div></div><audio id="MCi3kh7r-audio" src="" preload="metadata"></audio><script type="text/javascript">
+<div class="card-music no-hue-rotate" id="MC7lt63r-card"><div class="music-cover" style=""></div><div class="music-info"><div class="music-header"><div class="music-title">Loading...</div><div class="music-artist">Loading...</div></div><div class="music-lyric" id="MC7lt63r-lyric" style="display:grid;place-items:center;"><div class="lyric-exit" style="grid-area:1/1;opacity:0;pointer-events:none;"></div><div class="lyric-current" style="grid-area:1/1;">Loading lyrics...</div></div><div class="music-controls"><button class="play-btn" id="MC7lt63r-play" aria-label="Play/Pause" type="button"><svg viewBox="0 0 24 24" class="play-icon"><path d="M8 5v14l11-7z"></path></svg><svg viewBox="0 0 24 24" class="pause-icon" style="display:none;"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"></path></svg></button><div class="progress-container" id="MC7lt63r-progress-container"><div class="progress-bar" id="MC7lt63r-progress-bar"></div></div><div class="time-display" id="MC7lt63r-time">0:00 / 0:00</div></div></div><audio id="MC7lt63r-audio" src="" preload="metadata"></audio><script type="text/javascript">
 (async function () {
-	const cardId = "MCi3kh7r";
+	const cardId = "MC7lt63r";
 	const audio = document.getElementById(cardId + '-audio');
 	const playBtn = document.getElementById(cardId + '-play');
 	if (!audio || !playBtn) return;
@@ -932,7 +932,23 @@ const umamiConfig = {"enable":true,"baseUrl":"https://u.mtcacg.top","shareId":"C
 	let lyrics = [];
 	let inlineLyrics = "";
 	let lrcSrc = "";
-	const metingUrl = "https://meting.mtcacg.top/api/meting?server=netease&type=song&id=2666842841";
+	const metingUrl = "https://api.i-meto.com/api/meting?server=netease&type=song&id=2666842841";
+
+	function getMetingParam(name) {
+		if (!metingUrl) return "";
+		try {
+			return new URL(metingUrl, window.location.href).searchParams.get(name) || "";
+		} catch {
+			return "";
+		}
+	}
+
+	function fallbackAudioUrl(music) {
+		const server = String(music?.source || getMetingParam("server") || "").toLowerCase();
+		const id = String(music?.id || getMetingParam("id") || "").trim();
+		if (server !== "netease" || !id) return "";
+		return "https://music.163.com/song/media/outer/url?id=" + encodeURIComponent(id) + ".mp3";
+	}
 
 	function formatTime(seconds) {
 		if (!Number.isFinite(seconds) || seconds <= 0) return "0:00";
@@ -1065,7 +1081,8 @@ const umamiConfig = {"enable":true,"baseUrl":"https://u.mtcacg.top","shareId":"C
 				if (titleEl) titleEl.innerText = music.title || "Loading...";
 				if (artistEl) artistEl.innerText = music.author || "Loading...";
 				if (coverEl && music.pic) coverEl.style.backgroundImage = 'url("' + music.pic + '")';
-				if (music.url) audio.src = music.url;
+				const nextAudioSrc = music.url || fallbackAudioUrl(music);
+				if (nextAudioSrc) audio.src = nextAudioSrc;
 				if (music.lrc) {
 					lrcSrc = music.lrc;
 					inlineLyrics = "";
@@ -1158,9 +1175,9 @@ const umamiConfig = {"enable":true,"baseUrl":"https://u.mtcacg.top","shareId":"C
 @media (prefers-reduced-motion: reduce){
   .fv-player-overlay{transition:none}
 }
-</style><div id="VP5zj1qjd" class="fv-player-root" data-config="{&#x22;host&#x22;:&#x22;https://v.kaza.de5.net&#x22;,&#x22;slug&#x22;:&#x22;e-m&#x22;,&#x22;type&#x22;:&#x22;dash&#x22;,&#x22;streamUrl&#x22;:&#x22;https://v.kaza.de5.net/d/e-m&#x22;,&#x22;routePath&#x22;:&#x22;/d/e-m&#x22;,&#x22;hlsUrl&#x22;:&#x22;https://v.kaza.de5.net/h/e-m&#x22;,&#x22;dashUrl&#x22;:&#x22;https://v.kaza.de5.net/d/e-m&#x22;,&#x22;catalogUrl&#x22;:&#x22;https://v.kaza.de5.net/catalog.json&#x22;,&#x22;preload&#x22;:&#x22;metadata&#x22;,&#x22;autoplay&#x22;:false,&#x22;muted&#x22;:false,&#x22;loop&#x22;:false,&#x22;poster&#x22;:&#x22;&#x22;,&#x22;title&#x22;:&#x22;Video d/e-m&#x22;}" data-init="0" style="border-radius:12px;"><div class="fv-player-badge" data-role="badge" data-state="loading"><span class="dot" aria-hidden="true"></span><span data-role="badge-text">Loading</span></div><div class="fv-player-overlay" data-role="overlay" data-hidden="false"><div class="fv-player-message" data-role="message">Loading player...</div></div><video class="fv-player-video" playsinline webkit-playsinline="true" preload="metadata" crossorigin="anonymous" style="width:100%;height:100%;display:block;background:#000;object-fit:contain;position:relative;z-index:1;"></video></div><script type="text/javascript">
+</style><div id="VP8zpw4bh" class="fv-player-root" data-config="{&#x22;host&#x22;:&#x22;https://v.kaza.de5.net&#x22;,&#x22;slug&#x22;:&#x22;e-m&#x22;,&#x22;type&#x22;:&#x22;dash&#x22;,&#x22;streamUrl&#x22;:&#x22;https://v.kaza.de5.net/d/e-m&#x22;,&#x22;routePath&#x22;:&#x22;/d/e-m&#x22;,&#x22;hlsUrl&#x22;:&#x22;https://v.kaza.de5.net/h/e-m&#x22;,&#x22;dashUrl&#x22;:&#x22;https://v.kaza.de5.net/d/e-m&#x22;,&#x22;catalogUrl&#x22;:&#x22;https://v.kaza.de5.net/catalog.json&#x22;,&#x22;preload&#x22;:&#x22;metadata&#x22;,&#x22;autoplay&#x22;:false,&#x22;muted&#x22;:false,&#x22;loop&#x22;:false,&#x22;poster&#x22;:&#x22;&#x22;,&#x22;title&#x22;:&#x22;Video d/e-m&#x22;}" data-init="0" style="border-radius:12px;"><div class="fv-player-badge" data-role="badge" data-state="loading"><span class="dot" aria-hidden="true"></span><span data-role="badge-text">Loading</span></div><div class="fv-player-overlay" data-role="overlay" data-hidden="false"><div class="fv-player-message" data-role="message">Loading player...</div></div><video class="fv-player-video" playsinline webkit-playsinline="true" preload="metadata" crossorigin="anonymous" style="width:100%;height:100%;display:block;background:#000;object-fit:contain;position:relative;z-index:1;"></video></div><script type="text/javascript">
 (async function () {
-  const root = document.getElementById("VP5zj1qjd");
+  const root = document.getElementById("VP8zpw4bh");
   if (!root || root.dataset.init === "1") return;
   root.dataset.init = "1";
 
@@ -1661,9 +1678,9 @@ const umamiConfig = {"enable":true,"baseUrl":"https://u.mtcacg.top","shareId":"C
 @media (prefers-reduced-motion: reduce){
   .fv-player-overlay{transition:none}
 }
-</style><div id="VPb90occg" class="fv-player-root" data-config="{&#x22;host&#x22;:&#x22;https://v.kaza.de5.net&#x22;,&#x22;slug&#x22;:&#x22;2-red&#x22;,&#x22;type&#x22;:&#x22;dash&#x22;,&#x22;streamUrl&#x22;:&#x22;https://v.kaza.de5.net/d/2-red&#x22;,&#x22;routePath&#x22;:&#x22;/d/2-red&#x22;,&#x22;hlsUrl&#x22;:&#x22;https://v.kaza.de5.net/h/2-red&#x22;,&#x22;dashUrl&#x22;:&#x22;https://v.kaza.de5.net/d/2-red&#x22;,&#x22;catalogUrl&#x22;:&#x22;https://v.kaza.de5.net/catalog.json&#x22;,&#x22;preload&#x22;:&#x22;metadata&#x22;,&#x22;autoplay&#x22;:false,&#x22;muted&#x22;:false,&#x22;loop&#x22;:false,&#x22;poster&#x22;:&#x22;&#x22;,&#x22;title&#x22;:&#x22;Video d/2-red&#x22;}" data-init="0" style="border-radius:12px;"><div class="fv-player-badge" data-role="badge" data-state="loading"><span class="dot" aria-hidden="true"></span><span data-role="badge-text">Loading</span></div><div class="fv-player-overlay" data-role="overlay" data-hidden="false"><div class="fv-player-message" data-role="message">Loading player...</div></div><video class="fv-player-video" playsinline webkit-playsinline="true" preload="metadata" crossorigin="anonymous" style="width:100%;height:100%;display:block;background:#000;object-fit:contain;position:relative;z-index:1;"></video></div><script type="text/javascript">
+</style><div id="VPhpn8zkk" class="fv-player-root" data-config="{&#x22;host&#x22;:&#x22;https://v.kaza.de5.net&#x22;,&#x22;slug&#x22;:&#x22;2-red&#x22;,&#x22;type&#x22;:&#x22;dash&#x22;,&#x22;streamUrl&#x22;:&#x22;https://v.kaza.de5.net/d/2-red&#x22;,&#x22;routePath&#x22;:&#x22;/d/2-red&#x22;,&#x22;hlsUrl&#x22;:&#x22;https://v.kaza.de5.net/h/2-red&#x22;,&#x22;dashUrl&#x22;:&#x22;https://v.kaza.de5.net/d/2-red&#x22;,&#x22;catalogUrl&#x22;:&#x22;https://v.kaza.de5.net/catalog.json&#x22;,&#x22;preload&#x22;:&#x22;metadata&#x22;,&#x22;autoplay&#x22;:false,&#x22;muted&#x22;:false,&#x22;loop&#x22;:false,&#x22;poster&#x22;:&#x22;&#x22;,&#x22;title&#x22;:&#x22;Video d/2-red&#x22;}" data-init="0" style="border-radius:12px;"><div class="fv-player-badge" data-role="badge" data-state="loading"><span class="dot" aria-hidden="true"></span><span data-role="badge-text">Loading</span></div><div class="fv-player-overlay" data-role="overlay" data-hidden="false"><div class="fv-player-message" data-role="message">Loading player...</div></div><video class="fv-player-video" playsinline webkit-playsinline="true" preload="metadata" crossorigin="anonymous" style="width:100%;height:100%;display:block;background:#000;object-fit:contain;position:relative;z-index:1;"></video></div><script type="text/javascript">
 (async function () {
-  const root = document.getElementById("VPb90occg");
+  const root = document.getElementById("VPhpn8zkk");
   if (!root || root.dataset.init === "1") return;
   root.dataset.init = "1";
 
