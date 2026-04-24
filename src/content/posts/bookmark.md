@@ -19,10 +19,9 @@ lang: ""
 codeload.github.com
 objects.githubusercontent.com
 github-releases.githubusercontent.com
+
 ```
-
-
-
+---
 # Meting-music音乐api接口（个人维护）
 > ### 支持的平台
 
