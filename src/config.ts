@@ -25,7 +25,7 @@ export const siteConfig: SiteConfig = {
 	},
 	wallpaper: {
 		enable: true,
-		modeDefault: "fullscreen", // "banner" | "fullscreen" | "none"
+		modeDefault: "banner", // "banner" | "fullscreen" | "none"
 		// P1-a: Twilight-style compatibility config (sources still use top-level banner/background for now)
 		banner: {
 			navbar: {
