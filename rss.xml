@@ -1479,56 +1479,18 @@ node build.js
 &lt;/ul&gt;
 &lt;hr /&gt;
 &lt;h1&gt;——自此本章完结——&lt;/h1&gt;
-</content:encoded></item><item><title>后记！！</title><link>https://blog.mtcacg.top/posts/bookmark/</link><guid isPermaLink="true">https://blog.mtcacg.top/posts/bookmark/</guid><description>记录各种资源。</description><pubDate>Thu, 21 Jul 1949 18:20:00 GMT</pubDate><content:encoded>&lt;h1&gt;&lt;code&gt;#&lt;/code&gt;（1）EMBY反代合集（他人维护）&lt;/h1&gt;
+</content:encoded></item><item><title>后记！！</title><link>https://blog.mtcacg.top/posts/bookmark/</link><guid isPermaLink="true">https://blog.mtcacg.top/posts/bookmark/</guid><description>记录各种资源。</description><pubDate>Thu, 21 Jul 1949 18:20:00 GMT</pubDate><content:encoded>&lt;h1&gt;Github 反代&lt;/h1&gt;
+&lt;p&gt;1、&lt;s&gt;&lt;a href=&quot;https://k.bba.cc.cd&quot;&gt;https://k.bba.cc.cd&lt;/a&gt;&lt;/s&gt;
+2、&lt;a href=&quot;https://gh.kaza.de5.net&quot;&gt;https://gh.kaza.de5.net&lt;/a&gt;
+3、&lt;a href=&quot;https://gh.2x.nz&quot;&gt;https://gh.2x.nz&lt;/a&gt; &lt;code&gt;他人维护&lt;/code&gt;&lt;/p&gt;
 &lt;blockquote&gt;
-&lt;p&gt;&lt;code&gt;使用方法：反代头/emby域名&lt;/code&gt;+通常端口为443&lt;/p&gt;
+&lt;p&gt;屏蔽海外请求。你都海外了还上不了github不是吧。
+该类下载域没有写进白名单，所以下载文件时会走原链。&lt;/p&gt;
 &lt;/blockquote&gt;
-&lt;pre&gt;&lt;code&gt;- https://ada.6yhy.top/
-- https://fd.dirige.de5.net/
-- https://auto.embys.dpdns.org/
-- https://auto.liuer.indevs.in/
-- https://auto.dolby.dpdns.org/
-- https://assrt.net/
+&lt;pre&gt;&lt;code&gt;codeload.github.com
+objects.githubusercontent.com
+github-releases.githubusercontent.com
 &lt;/code&gt;&lt;/pre&gt;
-&lt;hr /&gt;
-&lt;h1&gt;&lt;code&gt;#&lt;/code&gt;（2）优选域名&lt;/h1&gt;
-&lt;ul&gt;
-&lt;li&gt;
-&lt;h2&gt;CM大佬维护：&lt;/h2&gt;
-&lt;/li&gt;
-&lt;/ul&gt;
-&lt;blockquote&gt;
-&lt;p&gt;&lt;img src=&quot;https://blog.mtcacg.top/_astro/CMdalao.BZ9Y_V8H.png&quot; alt=&quot;CM&quot; /&gt;
-https://cf.090227.xyz/&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;ul&gt;
-&lt;li&gt;
-&lt;h2&gt;秋名山大佬维护：&lt;/h2&gt;
-&lt;/li&gt;
-&lt;/ul&gt;
-&lt;blockquote&gt;
-&lt;p&gt;&lt;img src=&quot;https://blog.mtcacg.top/_astro/qmsdalao.CzjCiQyU.png&quot; alt=&quot;秋名山&quot; /&gt;
-https://cf.877774.xyz/&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;ul&gt;
-&lt;li&gt;
-&lt;h2&gt;自用hw云单ipvv4优选（ipv6屏蔽不通）&lt;/h2&gt;
-&lt;/li&gt;
-&lt;/ul&gt;
-&lt;blockquote&gt;
-&lt;p&gt;&lt;img src=&quot;../assets/blogimg/%E8%87%AA%E7%94%A8hw%E4%BA%91ip4%E4%BC%98%E9%80%89.png&quot; alt=&quot;hw云单ipvv4优选&quot; /&gt;
-https://cf.hw.0721521.xyz&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;ul&gt;
-&lt;li&gt;
-&lt;h2&gt;MIYU维护:&lt;/h2&gt;
-&lt;/li&gt;
-&lt;/ul&gt;
-&lt;blockquote&gt;
-&lt;p&gt;&lt;img src=&quot;https://blog.mtcacg.top/_astro/saas-sin.CqvsOYpH.png&quot; alt=&quot;MIYU&quot; /&gt;
-https://saas.sin.fan&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;hr /&gt;
 &lt;h1&gt;Meting-music音乐api接口（个人维护）&lt;/h1&gt;
 &lt;blockquote&gt;
 &lt;h3&gt;支持的平台&lt;/h3&gt;
@@ -1613,5 +1575,56 @@ https://saas.sin.fan&lt;/p&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
 &lt;/blockquote&gt;
+&lt;hr /&gt;
+&lt;h1&gt;&lt;code&gt;#&lt;/code&gt;EMBY反代合集（他人维护）&lt;/h1&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;code&gt;使用方法：反代头/emby域名&lt;/code&gt;+通常端口为443&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;pre&gt;&lt;code&gt;- https://ada.6yhy.top/
+- https://fd.dirige.de5.net/
+- https://auto.embys.dpdns.org/
+- https://auto.liuer.indevs.in/
+- https://auto.dolby.dpdns.org/
+- https://assrt.net/
+&lt;/code&gt;&lt;/pre&gt;
+&lt;hr /&gt;
+&lt;h1&gt;&lt;code&gt;#&lt;/code&gt;优选域名&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;h2&gt;CM大佬维护：&lt;/h2&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;img src=&quot;https://blog.mtcacg.top/_astro/CMdalao.BZ9Y_V8H.png&quot; alt=&quot;CM&quot; /&gt;
+https://cf.090227.xyz/&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;h2&gt;秋名山大佬维护：&lt;/h2&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;img src=&quot;https://blog.mtcacg.top/_astro/qmsdalao.CzjCiQyU.png&quot; alt=&quot;秋名山&quot; /&gt;
+https://cf.877774.xyz/&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;h2&gt;自用hw云单ipvv4优选（ipv6屏蔽不通）&lt;/h2&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;img src=&quot;../assets/blogimg/%E8%87%AA%E7%94%A8hw%E4%BA%91ip4%E4%BC%98%E9%80%89.png&quot; alt=&quot;hw云单ipvv4优选&quot; /&gt;
+https://cf.hw.0721521.xyz&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;h2&gt;MIYU维护:&lt;/h2&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;img src=&quot;https://blog.mtcacg.top/_astro/saas-sin.CqvsOYpH.png&quot; alt=&quot;MIYU&quot; /&gt;
+https://saas.sin.fan&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;hr /&gt;
 &lt;h1&gt;&lt;code&gt; ——自此本章完结——&lt;/code&gt;&lt;/h1&gt;
 </content:encoded></item></channel></rss>
