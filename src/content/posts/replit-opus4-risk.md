@@ -2,7 +2,7 @@
 title: 奇技淫巧LINUX·之·完全免费获取Claude-Opus4模型的API
 published: 2026-04-24T12:00:00
 description: 逛 linux.do 看到一篇关于 Replit / OpenClaw 的讨论帖。与其说它是在讲“免费 Claude API”，不如说它是在讲怎么把平台现成能力重新包装成一个通用接口。
-image: ../assets/blogimg/claude.png
+image: ../assets/blogimg/claudeface.png
 tags:
   - Claude
   - Replit
