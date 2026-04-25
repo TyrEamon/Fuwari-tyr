@@ -16,7 +16,7 @@ lang: "zh-CN"
 > ## 什么？免费获取 Claude-Opus4 模型的 API？
 ![claude](../assets/blogimg/claude.png)
 > ## Cherry Studio导入情况
-![cherry](../assets/blogimg/cherry.png)
+![cherry](../assets/blogimg/cherry1.png)
 
 
 # 讨论帖子
