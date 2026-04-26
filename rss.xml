@@ -115,6 +115,166 @@
 &lt;ul&gt;
 &lt;li&gt;同样的，欢迎你加入&lt;/li&gt;
 &lt;/ul&gt;
+</content:encoded></item><item><title>如何使用CAPMS完全免费调用GPT、Gemini、Claude模型的API，实现Token自由</title><link>https://blog.mtcacg.top/posts/cpams/</link><guid isPermaLink="true">https://blog.mtcacg.top/posts/cpams/</guid><description>一种低成本接入多模型 API 的思路：用 CPAMS / CLIProxyAPI 将 OAuth 模型通道封装成 OpenAI 兼容接口，让本地 AI 工具更自由地调用 Gemini、Claude、GPT/Codex 等模型能力。</description><pubDate>Mon, 27 Apr 2026 00:33:32 GMT</pubDate><content:encoded>&lt;h2&gt;::github{repo=&quot;router-for-me/CLIProxyAPI&quot;}
+&amp;lt;details&amp;gt;
+&amp;lt;summary&amp;gt;点击展开&amp;lt;/summary&amp;gt;
+&amp;lt;p&amp;gt;源站：https://github.com/router-for-me/CLIProxyAPI&amp;lt;/p&amp;gt;
+&amp;lt;p&amp;gt;镜像站：https://gh.kaza.de5.net/router-for-me/CLIProxyAPI&amp;lt;/p&amp;gt;
+&amp;lt;/details&amp;gt;&lt;/h2&gt;
+&lt;h1&gt;引言&lt;/h1&gt;
+&lt;p&gt;如何使用CPAMS去中转你的codex、Gpt、Gemini、Claude等代理转成个人api，解放token，实现token自由。&lt;/p&gt;
+&lt;p&gt;想必大家都听说CAPMS这个项目，这里给到一个capms项目的部署教程。&lt;/p&gt;
+&lt;p&gt;对了，这里我使用的是本地部署。你也可以使用别的大佬打包好的镜像包去部署。
+如：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;docker pull routerforme/cliproxyapi:latest
+docker pull eceasy/cli-proxy-api:latest
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;docker run -d \
+  --name cli-proxy-api \
+  -p 8317:8317 \
+  -p 8085:8085 \
+  -p 1455:1455 \
+  -p 54545:54545 \
+  -p 51121:51121 \
+  -p 11451:11451 \
+  -v cli-proxy-api-data:/data \
+  -e DEPLOY=cloud \
+  -e PORT=8317 \
+  eceasy/cli-proxy-api:latest
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;API 地址：http://服务器IP:8317/v1
+管理页面：http://服务器IP:8317&lt;/p&gt;
+&lt;h1&gt;正式开始&lt;/h1&gt;
+&lt;h3&gt;1、后端二进制程序下载&lt;/h3&gt;
+&lt;p&gt;首先我们去GitHu下载官方release文件
+https://github.com/router-for-me/CLIProxyAPI
+&lt;img src=&quot;../assets/blogimg/capms%E9%A1%B9%E7%9B%AE.webp&quot; alt=&quot;capms项目&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;选取适合版本的二进制程序包下到本地解压
+解压后得到以下文件
+&lt;img src=&quot;../assets/blogimg/capms%E8%A7%A3%E5%8E%8B.webp&quot; alt=&quot;capms解压&quot; /&gt;&lt;/p&gt;
+&lt;h3&gt;2、修改配置文件yaml&lt;/h3&gt;
+&lt;p&gt;注意其中的config.example.yaml，这是他的配置文件，建议修改其中的个人密钥。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;
+host: &quot;&quot;
+# Server port
+port: 8317 #如果你8317端口被占用，可以修改为其他端口
+  secret-key: &quot;输入你自己的密钥&quot; #用于capms页面（这个页面得自己导入，后面会提到。）得登录，该密钥后续会被进行加密，也没什么。
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;code&gt;做好上述准备，先不急运行exe程序。&lt;/code&gt;&lt;/p&gt;
+&lt;hr /&gt;
+&lt;h3&gt;3、安装前端资源文件&lt;/h3&gt;
+&lt;p&gt;由于此仅仅为CLIProxyAPI 的后端二进制我们要去单独下载他的前端控制台资源：一个html文件。
+这里我推荐的是router-for-me大佬的前端资源。
+前端资源：https://github.com/router-for-me/Cli-Proxy-API-Management-Center
+&lt;img src=&quot;../assets/blogimg/capms%E5%89%8D%E7%AB%AF%E8%B5%84%E6%BA%90.webp&quot; alt=&quot;capms前端资源&quot; /&gt;
+下载那个management.html放到解压出来的后端二进制文件目录下。和那个exe同级就行。&lt;/p&gt;
+&lt;hr /&gt;
+&lt;h1&gt;运行程序更改配置&lt;/h1&gt;
+&lt;h3&gt;4、运行程序&lt;/h3&gt;
+&lt;p&gt;现在我们可以运行程序了，双击或在终端中运行。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;./cli-proxy-api.exe
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;会跳出终端界面，如下：
+&lt;img src=&quot;https://blog.mtcacg.top/_astro/capms-cmd.CzmdxDnE.webp&quot; alt=&quot;capms-cmd&quot; /&gt;
+无视即可。
+访问管理页面：http://服务器IP:8317
+&lt;img src=&quot;../assets/blogimg/capms%E9%A1%B5%E9%9D%A2.webp&quot; alt=&quot;capms页面&quot; /&gt;&lt;/p&gt;
+&lt;h3&gt;5、更改配置&lt;/h3&gt;
+&lt;p&gt;现在我们可以去配置面板页去更改配置了。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;(1)&lt;code&gt;网络配置&lt;/code&gt;
+&lt;img src=&quot;https://blog.mtcacg.top/_astro/capms-net.BGhTPE2B.webp&quot; alt=&quot;capms配置1&quot; /&gt;&lt;/li&gt;
+&lt;li&gt;(2)&lt;code&gt;设置自己的apikey&lt;/code&gt;
+&lt;img src=&quot;../assets/blogimg/capms-%E8%AE%A4%E8%AF%81.webp&quot; alt=&quot;capms配置2&quot; /&gt;&lt;/li&gt;
+&lt;li&gt;(3)&lt;code&gt;记得保存&lt;/code&gt;
+&lt;img src=&quot;../assets/blogimg/capms-%E4%BF%9D%E5%AD%98.webp&quot; alt=&quot;capms配置3&quot; /&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;后面有需求就继续配置内网穿透ngrok、cloudflare-tunnel等。实现外部访问。不过一般我都在本机进行使用，所以没有这个需求。&lt;/p&gt;
+&lt;h3&gt;接入你的codex、Gemini CLI、Antigravity等的OAuth&lt;/h3&gt;
+&lt;p&gt;&lt;img src=&quot;https://blog.mtcacg.top/_astro/Antigravity-model.CDww2OKr.webp&quot; alt=&quot;Antigravity-model&quot; /&gt;
+&lt;img src=&quot;https://blog.mtcacg.top/_astro/codex-model.CGdcz9po.webp&quot; alt=&quot;codex-model&quot; /&gt;
+&lt;img src=&quot;https://blog.mtcacg.top/_astro/gemini-cli-model.DoNgTOEZ.webp&quot; alt=&quot;gemini-cli-model&quot; /&gt;&lt;/p&gt;
+&lt;hr /&gt;
+&lt;h1&gt;注意事项&lt;/h1&gt;
+&lt;h2&gt;&lt;strong&gt;1. 注意&lt;/strong&gt;&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;[!WARNING]
+注意Gemini CLI及Antigravity记得确认你的project 开启了Gemini for Google Cloud的权限。
+访问：https://console.cloud.google.com/
+确认你的project 开启了Gemini for Google Cloud的权限。
+&lt;img src=&quot;https://blog.mtcacg.top/_astro/gemin-projest.BK6UguOX.webp&quot; alt=&quot;gemini projest&quot; /&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;ol&gt;
+&lt;li&gt;点击你的My Frist Project &amp;gt; 确认有项目 &amp;gt; 记下project_id：如（gen-lang-client-0412195766）&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;ol&gt;
+&lt;li&gt;点击 APIS AND SERVICES&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;ol&gt;
+&lt;li&gt;选择库 &amp;gt; 搜索Gemini for Google Cloud
+&lt;img src=&quot;../assets/blogimg/%E5%BA%93.webp&quot; alt=&quot;capms-库&quot; /&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;ol&gt;
+&lt;li&gt;点击ENABLE
+到此权限问题解决了。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr /&gt;
+&lt;h2&gt;&lt;strong&gt;2. 注意&lt;/strong&gt;&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;[!WARNING]
+OAuth接入之后，Gemini CLI、Antigravity要特殊处理一下。因为它没有提供project_id的参数。会导致连接调用失败，尽管你过了认证。
+找到到这个文件，将project_id添加到文件中。
+&lt;code&gt;&quot;C:\Users\Tyr.Eamon\.cli-proxy-api\antigravity-账号.json&quot;&lt;/code&gt;
+原文件。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;pre&gt;&lt;code&gt;{&quot;access_token&quot;:&quot;****&quot;,&quot;disabled&quot;:false,&quot;email&quot;:&quot;你的账号@gmail.com&quot;,&quot;expired&quot;:&quot;2026-04-27T00:33:32+08:00&quot;,&quot;expires_in&quot;:3599,&quot;refresh_token&quot;:&quot;*******&quot;,&quot;timestamp&quot;:1777217***,&quot;type&quot;:&quot;antigravity&quot;}
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;修改后的文件。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;{&quot;access_token&quot;:&quot;****&quot;,&quot;disabled&quot;:false,&quot;email&quot;:&quot;你的账号@gmail.com&quot;,&quot;expired&quot;:&quot;2026-04-27T00:33:32+08:00&quot;,&quot;expires_in&quot;:3599,&quot;project_id&quot;:&quot;你的project_id&quot;,&quot;refresh_token&quot;:&quot;*******&quot;,&quot;timestamp&quot;:1777217***,&quot;type&quot;:&quot;antigravity&quot;}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;hr /&gt;
+&lt;h2&gt;&lt;strong&gt;3. 注意&lt;/strong&gt;&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;[!WARNING]
+还有就是Antigravity可能要你认证。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;pre&gt;&lt;code&gt;{
+  &quot;error&quot;: {
+    &quot;code&quot;: 403,
+    &quot;message&quot;: &quot;Verify your account to continue.&quot;,
+    &quot;status&quot;: &quot;PERMISSION_DENIED&quot;,
+    &quot;details&quot;: [
+      {
+        &quot;reason&quot;: &quot;VALIDATION_REQUIRED&quot;,
+        &quot;domain&quot;: &quot;cloudcode-pa.googleapis.com&quot;,
+        &quot;metadata&quot;: {
+          &quot;validation_url&quot;: &quot;https://accounts.google.com/signin/continue?[REDACTED]&quot; # 点击这个链接进行认证
+        }
+      }
+    ]
+  }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;hr /&gt;
+&lt;h1&gt;后记&lt;/h1&gt;
+&lt;p&gt;——理论上——
+只要你的号够多，&lt;code&gt;号池够深够硬&lt;/code&gt;理论上无限token、解放你的token限制。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;后续我们可以用CCSwith去&lt;code&gt;统一入口&lt;/code&gt;＋&lt;code&gt;融断&lt;/code&gt;及&lt;code&gt;故障转移&lt;/code&gt; 等管理。&lt;/li&gt;
+&lt;/ul&gt;
 </content:encoded></item><item><title>奇技淫巧LINUX·之·完全免费获取Claude-Opus4模型的API</title><link>https://blog.mtcacg.top/posts/replit-opus4-risk/</link><guid isPermaLink="true">https://blog.mtcacg.top/posts/replit-opus4-risk/</guid><description>逛 linux.do 看到一篇关于 Replit / OpenClaw 的讨论帖。与其说它是在讲“免费 Claude API”，不如说它是在讲怎么把平台现成能力重新包装成一个通用接口。</description><pubDate>Fri, 24 Apr 2026 12:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;引言&lt;/h1&gt;
 &lt;blockquote&gt;
 &lt;h2&gt;什么？免费获取 Claude-Opus4 模型的 API？&lt;/h2&gt;
@@ -473,12 +633,13 @@ Cyberduck 官方提到，有些第三方 S3 兼容服务只支持 &lt;strong&gt;
 &lt;li&gt;访问 &lt;code&gt;/journal/&lt;/code&gt; 检查是否出现列表项并可点击进入详情。&lt;/li&gt;
 &lt;/ol&gt;
 &lt;p&gt;如果这篇能在日志页显示并能点开，就说明“日志按帖子模型走”已经打通。&lt;/p&gt;
-</content:encoded></item><item><title>用 video-ts 在 Cloudflare Pages / Worker 零成本托管你的视频文件</title><link>https://blog.mtcacg.top/posts/cfplay/</link><guid isPermaLink="true">https://blog.mtcacg.top/posts/cfplay/</guid><description>不用自建流媒体服务器，hls/dash静态分片托管到cloudflare在线播放，享受CDN 分发。</description><pubDate>Fri, 27 Feb 2026 16:30:00 GMT</pubDate><content:encoded>&lt;p&gt;&lt;code&gt;项目仓库地址:&lt;/code&gt;
+</content:encoded></item><item><title>用 video-ts 在 Cloudflare Pages / Worker 零成本托管你的视频文件</title><link>https://blog.mtcacg.top/posts/cfplay/</link><guid isPermaLink="true">https://blog.mtcacg.top/posts/cfplay/</guid><description>不用自建流媒体服务器，hls/dash静态分片托管到cloudflare在线播放，享受CDN 分发。</description><pubDate>Fri, 27 Feb 2026 16:30:00 GMT</pubDate><content:encoded>&lt;h2&gt;&lt;code&gt;项目仓库地址:&lt;/code&gt;
 ::github{repo=&quot;TyrEamon/video-tsp&quot;}
 &amp;lt;details&amp;gt;
 &amp;lt;summary&amp;gt;点击展开&amp;lt;/summary&amp;gt;
-&amp;lt;p&amp;gt;源站：https://github.com/TyrEamon/video-ts&amp;lt;p&amp;gt;镜像站：https://k.bba.cc.cd/TyrEamon/video-tsp&amp;lt;/p&amp;gt;
-&amp;lt;/details&amp;gt;&lt;/p&gt;
+&amp;lt;p&amp;gt;源站：https://github.com/TyrEamon/video-ts
+&amp;lt;p&amp;gt;镜像站：https://gh.kaza.de5.net/TyrEamon/video-tsp&amp;lt;/p&amp;gt;
+&amp;lt;/details&amp;gt;&lt;/h2&gt;
 &lt;h1&gt;&lt;code&gt;#&lt;/code&gt;前言&lt;/h1&gt;
 &lt;p&gt;如果你想把视频放进博客，但又不想自建流媒体服务器，那么你可以考虑用强大的FFmpeg工具和video-ts项目。这种“静态分片 + CDN 分发”的方案会非常实用。
 核心思路是：&lt;/p&gt;
