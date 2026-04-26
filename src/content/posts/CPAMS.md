@@ -112,7 +112,7 @@ port: 8317 #如果你8317端口被占用，可以修改为其他端口
 后面有需求就继续配置内网穿透ngrok、cloudflare-tunnel等。实现外部访问。不过一般我都在本机进行使用，所以没有这个需求。
 
 ### 接入你的codex、Gemini CLI、Antigravity等的OAuth
-![Antigravity-model](../assets/blogimg/antigravity-model.webp)
+![Antigravity-model](../assets/blogimg/Antigravity-model.webp)
 ![codex-model](../assets/blogimg/codex-model.webp)
 ![gemini-cli-model](../assets/blogimg/gemini-cli-model.webp)
 
