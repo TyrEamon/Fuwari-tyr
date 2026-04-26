@@ -16,8 +16,10 @@ lang: ""
 ::github{repo="TyrEamon/video-tsp"}
 <details>
   <summary>点击展开</summary>
-  <p>源站：https://github.com/TyrEamon/video-ts<p>镜像站：https://k.bba.cc.cd/TyrEamon/video-tsp</p>
+  <p>源站：https://github.com/TyrEamon/video-ts
+  <p>镜像站：https://gh.kaza.de5.net/TyrEamon/video-tsp</p>
 </details>
+---
 
 # `#`前言
 如果你想把视频放进博客，但又不想自建流媒体服务器，那么你可以考虑用强大的FFmpeg工具和video-ts项目。这种“静态分片 + CDN 分发”的方案会非常实用。
