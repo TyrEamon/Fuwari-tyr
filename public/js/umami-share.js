@@ -85,7 +85,6 @@
 				endAt: currentTimestamp,
 				unit: "hour",
 				timezone: queryParams.timezone || "Asia/Shanghai",
-				compare: false,
 				...queryParams,
 			});
 
@@ -94,6 +93,7 @@
 			const res = await fetch(statsUrl, {
 				headers: {
 					"x-umami-share-token": token,
+					"x-umami-share-context": "1",
 				},
 			});
 
