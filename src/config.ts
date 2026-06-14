@@ -147,6 +147,13 @@ export const navBarConfig: NavBarConfig = {
 					icon: "material-symbols:image-rounded",
 					description: "个人图站 / 图床展示页面",
 				},
+				{
+					name: "CFW 面板",
+					url: "https://proxylink.mtcacg.top",
+					external: true,
+					icon: "material-symbols:dashboard-rounded",
+					description: "CFW 订阅与代理面板入口",
+				},
 			],
 		},
 	],
