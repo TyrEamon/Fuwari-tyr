@@ -135,7 +135,7 @@ export const navBarConfig: NavBarConfig = {
 			children: [
 				{
 					name: "网页导航",
-					url: "https://www.6858686.xyz/",
+					url: "https://www.685866.xyz/",
 					external: true,
 					icon: "fa6-solid:compass",
 					description: "常用网站导航与收藏入口",
