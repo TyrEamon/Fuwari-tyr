@@ -41,7 +41,7 @@
 		"astro": "5.7.9",
 		"astro-expressive-code": "^0.41.3",
 		"astro-icon": "^1.1.5",
-		"glob": "^11.0.3",
+		"glob": "^11.1.0",
 		"hastscript": "^9.0.1",
 		"imagesloaded": "^5.0.0",
 		"katex": "^0.16.22",
